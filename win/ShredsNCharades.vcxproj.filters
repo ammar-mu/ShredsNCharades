@@ -1,0 +1,148 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="Source Files\vstgui">
+      <UniqueIdentifier>{0b4eecf5-632a-4f23-82c3-45c2db8fec03}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Interfaces">
+      <UniqueIdentifier>{803f5e4f-6281-42de-9de5-e79e9664cbbc}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Clouds">
+      <UniqueIdentifier>{76918c1f-c339-4171-8eb3-8d44ad79b8b5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Clouds\dsp">
+      <UniqueIdentifier>{9383610d-95bb-401e-9942-424444afe999}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Clouds\dsp\pvoc">
+      <UniqueIdentifier>{a6110834-0fde-4538-81ca-08678a59c7d9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\stmlib">
+      <UniqueIdentifier>{ec9bc186-f559-4b82-9841-3867b783c04a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\stmlib\dsp">
+      <UniqueIdentifier>{7e54f258-7fc6-4dd7-a12b-a7650ab1e041}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\stmlib\utils">
+      <UniqueIdentifier>{83b6b26f-c587-45c9-8f46-04f49ad815b1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Rings">
+      <UniqueIdentifier>{d317f56d-11e9-4729-8160-2409fe943b5c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Rings\dsp">
+      <UniqueIdentifier>{2ddbbf32-9c47-45bb-bc6f-0946acd953c0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Braids">
+      <UniqueIdentifier>{7b93cf2e-d9ae-4847-ac50-a417d953f525}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Tides">
+      <UniqueIdentifier>{27c258be-50eb-4502-9430-eb45ea6e6a47}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\source\Exports.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\source\Modules.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\source\ModulesMain.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\source\ModuleWrapper.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\vstgui\vstcontrols.cpp">
+      <Filter>Source Files\vstgui</Filter>
+    </ClCompile>
+    <ClCompile Include="..\vstgui\vstgui.cpp">
+      <Filter>Source Files\vstgui</Filter>
+    </ClCompile>
+    <ClCompile Include="..\dependencies\eurorack\clouds\dsp\pvoc\frame_transformation.cc">
+      <Filter>Source Files\Clouds\dsp\pvoc</Filter>
+    </ClCompile>
+    <ClCompile Include="..\dependencies\eurorack\clouds\dsp\pvoc\phase_vocoder.cc">
+      <Filter>Source Files\Clouds\dsp\pvoc</Filter>
+    </ClCompile>
+    <ClCompile Include="..\dependencies\eurorack\clouds\dsp\pvoc\stft.cc">
+      <Filter>Source Files\Clouds\dsp\pvoc</Filter>
+    </ClCompile>
+    <ClCompile Include="..\dependencies\eurorack\clouds\dsp\correlator.cc">
+      <Filter>Source Files\Clouds\dsp</Filter>
+    </ClCompile>
+    <ClCompile Include="..\dependencies\eurorack\clouds\dsp\granular_processor.cc">
+      <Filter>Source Files\Clouds\dsp</Filter>
+    </ClCompile>
+    <ClCompile Include="..\dependencies\eurorack\clouds\dsp\mu_law.cc">
+      <Filter>Source Files\Clouds\dsp</Filter>
+    </ClCompile>
+    <ClCompile Include="..\dependencies\eurorack\stmlib\dsp\atan.cc">
+      <Filter>Source Files\stmlib\dsp</Filter>
+    </ClCompile>
+    <ClCompile Include="..\dependencies\eurorack\stmlib\dsp\units.cc">
+      <Filter>Source Files\stmlib\dsp</Filter>
+    </ClCompile>
+    <ClCompile Include="..\dependencies\eurorack\stmlib\utils\random.cc">
+      <Filter>Source Files\stmlib\utils</Filter>
+    </ClCompile>
+    <ClCompile Include="..\dependencies\eurorack\rings\dsp\part.cc">
+      <Filter>Source Files\Rings\dsp</Filter>
+    </ClCompile>
+    <ClCompile Include="..\dependencies\eurorack\rings\dsp\fm_voice.cc">
+      <Filter>Source Files\Rings\dsp</Filter>
+    </ClCompile>
+    <ClCompile Include="..\dependencies\eurorack\rings\dsp\resonator.cc">
+      <Filter>Source Files\Rings\dsp</Filter>
+    </ClCompile>
+    <ClCompile Include="..\dependencies\eurorack\rings\dsp\string.cc">
+      <Filter>Source Files\Rings\dsp</Filter>
+    </ClCompile>
+    <ClCompile Include="..\dependencies\eurorack\rings\dsp\string_synth_part.cc">
+      <Filter>Source Files\Rings\dsp</Filter>
+    </ClCompile>
+    <ClCompile Include="..\dependencies\eurorack\clouds\resources.cc">
+      <Filter>Source Files\Clouds</Filter>
+    </ClCompile>
+    <ClCompile Include="..\dependencies\eurorack\rings\rings_resources.cc">
+      <Filter>Source Files\Rings</Filter>
+    </ClCompile>
+    <ClCompile Include="..\dependencies\eurorack\braids\braids_resources.cc">
+      <Filter>Source Files\Braids</Filter>
+    </ClCompile>
+    <ClCompile Include="..\dependencies\eurorack\braids\macro_oscillator.cc">
+      <Filter>Source Files\Braids</Filter>
+    </ClCompile>
+    <ClCompile Include="..\dependencies\eurorack\braids\analog_oscillator.cc">
+      <Filter>Source Files\Braids</Filter>
+    </ClCompile>
+    <ClCompile Include="..\dependencies\eurorack\braids\digital_oscillator.cc">
+      <Filter>Source Files\Braids</Filter>
+    </ClCompile>
+    <ClCompile Include="..\dependencies\eurorack\tides2\poly_slope_generator.cc">
+      <Filter>Source Files\Tides</Filter>
+    </ClCompile>
+    <ClCompile Include="..\dependencies\eurorack\tides2\ramp_extractor.cc">
+      <Filter>Source Files\Tides</Filter>
+    </ClCompile>
+    <ClCompile Include="..\dependencies\eurorack\tides2\tides2_resources.cc">
+      <Filter>Source Files\Tides</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\source\Modules.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\source\ModuleWrapper.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\vstgui\vstcontrols.h">
+      <Filter>Source Files\vstgui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\vstgui\vstgui.h">
+      <Filter>Source Files\vstgui</Filter>
+    </ClInclude>
+  </ItemGroup>
+</Project>

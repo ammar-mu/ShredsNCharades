@@ -1,0 +1,2 @@
+1. At some point, pthreads package by Tim Rogers may or may not become a dependancy.
+You can search and install this one in VS using the "Manage NuGet Packages" under "project" menu.
