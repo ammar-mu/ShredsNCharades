@@ -1,9 +1,7 @@
 # Shreds & Charades
- 
  Shreds & Charades is a [SoloRack](http://www.solostuff.net/solorack/) plugin that is a port/fork of the [VCV™ Audible Instruments](https://github.com/VCVRack/AudibleInstruments) source code. With a few optimizations, modifications and a fresh UI.
  
-# Acknowledgement & Credits
- 
+# Acknowledgement
  This project wouldn't have been possible without the tremendous effort of the following people.
  
  Emilie Gillet of [Mutable Instruments™](https://mutable-instruments.net/). Original hardware modules maker and source code author.
@@ -14,6 +12,7 @@
  
  [Steinberg Media Technologies™](https://www.steinberg.net/). For VSTGUI API.
  
+# Credits
  Ammar Muqaddas of [SoloStuff](http://www.solostuff.net/). Code port/fork for SoloRack.
  
  
