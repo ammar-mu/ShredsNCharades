@@ -8,7 +8,7 @@
  
  Emilie Gillet of [Mutable Instruments™](https://mutable-instruments.net/). Original hardware modules maker and source code author.
  
- Andrew Belt of [VCV](https://vcvrack.com/). VCV Rack SDK and code port/fork for [VCV Rack](https://github.com/VCVRack/Rack)
+ Andrew Belt of [VCV™](https://vcvrack.com/). VCV Rack SDK and code port/fork for [VCV Rack](https://github.com/VCVRack/Rack)
  
  Speex library [authors](https://github.com/ammar-mu/ShredsNCharades/blob/main/dependencies/speex/AUTHORS)
  
