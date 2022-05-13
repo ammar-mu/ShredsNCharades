@@ -1,4 +1,4 @@
-<img src="./Shot.png" style="max-width: 100%;">
+<img src="./Shot.jpg" style="max-width: 100%;">
 
 # Shreds & Charades
  Shreds & Charades is a [SoloRack](http://www.solostuff.net/solorack/) plugin that is a port/fork of the [VCV™ Audible Instruments](https://github.com/VCVRack/AudibleInstruments) source code. With a few optimizations, modifications and a fresh UI.
