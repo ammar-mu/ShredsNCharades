@@ -3880,19 +3880,21 @@ void Branches::ValueChanged(CControl* pControl)
 //	ramp_extractor.Init(sr, 40.f / sr);
 //}
 
-int Branches::GetPresetSize()
-{
-	return GetControlsValuesSize();
-}
+//int Branches::GetPresetSize()
+//{
+//	return GetControlsValuesSize();
+//}
 
-void Branches::SavePreset(void* pdata, int size)
-{
-
-}
+//void Branches::SavePreset(void* pdata, int size)
+//{
+//
+//}
 
 void Branches::LoadPreset(void* pdata, int size, int version)
 {
+	if (version < 1001) return;		// Fixes bug in version 1000 which doesn't save presets
 
+	Module::LoadPreset(pdata, size, version);
 }
 
 const char* Branches::GetInfoURL()

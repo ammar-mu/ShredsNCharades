@@ -1763,15 +1763,15 @@ public:
 	const char* GetVendorName();
 	const int GetVendorNameLen();
 	inline void ProcessSample();
-	int GetVersion() { return 1000; }														// Is Licence activated ?
+	int GetVersion() { return 1001; }														// Is Licence activated ?
 	Product* InstanceActivate(char* fullname, char* email, char* serial);		// Virtual Version
 	bool InstanceIsActive();													// Virtual Version
 	void ValueChanged(CControl* pControl);
 	//void SetSampleRate(float sr);
 	//bool GetIsMonoDefault() { return false; }
 	void LoadPreset(void* pdata, int size, int version);
-	void SavePreset(void* pdata, int size);
-	int GetPresetSize();
+	//void SavePreset(void* pdata, int size);
+	//int GetPresetSize();
 	void onReset();
 	const char* GetInfoURL();
 	void UpdateOutputs(bool gate, int i);
