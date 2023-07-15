@@ -3276,6 +3276,7 @@ CView::CView (const CRect& size)
 , pBackground (0)
 , pAttributeList (0)
 , autosizeFlags (kAutosizeNone)
+, last_parent(NULL)		// By Ammar
 {
 	#if DEBUG
 	gNbCView++;
@@ -3298,6 +3299,7 @@ CView::CView (const CView& v)
 , pBackground (v.pBackground)
 , pAttributeList (0)
 , autosizeFlags (v.autosizeFlags)
+, last_parent(NULL)		// By Ammar
 {
 	if (pBackground)
 		pBackground->remember ();
@@ -3358,6 +3360,7 @@ bool CView::removed (CView* parent)
 {
 	if (!isAttached ())
 		return false;
+	last_parent = pParentView;		// By Ammar.
 	pParentView = 0;
 	pParentFrame = 0;
 	bIsAttached = false;

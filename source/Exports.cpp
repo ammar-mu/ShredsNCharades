@@ -2,100 +2,17 @@
 	Copyright 2017-2022 Ammar Muqaddas
 */
 
-#include "Modules.h"
+#include "ShredsNCharades.h"
 
 //----------------------------------------------------------
 // Exported functions
 extern "C"
 {
-
-__declspec(dllexport) bool GetDllModule(DllModule *mi, char *vendorname)
-{	// mi->name and mi->vendorname are inputs to this function.
-	// They are read by SoloRack from the xxxx.ini file, were xxxx.dll is the dll contaniing this requested module
-	// Returnes true if the operation is successful, otherwise false.
-
-	if (strcmp(mi->name,Clouds::name)==0 && strcmp(vendorname,Clouds::vendorname)==0)
-	{	mi->sdk_version = SDK_VERSION;
-		mi->name_len = Clouds::name_len;		// Not neccessary.
-		
-		mi->InitializePtr = Clouds::Initialize;
-		mi->EndPtr = Clouds::End;
-		mi->Constructor = (Module *(*)(CFrame *,CControlListener *, const SynthComm*, const int)) Clouds::Constructor;				// (Module *(__cdecl *)(CFrame *,CControlListener *)) 
-		mi->GetTypePtr = Clouds::GetType;
-		mi->ActivatePtr = Clouds::Activate;
-		mi->IsActivePtr = Clouds::IsActive;
-		mi->GetProductNamePtr = Clouds::GetProductName;
-
-		return true;
-	}
-	else if (strcmp(mi->name, Rings::name) == 0 && strcmp(vendorname, Rings::vendorname) == 0)
-	{
-		mi->sdk_version = SDK_VERSION;
-		mi->name_len = Rings::name_len;		// Not neccessary.
-
-		mi->InitializePtr = Rings::Initialize;
-		mi->EndPtr = Rings::End;
-		mi->Constructor = (Module * (*)(CFrame*, CControlListener*, const SynthComm*, const int)) Rings::Constructor;				// (Module *(__cdecl *)(CFrame *,CControlListener *)) 
-		mi->GetTypePtr = Rings::GetType;
-		mi->ActivatePtr = Rings::Activate;
-		mi->IsActivePtr = Rings::IsActive;
-		mi->GetProductNamePtr = Rings::GetProductName;
-
-		return true;
-	}
-	else if (strcmp(mi->name, Braids::name) == 0 && strcmp(vendorname, Braids::vendorname) == 0)
-	{
-		mi->sdk_version = SDK_VERSION;
-		mi->name_len = Braids::name_len;		// Not neccessary.
-
-		mi->InitializePtr = Braids::Initialize;
-		mi->EndPtr = Braids::End;
-		mi->Constructor = (Module * (*)(CFrame*, CControlListener*, const SynthComm*, const int)) Braids::Constructor;				// (Module *(__cdecl *)(CFrame *,CControlListener *)) 
-		mi->GetTypePtr = Braids::GetType;
-		mi->ActivatePtr = Braids::Activate;
-		mi->IsActivePtr = Braids::IsActive;
-		mi->GetProductNamePtr = Braids::GetProductName;
-
-		return true;
-	}
-	else if (strcmp(mi->name, Tides::name) == 0 && strcmp(vendorname, Tides::vendorname) == 0)
-	{
-		mi->sdk_version = SDK_VERSION;
-		mi->name_len = Tides::name_len;		// Not neccessary.
-
-		mi->InitializePtr = Tides::Initialize;
-		mi->EndPtr = Tides::End;
-		mi->Constructor = (Module * (*)(CFrame*, CControlListener*, const SynthComm*, const int)) Tides::Constructor;				// (Module *(__cdecl *)(CFrame *,CControlListener *)) 
-		mi->GetTypePtr = Tides::GetType;
-		mi->ActivatePtr = Tides::Activate;
-		mi->IsActivePtr = Tides::IsActive;
-		mi->GetProductNamePtr = Tides::GetProductName;
-
-		return true;
-	}
-	else if (strcmp(mi->name, Branches::name) == 0 && strcmp(vendorname, Branches::vendorname) == 0)
-	{
-		mi->sdk_version = SDK_VERSION;
-		mi->name_len = Branches::name_len;		// Not neccessary.
-
-		mi->InitializePtr = Branches::Initialize;
-		mi->EndPtr = Branches::End;
-		mi->Constructor = (Module * (*)(CFrame*, CControlListener*, const SynthComm*, const int)) Branches::Constructor;				// (Module *(__cdecl *)(CFrame *,CControlListener *)) 
-		mi->GetTypePtr = Branches::GetType;
-		mi->ActivatePtr = Branches::Activate;
-		mi->IsActivePtr = Branches::IsActive;
-		mi->GetProductNamePtr = Branches::GetProductName;
-
-		return true;
-	}
-	else return false;
-}
-
 // The following functions are used to enumerate all modules in the Dll, they are only used when scanning the dll instead of reading an .INI file. Which is not the default behavior.
 // You should provide an accurate .INI file for your dll.
 __declspec(dllexport) int GetDllNumberOfModules()
 {	// Returnes total number of modules in this Dll.
-	return 5;
+	return 7;
 }
 
 __declspec(dllexport) const char *GetDllVendorName()
@@ -118,91 +35,84 @@ __declspec(dllexport) int GetDllModuleNameLenByIndex(DllModule *mi, int index)
 			return Tides::name_len;
 		case 4:
 			return Branches::name_len;
+		case 5:
+			return Warps::name_len;
+		case 6:
+			return Stages::name_len;
 		default:
 			return -1;
 	}
 }
 
-__declspec(dllexport) bool GetDllModuleByIndex(DllModule *mi, int index)
+__declspec(dllexport) bool GetDllModuleByIndex(DllModule* mi, int index)
 {	// index range is from 0 to (Number Of Modules-1)
 	// Returnes true if the operation is successful, otherwise false.
 	// Note, caller (SoloRack) should allocate the memory for name. enough space can be ensured by calling GetDllModuleNameLenByIndex() 
 
+	//#define CHOOSEMACRO(_1,_2,_3,_4,_5,_6,_7,_8,_9,NAME,...) NAME
+	//#define NOCASE(cn)
+	//#define MODCASE(...) CHOOSEMACRO(__VA_ARGS__,MODCASEN,MODCASEN,MODCASEN,MODCASEN,MODCASEN,MODCASEN,MODCASEN,MODCASEN,NOCASE)(__VA_ARGS__)
+
+	#define MODCASE(cn,classname)	\
+	case cn:								\
+	mi->sdk_version = SDK_VERSION;			\
+	strcpy(mi->name, classname::name);			\
+	mi->name_len = classname::name_len;		\
+	mi->InitializePtr = classname::Initialize;	\
+	mi->EndPtr = classname::End;				\
+	mi->Constructor = (Module * (*)(CFrame*, CControlListener*, const SynthComm*, const int)) classname::Constructor;	\
+	mi->GetTypePtr = classname::GetType;		\
+	mi->ActivatePtr = classname::Activate;		\
+	mi->IsActivePtr = classname::IsActive;		\
+	mi->GetProductNamePtr = classname::GetProductName;		\
+	break;
+
 	switch (index)
-	{	case 0:
-			mi->sdk_version = SDK_VERSION;
-			strcpy(mi->name,Clouds::name);
-			mi->name_len = Clouds::name_len;	
-
-			mi->InitializePtr = Clouds::Initialize;
-			mi->EndPtr = Clouds::End;
-			mi->Constructor = (Module *(*)(CFrame *,CControlListener *, const SynthComm*, const int)) Clouds::Constructor;				// (Module *(__cdecl *)(CFrame *,CControlListener *)) 
-			mi->GetTypePtr = Clouds::GetType;
-			mi->ActivatePtr = Clouds::Activate;
-			mi->IsActivePtr = Clouds::IsActive;
-			mi->GetProductNamePtr = Clouds::GetProductName;
-			break;
-
-		case 1:
-			mi->sdk_version = SDK_VERSION;
-			strcpy(mi->name, Rings::name);
-			mi->name_len = Rings::name_len;
-
-			mi->InitializePtr = Rings::Initialize;
-			mi->EndPtr = Rings::End;
-			mi->Constructor = (Module * (*)(CFrame*, CControlListener*, const SynthComm*, const int)) Rings::Constructor;				// (Module *(__cdecl *)(CFrame *,CControlListener *)) 
-			mi->GetTypePtr = Rings::GetType;
-			mi->ActivatePtr = Rings::Activate;
-			mi->IsActivePtr = Rings::IsActive;
-			mi->GetProductNamePtr = Rings::GetProductName;
-			break;
-
-		case 2:
-			mi->sdk_version = SDK_VERSION;
-			strcpy(mi->name, Braids::name);
-			mi->name_len = Braids::name_len;
-
-			mi->InitializePtr = Braids::Initialize;
-			mi->EndPtr = Braids::End;
-			mi->Constructor = (Module * (*)(CFrame*, CControlListener*, const SynthComm*, const int)) Braids::Constructor;				// (Module *(__cdecl *)(CFrame *,CControlListener *)) 
-			mi->GetTypePtr = Braids::GetType;
-			mi->ActivatePtr = Braids::Activate;
-			mi->IsActivePtr = Braids::IsActive;
-			mi->GetProductNamePtr = Braids::GetProductName;
-			break;
-
-		case 3:
-			mi->sdk_version = SDK_VERSION;
-			strcpy(mi->name, Tides::name);
-			mi->name_len = Tides::name_len;
-
-			mi->InitializePtr = Tides::Initialize;
-			mi->EndPtr = Tides::End;
-			mi->Constructor = (Module * (*)(CFrame*, CControlListener*, const SynthComm*, const int)) Tides::Constructor;				// (Module *(__cdecl *)(CFrame *,CControlListener *)) 
-			mi->GetTypePtr = Tides::GetType;
-			mi->ActivatePtr = Tides::Activate;
-			mi->IsActivePtr = Tides::IsActive;
-			mi->GetProductNamePtr = Tides::GetProductName;
-			break;
-
-		case 4:
-			mi->sdk_version = SDK_VERSION;
-			strcpy(mi->name, Branches::name);
-			mi->name_len = Branches::name_len;
-
-			mi->InitializePtr = Branches::Initialize;
-			mi->EndPtr = Branches::End;
-			mi->Constructor = (Module * (*)(CFrame*, CControlListener*, const SynthComm*, const int)) Branches::Constructor;				// (Module *(__cdecl *)(CFrame *,CControlListener *)) 
-			mi->GetTypePtr = Branches::GetType;
-			mi->ActivatePtr = Branches::Activate;
-			mi->IsActivePtr = Branches::IsActive;
-			mi->GetProductNamePtr = Branches::GetProductName;
-			break;
+	{	MODCASE(0, Clouds)
+		MODCASE(1, Rings)
+		MODCASE(2, Braids)
+		MODCASE(3, Tides)
+		MODCASE(4, Branches)
+		MODCASE(5, Warps)
+		MODCASE(6, Stages)
 
 		default:
 			return false;
 	}
 	return true;
+}
+
+__declspec(dllexport) bool GetDllModule(DllModule* mi, char* vendorname)
+{	// mi->name and mi->vendorname are inputs to this function.
+	// They are read by SoloRack from the xxxx.ini file, were xxxx.dll is the dll contaniing this requested module
+	// Returnes true if the operation is successful, otherwise false.
+
+	//#define CHOOSEMACRO(_1,_2,_3,_4,_5,_6,_7,_8,_9,NAME,...) NAME
+	//#define NOMODIF() return false;
+	//#define MODIF(...) CHOOSEMACRO(__VA_ARGS__,MODIFN,MODIFN,MODIFN,MODIFN,MODIFN,MODIFN,MODIFN,MODIFN,MODIF1)(__VA_ARGS__)
+
+	#define IFMOD(classname)	\
+	if (strcmp(mi->name,classname::name)==0 && strcmp(vendorname,classname::vendorname)==0)	\
+	{	mi->sdk_version = SDK_VERSION;						\
+		mi->name_len = classname::name_len;					\
+		mi->InitializePtr = classname::Initialize;				\
+		mi->EndPtr = classname::End;							\
+		mi->Constructor = (Module *(*)(CFrame *,CControlListener *, const SynthComm*, const int)) classname::Constructor;	\
+		mi->GetTypePtr = classname::GetType;					\
+		mi->ActivatePtr = classname::Activate;					\
+		mi->IsActivePtr = classname::IsActive;					\
+		mi->GetProductNamePtr = classname::GetProductName;		\
+		return true;										\
+	}
+
+	IFMOD(Clouds)
+	else IFMOD(Rings)
+	else IFMOD(Braids)
+	else IFMOD(Tides)
+	else IFMOD(Branches)
+	else IFMOD(Warps)
+	else IFMOD(Stages)
+	else return false;
 }
 
 __declspec(dllexport) bool DllInitialize(const DllInit *init)
@@ -239,6 +149,8 @@ __declspec(dllexport) bool DllInitialize(const DllInit *init)
 	Braids::Initialize();
 	Tides::Initialize();
 	Branches::Initialize();
+	Warps::Initialize();
+	Stages::Initialize();
 	// Remmember to call your Initialize() here for each of your modules
 	// ....
 	return true;

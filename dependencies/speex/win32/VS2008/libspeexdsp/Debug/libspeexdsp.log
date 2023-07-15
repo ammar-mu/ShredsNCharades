@@ -1,0 +1,131 @@
+﻿cl : command line  warning D9035: option 'Gm' has been deprecated and will be removed in a future release
+  smallft.c
+C:\Users\Ammar\Documents\Visual Studio 2008\Projects\ShredsNCharades\ShredsNCharades\dependencies\speex\libspeex\smallft.c(101,10): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+C:\Users\Ammar\Documents\Visual Studio 2008\Projects\ShredsNCharades\ShredsNCharades\dependencies\speex\libspeex\smallft.c(102,10): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+C:\Users\Ammar\Documents\Visual Studio 2008\Projects\ShredsNCharades\ShredsNCharades\dependencies\speex\libspeex\smallft.c(285,7): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+C:\Users\Ammar\Documents\Visual Studio 2008\Projects\ShredsNCharades\ShredsNCharades\dependencies\speex\libspeex\smallft.c(286,7): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+C:\Users\Ammar\Documents\Visual Studio 2008\Projects\ShredsNCharades\ShredsNCharades\dependencies\speex\libspeex\smallft.c(855,7): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+C:\Users\Ammar\Documents\Visual Studio 2008\Projects\ShredsNCharades\ShredsNCharades\dependencies\speex\libspeex\smallft.c(856,7): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+  scal.c
+C:\Users\Ammar\Documents\Visual Studio 2008\Projects\ShredsNCharades\ShredsNCharades\dependencies\speex\libspeex\scal.c(109,27): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+C:\Users\Ammar\Documents\Visual Studio 2008\Projects\ShredsNCharades\ShredsNCharades\dependencies\speex\libspeex\scal.c(151,16): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+C:\Users\Ammar\Documents\Visual Studio 2008\Projects\ShredsNCharades\ShredsNCharades\dependencies\speex\libspeex\scal.c(180,18): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+C:\Users\Ammar\Documents\Visual Studio 2008\Projects\ShredsNCharades\ShredsNCharades\dependencies\speex\libspeex\scal.c(182,18): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+C:\Users\Ammar\Documents\Visual Studio 2008\Projects\ShredsNCharades\ShredsNCharades\dependencies\speex\libspeex\scal.c(204,19): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+C:\Users\Ammar\Documents\Visual Studio 2008\Projects\ShredsNCharades\ShredsNCharades\dependencies\speex\libspeex\scal.c(206,25): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+C:\Users\Ammar\Documents\Visual Studio 2008\Projects\ShredsNCharades\ShredsNCharades\dependencies\speex\libspeex\scal.c(208,21): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+C:\Users\Ammar\Documents\Visual Studio 2008\Projects\ShredsNCharades\ShredsNCharades\dependencies\speex\libspeex\scal.c(268,35): warning C4244: '=': conversion from 'float' to 'spx_int16_t', possible loss of data
+  resample.c
+C:\Users\Ammar\Documents\Visual Studio 2008\Projects\ShredsNCharades\ShredsNCharades\dependencies\speex\libspeex\resample_sse.h(45,14): warning C4018: '<': signed/unsigned mismatch
+C:\Users\Ammar\Documents\Visual Studio 2008\Projects\ShredsNCharades\ShredsNCharades\dependencies\speex\libspeex\resample_sse.h(62,12): warning C4018: '<': signed/unsigned mismatch
+C:\Users\Ammar\Documents\Visual Studio 2008\Projects\ShredsNCharades\ShredsNCharades\dependencies\speex\libspeex\resample_sse.h(84,14): warning C4018: '<': signed/unsigned mismatch
+C:\Users\Ammar\Documents\Visual Studio 2008\Projects\ShredsNCharades\ShredsNCharades\dependencies\speex\libspeex\resample_sse.h(110,12): warning C4018: '<': signed/unsigned mismatch
+C:\Users\Ammar\Documents\Visual Studio 2008\Projects\ShredsNCharades\ShredsNCharades\dependencies\speex\libspeex\resample.c(299,56): warning C4244: 'function': conversion from 'double' to 'float', possible loss of data
+C:\Users\Ammar\Documents\Visual Studio 2008\Projects\ShredsNCharades\ShredsNCharades\dependencies\speex\libspeex\resample.c(299,41): warning C4244: 'return': conversion from 'double' to 'spx_word16_t', possible loss of data
+C:\Users\Ammar\Documents\Visual Studio 2008\Projects\ShredsNCharades\ShredsNCharades\dependencies\speex\libspeex\resample.c(329,38): warning C4244: '=': conversion from 'double' to 'spx_word16_t', possible loss of data
+C:\Users\Ammar\Documents\Visual Studio 2008\Projects\ShredsNCharades\ShredsNCharades\dependencies\speex\libspeex\resample.c(424,40): warning C4244: '=': conversion from 'double' to 'spx_word16_t', possible loss of data
+C:\Users\Ammar\Documents\Visual Studio 2008\Projects\ShredsNCharades\ShredsNCharades\dependencies\speex\libspeex\resample.c(544,13): warning C4244: '=': conversion from 'double' to 'spx_word32_t', possible loss of data
+C:\Users\Ammar\Documents\Visual Studio 2008\Projects\ShredsNCharades\ShredsNCharades\dependencies\speex\libspeex\resample.c(663,20): warning C4018: '<': signed/unsigned mismatch
+C:\Users\Ammar\Documents\Visual Studio 2008\Projects\ShredsNCharades\ShredsNCharades\dependencies\speex\libspeex\resample.c(927,21): warning C4018: '<': signed/unsigned mismatch
+C:\Users\Ammar\Documents\Visual Studio 2008\Projects\ShredsNCharades\ShredsNCharades\dependencies\speex\libspeex\resample.c(930,20): warning C4018: '<': signed/unsigned mismatch
+C:\Users\Ammar\Documents\Visual Studio 2008\Projects\ShredsNCharades\ShredsNCharades\dependencies\speex\libspeex\resample.c(983,19): warning C4018: '<': signed/unsigned mismatch
+C:\Users\Ammar\Documents\Visual Studio 2008\Projects\ShredsNCharades\ShredsNCharades\dependencies\speex\libspeex\resample.c(990,19): warning C4018: '<': signed/unsigned mismatch
+C:\Users\Ammar\Documents\Visual Studio 2008\Projects\ShredsNCharades\ShredsNCharades\dependencies\speex\libspeex\resample.c(1000,16): warning C4018: '<': signed/unsigned mismatch
+C:\Users\Ammar\Documents\Visual Studio 2008\Projects\ShredsNCharades\ShredsNCharades\dependencies\speex\libspeex\resample.c(1004,31): warning C4244: '=': conversion from 'double' to 'spx_int16_t', possible loss of data
+  preprocess.c
+C:\Users\Ammar\Documents\Visual Studio 2008\Projects\ShredsNCharades\ShredsNCharades\dependencies\speex\libspeex\math_approx.h(57,21): warning C4244: 'return': conversion from 'double' to 'spx_word16_t', possible loss of data
+C:\Users\Ammar\Documents\Visual Studio 2008\Projects\ShredsNCharades\ShredsNCharades\dependencies\speex\libspeex\math_approx.h(323,15): warning C4244: '=': conversion from 'double' to 'spx_word16_t', possible loss of data
+C:\Users\Ammar\Documents\Visual Studio 2008\Projects\ShredsNCharades\ShredsNCharades\dependencies\speex\libspeex\preprocess.c(277,13): warning C4244: '=': conversion from 'double' to 'spx_word16_t', possible loss of data
+C:\Users\Ammar\Documents\Visual Studio 2008\Projects\ShredsNCharades\ShredsNCharades\dependencies\speex\libspeex\preprocess.c(280,12): warning C4244: '=': conversion from 'double' to 'spx_word16_t', possible loss of data
+C:\Users\Ammar\Documents\Visual Studio 2008\Projects\ShredsNCharades\ShredsNCharades\dependencies\speex\libspeex\preprocess.c(361,17): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+C:\Users\Ammar\Documents\Visual Studio 2008\Projects\ShredsNCharades\ShredsNCharades\dependencies\speex\libspeex\preprocess.c(366,29): warning C4244: 'return': conversion from 'double' to 'spx_word32_t', possible loss of data
+C:\Users\Ammar\Documents\Visual Studio 2008\Projects\ShredsNCharades\ShredsNCharades\dependencies\speex\libspeex\preprocess.c(368,68): warning C4244: 'return': conversion from 'double' to 'spx_word32_t', possible loss of data
+C:\Users\Ammar\Documents\Visual Studio 2008\Projects\ShredsNCharades\ShredsNCharades\dependencies\speex\libspeex\preprocess.c(382,18): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+C:\Users\Ammar\Documents\Visual Studio 2008\Projects\ShredsNCharades\ShredsNCharades\dependencies\speex\libspeex\preprocess.c(383,17): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+C:\Users\Ammar\Documents\Visual Studio 2008\Projects\ShredsNCharades\ShredsNCharades\dependencies\speex\libspeex\preprocess.c(387,103): warning C4244: '=': conversion from 'double' to 'spx_word16_t', possible loss of data
+C:\Users\Ammar\Documents\Visual Studio 2008\Projects\ShredsNCharades\ShredsNCharades\dependencies\speex\libspeex\preprocess.c(442,33): warning C4244: 'function': conversion from 'int' to 'spx_word32_t', possible loss of data
+C:\Users\Ammar\Documents\Visual Studio 2008\Projects\ShredsNCharades\ShredsNCharades\dependencies\speex\libspeex\preprocess.c(506,52): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+C:\Users\Ammar\Documents\Visual Studio 2008\Projects\ShredsNCharades\ShredsNCharades\dependencies\speex\libspeex\preprocess.c(512,24): warning C4305: '=': truncation from 'double' to 'float'
+C:\Users\Ammar\Documents\Visual Studio 2008\Projects\ShredsNCharades\ShredsNCharades\dependencies\speex\libspeex\preprocess.c(515,28): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+C:\Users\Ammar\Documents\Visual Studio 2008\Projects\ShredsNCharades\ShredsNCharades\dependencies\speex\libspeex\preprocess.c(516,28): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+C:\Users\Ammar\Documents\Visual Studio 2008\Projects\ShredsNCharades\ShredsNCharades\dependencies\speex\libspeex\preprocess.c(504,43): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
+C:\Users\Ammar\Documents\Visual Studio 2008\Projects\ShredsNCharades\ShredsNCharades\dependencies\speex\libspeex\preprocess.c(577,13): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+C:\Users\Ammar\Documents\Visual Studio 2008\Projects\ShredsNCharades\ShredsNCharades\dependencies\speex\libspeex\preprocess.c(583,24): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+C:\Users\Ammar\Documents\Visual Studio 2008\Projects\ShredsNCharades\ShredsNCharades\dependencies\speex\libspeex\preprocess.c(584,44): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+C:\Users\Ammar\Documents\Visual Studio 2008\Projects\ShredsNCharades\ShredsNCharades\dependencies\speex\libspeex\preprocess.c(591,41): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+C:\Users\Ammar\Documents\Visual Studio 2008\Projects\ShredsNCharades\ShredsNCharades\dependencies\speex\libspeex\preprocess.c(740,11): warning C4244: '=': conversion from 'double' to 'spx_word16_t', possible loss of data
+C:\Users\Ammar\Documents\Visual Studio 2008\Projects\ShredsNCharades\ShredsNCharades\dependencies\speex\libspeex\preprocess.c(825,43): warning C4244: 'function': conversion from 'spx_word16_t' to 'int', possible loss of data
+C:\Users\Ammar\Documents\Visual Studio 2008\Projects\ShredsNCharades\ShredsNCharades\dependencies\speex\libspeex\preprocess.c(864,21): warning C4244: '=': conversion from 'double' to 'spx_word16_t', possible loss of data
+C:\Users\Ammar\Documents\Visual Studio 2008\Projects\ShredsNCharades\ShredsNCharades\dependencies\speex\libspeex\preprocess.c(914,75): warning C4244: '=': conversion from 'double' to 'spx_word16_t', possible loss of data
+C:\Users\Ammar\Documents\Visual Studio 2008\Projects\ShredsNCharades\ShredsNCharades\dependencies\speex\libspeex\preprocess.c(926,75): warning C4244: '=': conversion from 'double' to 'spx_word16_t', possible loss of data
+C:\Users\Ammar\Documents\Visual Studio 2008\Projects\ShredsNCharades\ShredsNCharades\dependencies\speex\libspeex\preprocess.c(967,26): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+C:\Users\Ammar\Documents\Visual Studio 2008\Projects\ShredsNCharades\ShredsNCharades\dependencies\speex\libspeex\preprocess.c(983,28): warning C4244: '=': conversion from 'spx_word16_t' to 'spx_int16_t', possible loss of data
+C:\Users\Ammar\Documents\Visual Studio 2008\Projects\ShredsNCharades\ShredsNCharades\dependencies\speex\libspeex\preprocess.c(985,26): warning C4244: '=': conversion from 'spx_word16_t' to 'spx_int16_t', possible loss of data
+C:\Users\Ammar\Documents\Visual Studio 2008\Projects\ShredsNCharades\ShredsNCharades\dependencies\speex\libspeex\preprocess.c(1077,31): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+C:\Users\Ammar\Documents\Visual Studio 2008\Projects\ShredsNCharades\ShredsNCharades\dependencies\speex\libspeex\preprocess.c(1080,30): warning C4244: '=': conversion from 'double' to 'spx_int32_t', possible loss of data
+C:\Users\Ammar\Documents\Visual Studio 2008\Projects\ShredsNCharades\ShredsNCharades\dependencies\speex\libspeex\preprocess.c(1083,31): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+C:\Users\Ammar\Documents\Visual Studio 2008\Projects\ShredsNCharades\ShredsNCharades\dependencies\speex\libspeex\preprocess.c(1086,30): warning C4244: '=': conversion from 'double' to 'spx_int32_t', possible loss of data
+C:\Users\Ammar\Documents\Visual Studio 2008\Projects\ShredsNCharades\ShredsNCharades\dependencies\speex\libspeex\preprocess.c(1089,22): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+C:\Users\Ammar\Documents\Visual Studio 2008\Projects\ShredsNCharades\ShredsNCharades\dependencies\speex\libspeex\preprocess.c(1092,30): warning C4244: '=': conversion from 'double' to 'spx_int32_t', possible loss of data
+C:\Users\Ammar\Documents\Visual Studio 2008\Projects\ShredsNCharades\ShredsNCharades\dependencies\speex\libspeex\preprocess.c(1135,30): warning C4244: '=': conversion from 'spx_word16_t' to 'spx_int32_t', possible loss of data
+C:\Users\Ammar\Documents\Visual Studio 2008\Projects\ShredsNCharades\ShredsNCharades\dependencies\speex\libspeex\preprocess.c(1143,30): warning C4244: '=': conversion from 'spx_word16_t' to 'spx_int32_t', possible loss of data
+C:\Users\Ammar\Documents\Visual Studio 2008\Projects\ShredsNCharades\ShredsNCharades\dependencies\speex\libspeex\preprocess.c(1172,30): warning C4244: '=': conversion from 'double' to 'spx_int32_t', possible loss of data
+C:\Users\Ammar\Documents\Visual Studio 2008\Projects\ShredsNCharades\ShredsNCharades\dependencies\speex\libspeex\preprocess.c(1175,30): warning C4244: '=': conversion from 'double' to 'spx_int32_t', possible loss of data
+C:\Users\Ammar\Documents\Visual Studio 2008\Projects\ShredsNCharades\ShredsNCharades\dependencies\speex\libspeex\preprocess.c(1191,30): warning C4244: '=': conversion from 'spx_word16_t' to 'spx_int32_t', possible loss of data
+C:\Users\Ammar\Documents\Visual Studio 2008\Projects\ShredsNCharades\ShredsNCharades\dependencies\speex\libspeex\preprocess.c(1195,24): warning C4244: '=': conversion from 'spx_int32_t' to 'float', possible loss of data
+C:\Users\Ammar\Documents\Visual Studio 2008\Projects\ShredsNCharades\ShredsNCharades\dependencies\speex\libspeex\preprocess.c(1202,32): warning C4244: '=': conversion from 'float' to 'spx_int32_t', possible loss of data
+  mdf.c
+C:\Users\Ammar\Documents\Visual Studio 2008\Projects\ShredsNCharades\ShredsNCharades\dependencies\speex\libspeex\math_approx.h(57,21): warning C4244: 'return': conversion from 'double' to 'spx_word16_t', possible loss of data
+C:\Users\Ammar\Documents\Visual Studio 2008\Projects\ShredsNCharades\ShredsNCharades\dependencies\speex\libspeex\math_approx.h(323,15): warning C4244: '=': conversion from 'double' to 'spx_word16_t', possible loss of data
+C:\Users\Ammar\Documents\Visual Studio 2008\Projects\ShredsNCharades\ShredsNCharades\dependencies\speex\libspeex\mdf.c(200,25): warning C4244: '=': conversion from 'double' to 'spx_word16_t', possible loss of data
+C:\Users\Ammar\Documents\Visual Studio 2008\Projects\ShredsNCharades\ShredsNCharades\dependencies\speex\libspeex\mdf.c(368,17): warning C4244: '=': conversion from 'double' to 'spx_word16_t', possible loss of data
+C:\Users\Ammar\Documents\Visual Studio 2008\Projects\ShredsNCharades\ShredsNCharades\dependencies\speex\libspeex\mdf.c(479,25): warning C4244: '=': conversion from 'double' to 'spx_word16_t', possible loss of data
+C:\Users\Ammar\Documents\Visual Studio 2008\Projects\ShredsNCharades\ShredsNCharades\dependencies\speex\libspeex\mdf.c(489,37): warning C4305: '=': truncation from 'double' to 'spx_word16_t'
+C:\Users\Ammar\Documents\Visual Studio 2008\Projects\ShredsNCharades\ShredsNCharades\dependencies\speex\libspeex\mdf.c(505,33): warning C4305: '=': truncation from 'double' to 'spx_word16_t'
+C:\Users\Ammar\Documents\Visual Studio 2008\Projects\ShredsNCharades\ShredsNCharades\dependencies\speex\libspeex\mdf.c(507,42): warning C4305: '=': truncation from 'double' to 'spx_word16_t'
+C:\Users\Ammar\Documents\Visual Studio 2008\Projects\ShredsNCharades\ShredsNCharades\dependencies\speex\libspeex\mdf.c(509,44): warning C4305: '=': truncation from 'double' to 'spx_word16_t'
+C:\Users\Ammar\Documents\Visual Studio 2008\Projects\ShredsNCharades\ShredsNCharades\dependencies\speex\libspeex\mdf.c(511,44): warning C4305: '=': truncation from 'double' to 'spx_word16_t'
+C:\Users\Ammar\Documents\Visual Studio 2008\Projects\ShredsNCharades\ShredsNCharades\dependencies\speex\libspeex\mdf.c(488,28): warning C4244: 'initializing': conversion from 'double' to 'spx_word16_t', possible loss of data
+C:\Users\Ammar\Documents\Visual Studio 2008\Projects\ShredsNCharades\ShredsNCharades\dependencies\speex\libspeex\mdf.c(718,10): warning C4244: '=': conversion from 'double' to 'spx_word16_t', possible loss of data
+C:\Users\Ammar\Documents\Visual Studio 2008\Projects\ShredsNCharades\ShredsNCharades\dependencies\speex\libspeex\mdf.c(984,26): warning C4244: '=': conversion from 'double' to 'spx_int16_t', possible loss of data
+C:\Users\Ammar\Documents\Visual Studio 2008\Projects\ShredsNCharades\ShredsNCharades\dependencies\speex\libspeex\mdf.c(1076,10): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+C:\Users\Ammar\Documents\Visual Studio 2008\Projects\ShredsNCharades\ShredsNCharades\dependencies\speex\libspeex\mdf.c(1121,64): warning C4244: '=': conversion from 'double' to 'spx_word16_t', possible loss of data
+C:\Users\Ammar\Documents\Visual Studio 2008\Projects\ShredsNCharades\ShredsNCharades\dependencies\speex\libspeex\mdf.c(1149,19): warning C4244: '=': conversion from 'double' to 'spx_word32_t', possible loss of data
+C:\Users\Ammar\Documents\Visual Studio 2008\Projects\ShredsNCharades\ShredsNCharades\dependencies\speex\libspeex\mdf.c(1151,47): warning C4244: '=': conversion from 'double' to 'spx_word32_t', possible loss of data
+C:\Users\Ammar\Documents\Visual Studio 2008\Projects\ShredsNCharades\ShredsNCharades\dependencies\speex\libspeex\mdf.c(1167,24): warning C4244: '=': conversion from 'double' to 'spx_word32_t', possible loss of data
+C:\Users\Ammar\Documents\Visual Studio 2008\Projects\ShredsNCharades\ShredsNCharades\dependencies\speex\libspeex\mdf.c(1186,46): warning C4244: '=': conversion from 'int' to 'spx_word16_t', possible loss of data
+C:\Users\Ammar\Documents\Visual Studio 2008\Projects\ShredsNCharades\ShredsNCharades\dependencies\speex\libspeex\mdf.c(1225,39): warning C4244: '=': conversion from 'spx_int32_t' to 'spx_word32_t', possible loss of data
+C:\Users\Ammar\Documents\Visual Studio 2008\Projects\ShredsNCharades\ShredsNCharades\dependencies\speex\libspeex\mdf.c(1248,48): warning C4305: '=': truncation from 'double' to 'spx_word16_t'
+C:\Users\Ammar\Documents\Visual Studio 2008\Projects\ShredsNCharades\ShredsNCharades\dependencies\speex\libspeex\mdf.c(1250,50): warning C4305: '=': truncation from 'double' to 'spx_word16_t'
+C:\Users\Ammar\Documents\Visual Studio 2008\Projects\ShredsNCharades\ShredsNCharades\dependencies\speex\libspeex\mdf.c(1252,50): warning C4305: '=': truncation from 'double' to 'spx_word16_t'
+C:\Users\Ammar\Documents\Visual Studio 2008\Projects\ShredsNCharades\ShredsNCharades\dependencies\speex\libspeex\mdf.c(1276,30): warning C4244: '=': conversion from 'spx_word32_t' to 'spx_int32_t', possible loss of data
+  kiss_fftr.c
+C:\Users\Ammar\Documents\Visual Studio 2008\Projects\ShredsNCharades\ShredsNCharades\dependencies\speex\libspeex\math_approx.h(57,21): warning C4244: 'return': conversion from 'double' to 'spx_word16_t', possible loss of data
+C:\Users\Ammar\Documents\Visual Studio 2008\Projects\ShredsNCharades\ShredsNCharades\dependencies\speex\libspeex\math_approx.h(323,15): warning C4244: '=': conversion from 'double' to 'spx_word16_t', possible loss of data
+C:\Users\Ammar\Documents\Visual Studio 2008\Projects\ShredsNCharades\ShredsNCharades\dependencies\speex\libspeex\kiss_fftr.c(129,25): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+C:\Users\Ammar\Documents\Visual Studio 2008\Projects\ShredsNCharades\ShredsNCharades\dependencies\speex\libspeex\kiss_fftr.c(130,25): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+C:\Users\Ammar\Documents\Visual Studio 2008\Projects\ShredsNCharades\ShredsNCharades\dependencies\speex\libspeex\kiss_fftr.c(131,31): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+C:\Users\Ammar\Documents\Visual Studio 2008\Projects\ShredsNCharades\ShredsNCharades\dependencies\speex\libspeex\kiss_fftr.c(132,31): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+  kiss_fft.c
+C:\Users\Ammar\Documents\Visual Studio 2008\Projects\ShredsNCharades\ShredsNCharades\dependencies\speex\libspeex\math_approx.h(57,21): warning C4244: 'return': conversion from 'double' to 'spx_word16_t', possible loss of data
+C:\Users\Ammar\Documents\Visual Studio 2008\Projects\ShredsNCharades\ShredsNCharades\dependencies\speex\libspeex\math_approx.h(323,15): warning C4244: '=': conversion from 'double' to 'spx_word16_t', possible loss of data
+C:\Users\Ammar\Documents\Visual Studio 2008\Projects\ShredsNCharades\ShredsNCharades\dependencies\speex\libspeex\kiss_fft.c(197,30): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+C:\Users\Ammar\Documents\Visual Studio 2008\Projects\ShredsNCharades\ShredsNCharades\dependencies\speex\libspeex\kiss_fft.c(198,30): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+  jitter.c
+C:\Users\Ammar\Documents\Visual Studio 2008\Projects\ShredsNCharades\ShredsNCharades\dependencies\speex\libspeex\jitter.c(201,64): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
+C:\Users\Ammar\Documents\Visual Studio 2008\Projects\ShredsNCharades\ShredsNCharades\dependencies\speex\libspeex\jitter.c(234,25): warning C4244: '=': conversion from 'float' to 'spx_int32_t', possible loss of data
+C:\Users\Ammar\Documents\Visual Studio 2008\Projects\ShredsNCharades\ShredsNCharades\dependencies\speex\libspeex\jitter.c(445,20): warning C4018: '<': signed/unsigned mismatch
+C:\Users\Ammar\Documents\Visual Studio 2008\Projects\ShredsNCharades\ShredsNCharades\dependencies\speex\libspeex\jitter.c(692,20): warning C4018: '<': signed/unsigned mismatch
+  filterbank.c
+C:\Users\Ammar\Documents\Visual Studio 2008\Projects\ShredsNCharades\ShredsNCharades\dependencies\speex\libspeex\math_approx.h(57,21): warning C4244: 'return': conversion from 'double' to 'spx_word16_t', possible loss of data
+C:\Users\Ammar\Documents\Visual Studio 2008\Projects\ShredsNCharades\ShredsNCharades\dependencies\speex\libspeex\math_approx.h(323,15): warning C4244: '=': conversion from 'double' to 'spx_word16_t', possible loss of data
+C:\Users\Ammar\Documents\Visual Studio 2008\Projects\ShredsNCharades\ShredsNCharades\dependencies\speex\libspeex\filterbank.c(63,14): warning C4244: '=': conversion from 'double' to 'spx_word32_t', possible loss of data
+C:\Users\Ammar\Documents\Visual Studio 2008\Projects\ShredsNCharades\ShredsNCharades\dependencies\speex\libspeex\filterbank.c(83,13): warning C4244: '=': conversion from 'double' to 'spx_word32_t', possible loss of data
+  fftwrap.c
+C:\Users\Ammar\Documents\Visual Studio 2008\Projects\ShredsNCharades\ShredsNCharades\dependencies\speex\libspeex\fftwrap.c(103,23): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
+C:\Users\Ammar\Documents\Visual Studio 2008\Projects\ShredsNCharades\ShredsNCharades\dependencies\speex\libspeex\fftwrap.c(109,23): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
+  buffer.c
+  Generating Code...
+C:\Program Files\Microsoft Visual Studio\2022\Community\MSBuild\Microsoft\VC\v170\Microsoft.CppBuild.targets(1571,5): warning MSB8012: TargetPath(C:\Users\Ammar\Documents\Visual Studio 2008\Projects\ShredsNCharades\ShredsNCharades\dependencies\speex\win32\VS2008\libspeexdsp\Debug\libspeexdsp.lib) does not match the Library's OutputFile property value (C:\Users\Ammar\Documents\Visual Studio 2008\Projects\ShredsNCharades\ShredsNCharades\dependencies\speex\lib\libspeexdsp_debug.lib). This may cause your project to build incorrectly. To correct this, please make sure that $(OutDir), $(TargetName) and $(TargetExt) property values match the value specified in %(Lib.OutputFile).
+C:\Program Files\Microsoft Visual Studio\2022\Community\MSBuild\Microsoft\VC\v170\Microsoft.CppBuild.targets(1573,5): warning MSB8012: TargetName(libspeexdsp) does not match the Library's OutputFile property value (libspeexdsp_debug). This may cause your project to build incorrectly. To correct this, please make sure that $(OutDir), $(TargetName) and $(TargetExt) property values match the value specified in %(Lib.OutputFile).
+  libspeexdsp.vcxproj -> C:\Users\Ammar\Documents\Visual Studio 2008\Projects\ShredsNCharades\ShredsNCharades\dependencies\speex\win32\VS2008\libspeexdsp\Debug\libspeexdsp.lib

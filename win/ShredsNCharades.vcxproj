@@ -333,7 +333,6 @@
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
-      <AdditionalOptions>%(AdditionalOptions)</AdditionalOptions>
       <Optimization>Disabled</Optimization>
       <AdditionalIncludeDirectories>../vstgui;../source;../dependencies/speex/libspeex;../dependencies/speex/include;../dependencies/eurorack;../dependencies/Rack-SDK/include;../dependencies/Rack-SDK/dep/include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;_USRDLL;VSTXSYNTH_EXPORTS;_CRT_SECURE_NO_DEPRECATE=1;TEST=1;M_PI=3.14159265358979323846;IS_SOLORACK;%(PreprocessorDefinitions)</PreprocessorDefinitions>
@@ -344,6 +343,8 @@
       <WarningLevel>Level3</WarningLevel>
       <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
       <CompileAs>Default</CompileAs>
+      <UseStandardPreprocessor>
+      </UseStandardPreprocessor>
     </ClCompile>
     <Link>
       <AdditionalOptions>
@@ -789,22 +790,32 @@
     <ClCompile Include="..\dependencies\eurorack\rings\dsp\string.cc" />
     <ClCompile Include="..\dependencies\eurorack\rings\dsp\string_synth_part.cc" />
     <ClCompile Include="..\dependencies\eurorack\rings\rings_resources.cc" />
+    <ClCompile Include="..\dependencies\eurorack\stages\segment_generator.cc" />
+    <ClCompile Include="..\dependencies\eurorack\stages\stages_ramp_extractor.cc" />
+    <ClCompile Include="..\dependencies\eurorack\stages\stages_resources.cc" />
     <ClCompile Include="..\dependencies\eurorack\stmlib\dsp\atan.cc" />
     <ClCompile Include="..\dependencies\eurorack\stmlib\dsp\units.cc" />
     <ClCompile Include="..\dependencies\eurorack\stmlib\utils\random.cc" />
     <ClCompile Include="..\dependencies\eurorack\tides2\poly_slope_generator.cc" />
     <ClCompile Include="..\dependencies\eurorack\tides2\ramp_extractor.cc" />
     <ClCompile Include="..\dependencies\eurorack\tides2\tides2_resources.cc" />
+    <ClCompile Include="..\dependencies\eurorack\warps\dsp\filter_bank.cc" />
+    <ClCompile Include="..\dependencies\eurorack\warps\dsp\modulator.cc" />
+    <ClCompile Include="..\dependencies\eurorack\warps\dsp\oscillator.cc" />
+    <ClCompile Include="..\dependencies\eurorack\warps\dsp\vocoder.cc" />
+    <ClCompile Include="..\dependencies\eurorack\warps\warps_resources.cc" />
     <ClCompile Include="..\source\Exports.cpp" />
     <ClCompile Include="..\source\Modules.cpp" />
     <ClCompile Include="..\source\ModulesMain.cpp" />
     <ClCompile Include="..\source\ModuleWrapper.cpp" />
+    <ClCompile Include="..\source\ShredsNCharades.cpp" />
     <ClCompile Include="..\vstgui\vstcontrols.cpp" />
     <ClCompile Include="..\vstgui\vstgui.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\source\Modules.h" />
     <ClInclude Include="..\source\ModuleWrapper.h" />
+    <ClInclude Include="..\source\ShredsNCharades.h" />
     <ClInclude Include="..\vstgui\vstcontrols.h" />
     <ClInclude Include="..\vstgui\vstgui.h" />
   </ItemGroup>

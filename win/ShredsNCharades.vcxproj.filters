@@ -41,6 +41,15 @@
     <Filter Include="Source Files\Tides">
       <UniqueIdentifier>{27c258be-50eb-4502-9430-eb45ea6e6a47}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\Warps">
+      <UniqueIdentifier>{e8dc35f1-4b62-44e6-9e25-725211f8f5f5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Warps\dsp">
+      <UniqueIdentifier>{9972f06f-5dad-4796-aaa5-8997e6992440}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Stages">
+      <UniqueIdentifier>{df6afb7a-8b54-4d54-8930-b3e3d092d182}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\source\Exports.cpp">
@@ -130,6 +139,33 @@
     <ClCompile Include="..\dependencies\eurorack\tides2\tides2_resources.cc">
       <Filter>Source Files\Tides</Filter>
     </ClCompile>
+    <ClCompile Include="..\dependencies\eurorack\warps\dsp\modulator.cc">
+      <Filter>Source Files\Warps\dsp</Filter>
+    </ClCompile>
+    <ClCompile Include="..\dependencies\eurorack\warps\dsp\oscillator.cc">
+      <Filter>Source Files\Warps\dsp</Filter>
+    </ClCompile>
+    <ClCompile Include="..\dependencies\eurorack\warps\dsp\vocoder.cc">
+      <Filter>Source Files\Warps\dsp</Filter>
+    </ClCompile>
+    <ClCompile Include="..\dependencies\eurorack\warps\warps_resources.cc">
+      <Filter>Source Files\Warps</Filter>
+    </ClCompile>
+    <ClCompile Include="..\dependencies\eurorack\warps\dsp\filter_bank.cc">
+      <Filter>Source Files\Warps\dsp</Filter>
+    </ClCompile>
+    <ClCompile Include="..\dependencies\eurorack\stages\stages_resources.cc">
+      <Filter>Source Files\Stages</Filter>
+    </ClCompile>
+    <ClCompile Include="..\dependencies\eurorack\stages\segment_generator.cc">
+      <Filter>Source Files\Stages</Filter>
+    </ClCompile>
+    <ClCompile Include="..\dependencies\eurorack\stages\stages_ramp_extractor.cc">
+      <Filter>Source Files\Stages</Filter>
+    </ClCompile>
+    <ClCompile Include="..\source\ShredsNCharades.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\source\Modules.h">
@@ -143,6 +179,9 @@
     </ClInclude>
     <ClInclude Include="..\vstgui\vstgui.h">
       <Filter>Source Files\vstgui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\source\ShredsNCharades.h">
+      <Filter>Source Files</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

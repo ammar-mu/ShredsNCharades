@@ -1,0 +1,25 @@
+﻿  buffer.c
+  fftwrap.c
+  filterbank.c
+  jitter.c
+C:\Users\Ammar\Documents\Visual Studio 2008\Projects\ShredsNCharades\ShredsNCharades\dependencies\speex\libspeex\jitter.c(445,20): warning C4018: '<': signed/unsigned mismatch
+C:\Users\Ammar\Documents\Visual Studio 2008\Projects\ShredsNCharades\ShredsNCharades\dependencies\speex\libspeex\jitter.c(692,20): warning C4018: '<': signed/unsigned mismatch
+  kiss_fft.c
+  kiss_fftr.c
+  mdf.c
+  preprocess.c
+  resample.c
+C:\Users\Ammar\Documents\Visual Studio 2008\Projects\ShredsNCharades\ShredsNCharades\dependencies\speex\libspeex\resample_sse.h(45,14): warning C4018: '<': signed/unsigned mismatch
+C:\Users\Ammar\Documents\Visual Studio 2008\Projects\ShredsNCharades\ShredsNCharades\dependencies\speex\libspeex\resample_sse.h(62,12): warning C4018: '<': signed/unsigned mismatch
+C:\Users\Ammar\Documents\Visual Studio 2008\Projects\ShredsNCharades\ShredsNCharades\dependencies\speex\libspeex\resample_sse.h(84,14): warning C4018: '<': signed/unsigned mismatch
+C:\Users\Ammar\Documents\Visual Studio 2008\Projects\ShredsNCharades\ShredsNCharades\dependencies\speex\libspeex\resample_sse.h(110,12): warning C4018: '<': signed/unsigned mismatch
+C:\Users\Ammar\Documents\Visual Studio 2008\Projects\ShredsNCharades\ShredsNCharades\dependencies\speex\libspeex\resample.c(663,20): warning C4018: '<': signed/unsigned mismatch
+C:\Users\Ammar\Documents\Visual Studio 2008\Projects\ShredsNCharades\ShredsNCharades\dependencies\speex\libspeex\resample.c(927,21): warning C4018: '<': signed/unsigned mismatch
+C:\Users\Ammar\Documents\Visual Studio 2008\Projects\ShredsNCharades\ShredsNCharades\dependencies\speex\libspeex\resample.c(930,20): warning C4018: '<': signed/unsigned mismatch
+C:\Users\Ammar\Documents\Visual Studio 2008\Projects\ShredsNCharades\ShredsNCharades\dependencies\speex\libspeex\resample.c(983,19): warning C4018: '<': signed/unsigned mismatch
+C:\Users\Ammar\Documents\Visual Studio 2008\Projects\ShredsNCharades\ShredsNCharades\dependencies\speex\libspeex\resample.c(990,19): warning C4018: '<': signed/unsigned mismatch
+C:\Users\Ammar\Documents\Visual Studio 2008\Projects\ShredsNCharades\ShredsNCharades\dependencies\speex\libspeex\resample.c(1000,16): warning C4018: '<': signed/unsigned mismatch
+  scal.c
+  smallft.c
+C:\Program Files\Microsoft Visual Studio\2022\Community\MSBuild\Microsoft\VC\v170\Microsoft.CppBuild.targets(1571,5): warning MSB8012: TargetPath(C:\Users\Ammar\Documents\Visual Studio 2008\Projects\ShredsNCharades\ShredsNCharades\dependencies\speex\win32\VS2008\libspeexdsp\Release\libspeexdsp.lib) does not match the Library's OutputFile property value (C:\Users\Ammar\Documents\Visual Studio 2008\Projects\ShredsNCharades\ShredsNCharades\dependencies\speex\lib\libspeexdsp.lib). This may cause your project to build incorrectly. To correct this, please make sure that $(OutDir), $(TargetName) and $(TargetExt) property values match the value specified in %(Lib.OutputFile).
+  libspeexdsp.vcxproj -> C:\Users\Ammar\Documents\Visual Studio 2008\Projects\ShredsNCharades\ShredsNCharades\dependencies\speex\win32\VS2008\libspeexdsp\Release\libspeexdsp.lib

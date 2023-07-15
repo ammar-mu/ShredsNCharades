@@ -1,11 +1,4 @@
-// ../../../../..;../../../../../vstgui.sf/vstgui;../../../../../public.sdk/source/vst2.x;../../SoloRack/source
-//#include "audioeffect.h"
-
-//#ifndef __Configuration__
-//#include ".\Configuration.h"
-//#endif
-
-#include "Modules.h"
+#include "ShredsNCharades.h"
 
 #if WIN32
 #include <windows.h>
@@ -18,7 +11,7 @@ int GetDataDirectory(char* dst, int nsize)
 
 	int i, rsize;
 
-	// ** think of using UNICODE version instead
+	// think of using UNICODE version instead
 	rsize = GetModuleFileNameA((HMODULE)hInstance, (LPCH)dst, nsize);		//** what if nsize is not enough.
 
 	// Ignore file extension name
@@ -46,6 +39,8 @@ BOOL WINAPI DllMain(HINSTANCE hInst, DWORD dwReason, LPVOID lpvReserved)
 		Braids::End();
 		Tides::End();
 		Branches::End();
+		Warps::End();
+		Stages::End();
 		Module::End();
 
 		free(Module::skindir); free(Module::defskindir);

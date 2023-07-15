@@ -112,6 +112,15 @@ void SegmentGenerator::Init() {
   }
 }
 
+// This appears to be for VCV
+void SegmentGenerator::SetSampleRate(float sample_rate) {
+    sample_rate_ = sample_rate;
+
+    ramp_extractor_.Init(
+        sample_rate_,
+        1000.0f / sample_rate_);
+}
+
 inline float SegmentGenerator::WarpPhase(float t, float curve) const {
   curve -= 0.5f;
   const bool flip = curve < 0.0f;

@@ -105,6 +105,7 @@ class SegmentGenerator {
   };
   
   void Init();
+  void SetSampleRate(float sample_rate);
   
   typedef void (SegmentGenerator::*ProcessFn)(
       const stmlib::GateFlags* gate_flags, Output* out, size_t size);
@@ -171,6 +172,9 @@ class SegmentGenerator {
   float WarpPhase(float t, float curve) const;
   float RateToFrequency(float rate) const;
   float PortamentoRateToLPCoefficient(float rate) const;
+
+  // Seams to be for VCV
+  float sample_rate_;
   
   float phase_;
   float aux_;

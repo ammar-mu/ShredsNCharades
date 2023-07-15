@@ -1207,6 +1207,15 @@ public:
 	{ 
 		return pParentView; 
 	}										///< get parent view
+	
+	// By Ammar. To keep returning the parent while view is detached.
+	// Since a view can still be part of a container while it has been detached!!
+	// I have no idea why they did it this way. May be there is a good reason.
+	CView  *GetPersistentParentView() const 
+	{ 
+		if (pParentView!=NULL) return pParentView; 
+		else return last_parent;
+	}
 	CFrame *getFrame () const { return pParentFrame; }											///< get frame
 	virtual VSTGUIEditorInterface *getEditor () const;											///< get editor
 	//@}
@@ -1254,6 +1263,9 @@ protected:
 	
 	CBitmap* pBackground;
 	CAttributeListEntry* pAttributeList;
+
+	CView *last_parent;					// By Ammar, to support automation while view is hidden
+										// Since pParentView == NULL in that case
 };
 
 extern const char* kMsgCheckIfViewContainer;	///< Message to check if View is a CViewContainer

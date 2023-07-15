@@ -1,4 +1,4 @@
-/*	SoloRack SDK v0.11 Beta
+/*	SoloRack SDK v0.2 Beta
 	Copyright 2017-2022 Ammar Muqaddas
 */
 
@@ -8,114 +8,10 @@
 #include "Modules.h"
 #endif
 
-extern OSVERSIONINFOEX	gSystemVersion;			// This is the one in VSTGUI. 
-
-// The folloiwng are just X,Y offsets that we use for pannels and positioning of controls. You can remove them if you don't need
-#define FIRST_KY	55
-#define FIRST_KY_DOWN	FIRST_KY+18
-#define FIRST_SKY_DANGLING		FIRST_KY-11
-#define FIRST_PPY	56
-#define FIRST_PPY_DOWN	FIRST_PPY+17
-#define FIRST_RIGHT_KX	62
-#define FIRST_LEFT_KX	32
-#define FIRST_LEFT_SKX	31
-#define FIRST_LEFT_PPX	16
-#define FIRST_RIGHT_PPX	72
-#define FIRST_RIGHT_PPX2	63
-#define XOFFSET 48
-#define YOFFSET	43
-#define YOFFSET_PP_SQWEEZE	32
-#define YOFFSET_SK_SQWEEZE	32
-#define PP_XOFFSET 31
-
-// Some more constants
-#define SCREW_X	9
-#define SCREW_Y	9
-#define NUM_PP_BITMAPS	1
-#define NUM_SCREW_BITMAPS	10
-#define MAIN_KNOB_IMAGES 49
-#define MAIN_KNOB_BIG_IMAGES 99
-#define SMALL_KNOB_IMAGES	31
-#define TINY_KNOB_IMAGES	31
-#define LED_BLUE_IMAGES	10
-#define LED_RED_IMAGES	10
-#define DIGITS_RED_IMAGES	10
-#define DIGITS_RED_ALPHA_IMAGES	26
-#define DIGITS_PLUS_MINUS_IMAGES	3
-#define MIN_PW		0.01
-#define RNG_PW		0.98
-#define MAX_PW		(MIN_PW+RNG_PW)
-#define HALF_PW		((MIN_PW+MAX_PW)/2)
-#define CLOCK_WIDTH			0.3					// Percentage of the total clock cycle
-#define CLIPTIME 0.2							// Clip led pulse time in seconds
-#define TRIGTIME 0.1							// Trigger led pulse time in seconds
-#define LMIDITIME	0.1							// MIDI led pulse time in seconds
-#define MAX_CLOCK_WIDTH		0.1					// Max clock pulse width is seconds
-#define LED_PULSE_TIME		0.1					// Reasonably visible pulse time (sec)
-#define SMOOTH_DELAY		35					// (was 45) Time in milliseconds to allow a knob to reach it's value smoothly.
-#define HIGH_CV				0.25				
-#define LOW_CV				0.15
-#define MID_CV				((LOW_CV+HIGH_CV)/2.0)
-#define VERY_HIGH_CV		4.0
-#define MAX_LEVEL			(clip_level)
-#define DEFAULT_MAX_LEVEL	4.0					// 12db
-#define MIDI_TUNE_FACTOR	10.0				// The factor to achieve 0.1/oct tunning
-#define MIDI_MAX_DELAY		0.002				// SMALL. For some Generators. In seconds. Dictates MIDI buffer sizes
-#define MIDI_MAX_DELAY2		0.006				// MEDIUM. For mergers and such. In seconds. Dictates MIDI buffer sizes
-#define LOG2				0.69314718055994529
-#define LOG10				2.30258509299405
-#define DENORMAL			0.0000000000001
-#undef NONE_CPP_DESTRUCTOR
-
-// Shreds N Charades
-#define SNC_MEDIUM_KNOB_IMAGES	69
-#define SNC_SMALL_KNOB_IMAGES	59
-#define SNC_TINY_KNOB_IMAGES	41
-#define SNC_LED_GYR_IMAGES		75
-#define SNC_LED_GREEN_IMAGES	25
-#define SNC_LED_RED_IMAGES		25
-#define SNC_LED_YELLOW_IMAGES	25
 
 
-// Supports automatic 14bit/7bit CC changes regardless of the type of controller used.
-#define CCHANGE(midi,msb,last_msb,lsb,conmsb,conlsb,val,drag_lsb,no_hold_lsb)		\
-	/* MSB */								\
-	case (char)conmsb:						\
-		msb=midi.data2;						\
-		/* Drag LSB If hi res 14bit MIDI is enabled. Maily to handle erratic jumping or delayed LSB */		\
-		if (drag_lsb)									\
-		{	if (msb>last_msb) lsb=(char)0;			\
-			else if (msb<last_msb) lsb=(char)127;	\
-			last_msb = msb;					\
-		}									\
-		temp=MSBLSB(msb,lsb);				\
-		val=temp/16383.0;					\
-		break;								\
-	/* LSB */								\
-	case (char)conlsb:						\
-		lsb=midi.data2;						\
-		if (no_hold_lsb) { temp=MSBLSB(msb,lsb); val=temp/16383.0;	}				\
-		break;	
-
-
-// Greatest Common Divider
-int gcd(int a, int b) 
-{	if (b == 0) return a; 
-	return gcd(b, a % b);  
-}
-
-int GetParentDir(char* str)
-{	// Makes given path, the parent and returns the length
-	int i;
-
-	i = strlen(str) - 1; if (str[i] == '\\') i--;
-	while (i >= 0)
-	{
-		if (str[i] == '\\') { str[i + 1] = '\0'; return i + 1; }
-		i--;
-	}
-	return -1;
-}
+// This is the one in VSTGUI. 
+extern OSVERSIONINFOEX	gSystemVersion;	
 
 // MIDI Frequencies Table
 float mfreqtab[128];
@@ -123,7 +19,13 @@ float mfreqtab[128];
 // for Park-Miller random generator
 unsigned int zgen;
 
-//Product Module::vproduct("M",0,NULL,true);
+
+
+// Greatest Common Divider
+int gcd(int a, int b) 
+{	if (b == 0) return a; 
+	return gcd(b, a % b);  
+}
 
 int IntPow(int base, int exp)
 {	int i, out;
@@ -141,6 +43,7 @@ int IntLog(int v, int base)
 	return out;
 }
 
+
 // Stack definitions and implementation
 template <typename TP>
 void InitStack(cstack<TP> &stackv,int size)
@@ -155,13 +58,6 @@ void FreeStack(cstack<TP> &stackv)
 	{	free(stackv.pbottom); stackv.pbottom=NULL;
 	}
 }
-
-#define PUSH(stackv,value) stackv.pbottom[++stackv.top]=value
-#define POP(stackv) stackv.pbottom[stackv.top--]
-#define FLUSHPOP(stackv) stackv.top--
-#define NOTEMPTY(stackv) stackv.top!=-1
-#define QISFULL(evin,evout,qsize)	(evin-evout==-1 || evin-evout==ev_qsize-1)
-
 
 inline void ForceInside(long &x, long &y,const CRect &r,const CRect &rpar)
 {	// rpar is rect of the container (parent)
@@ -255,24 +151,24 @@ PatchPoint::PatchPoint(const CRect& size, CControlListener* listener, long tag, 
 	peditor = (SynEditor *) listener;
 }
 
-inline void PatchPoint::SetCenterOffset(char x, char y)
+void PatchPoint::SetCenterOffset(char x, char y)
 {	coff_x = x; coff_y = y;
 }
 
-inline void PatchPoint::SetType(int pptype)
+void PatchPoint::SetType(int pptype)
 {	type=pptype;
 }
 
-inline void PatchPoint::SetProtocol(int ppprotocol)
+void PatchPoint::SetProtocol(int ppprotocol)
 {	protocol=ppprotocol;
 }
 
-//inline void PatchPoint::SetPPTag(long tag)
+//void PatchPoint::SetPPTag(long tag)
 //{	// This functoion is used exclusivly by SoloRack. It should not be called by modules
 //	pptag = tag;
 //}
 //
-//inline long PatchPoint::GetPPTag()
+//long PatchPoint::GetPPTag()
 //{	return pptag;
 //}
 
@@ -304,7 +200,7 @@ CMessageResult PatchPoint::notify(CBaseObject* sender, const char* message)
 ModuleKnob::ModuleKnob(const CRect& size, CControlListener* listener, long tag, CBitmap* background, Module *parent, const CPoint &offset)
 : CAnimKnob(size,listener,tag,background,offset)
 , is_stepping(false)
-{	svalue=qvalue=value;
+{	svalue=qvalue=value; mvalue=0.0;
 	SetSmoothDelay(SMOOTH_DELAY,parent);
 	setZoomFactor(5.0);
 }
@@ -312,7 +208,7 @@ ModuleKnob::ModuleKnob(const CRect& size, CControlListener* listener, long tag, 
 ModuleKnob::ModuleKnob (const CRect& size, CControlListener* listener, long tag, long subPixmaps, CCoord heightOfOneImage, CBitmap* background, Module *parent, const CPoint &offset)
 : CAnimKnob(size,listener,tag,subPixmaps,heightOfOneImage,background,offset)
 , is_stepping(false)
-{	svalue=qvalue=value; 
+{	svalue=qvalue=value; mvalue=0.0;
 	SetSmoothDelay(SMOOTH_DELAY,parent);
 	setZoomFactor(5.0);
 }
@@ -320,12 +216,12 @@ ModuleKnob::ModuleKnob (const CRect& size, CControlListener* listener, long tag,
 ModuleKnob::ModuleKnob (const ModuleKnob& v)
 : CAnimKnob(v)
 , is_stepping(false)
-{	svalue=qvalue=value;
+{	svalue=qvalue=value; mvalue=v.mvalue;
 	SetSmoothDelay(SMOOTH_DELAY,NULL);
 }
 
 void ModuleKnob::UpdateQValue()
-{	// Update Quantized value
+{	// Update Quantized value. (It's beter to just use the newer GetCurrentStep(). Much easier)
 	// This has to be called manually like in ValueChanged. Because VSTGUI does not call setValue but changes values directly.
 	// I could have done it automatically, but I opted out for performance issues. I will leave to the developer
 
@@ -355,18 +251,15 @@ CMouseEventResult ModuleKnob::onMouseMoved(CPoint& where, const long& buttons)
 }
 
 
-void ModuleKnob::SetSmoothDelay(int del, Module *parent)
+void ModuleKnob::SetSmoothDelay(float del, Module *parent)
 {	// getParentView() does not seam to work when the parent is still in it's constructor.
 	// So you have to pass it as parent in this situation.
 	
-	if (del>=0) delay=del;
+	if (del>=0.f) delay=del;
 
 	if (parent==NULL) parent=(Module *) getParentView();
-	//if (parent!=NULL)								//**
-		smooth_samples=parent->sample_rate/1000.0*delay;
-		//if (smooth_samples>30000) smooth_samples=30000;
-	//else
-	//	smooth_samples=Module/1000.0*delay;
+		// This was the 'reciprocal' prior to SDK version 0.12
+		smooth_samples_1 = 1000.0 / (parent->sample_rate * delay);
 }
 
 //---------------------------------------------
@@ -950,7 +843,7 @@ void CTextLabelEx::draw(CDrawContext *pContext)
 
 //---------------------------------------------
 // Base Module Class
-CBitmap **Module::mcbits = NULL;			// Bitmap(s) of the main patchpoints
+CBitmap **Module::mcbits = NULL;			// Main bitmap(s) array for most controls
 CBitmap **Module::ppbit = NULL;				// Bitmap(s) of the main patchpoints
 char *Module::skindir = NULL;
 char *Module::defskindir = NULL;
@@ -1025,15 +918,6 @@ void Module::Initialize()
 	// Create cbits array
 	mcbits = (CBitmap **) malloc(kModuleCBitsCount*sizeof(**mcbits));
 
-	// Main Knob bitmaps
-	mcbits[knobit] = new CBitmap(dllskindir,NULL,"main_knob_s.png");
-	mcbits[sknobit_white] = new CBitmap(dllskindir,NULL,"sknobit_white.png");
-	mcbits[tknobit_black] = new CBitmap(dllskindir, NULL, "tknobit_black.png");
-
-	// Switch bitmaps
-	mcbits[vert_swbit] = new CBitmap(skindir,defskindir,"vert_switch_toggle.png");
-	mcbits[tr_vert_swbit] = new CBitmap(skindir,defskindir,"vert_triple_switch_toggle.png");
-
 	// Prepare screws bitmap
 	mcbits[scrbit] = new CBitmap(skindir,defskindir,"screw.png");
 
@@ -1051,19 +935,8 @@ void Module::Initialize()
 		ppbit[i-1] = new CBitmap(dllskindir,defskindir,temp);
 	}
 
-	// leds bitmaps
-	mcbits[led_blue] = new CBitmap(dllskindir,defskindir,"led_blue.png");
-	mcbits[led_red] = new CBitmap(dllskindir,defskindir,"led_red.png");
-
-	
-	// small knobs
-	mcbits[sknobit_black5] = new CBitmap(dllskindir,NULL,"sknobit_black_5s.png");
-
-	// Buttons
-	mcbits[white_buttonbit] = new CBitmap(dllskindir,defskindir,"white_button_small.png");
-	mcbits[black_butbit_tiny] = new CBitmap(dllskindir,defskindir,"black_button_tiny.png");
-
 	// Shreds N Charades
+	mcbits[knob_big_white] = new CBitmap(dllskindir, NULL, "knob_big_white.png");
 	mcbits[knob_medium_white] = new CBitmap(dllskindir, NULL, "knob_medium_white.png");
 	mcbits[knob_medium_green] = new CBitmap(dllskindir, NULL, "knob_medium_green.png");
 	mcbits[knob_medium_red] = new CBitmap(dllskindir, NULL, "knob_medium_red.png");
@@ -1072,7 +945,6 @@ void Module::Initialize()
 	mcbits[knob_small_red] = new CBitmap(dllskindir, NULL, "knob_small_red.png");
 	mcbits[knob_small_black] = new CBitmap(dllskindir, NULL, "knob_small_black.png");
 	mcbits[knob_tiny_black] = new CBitmap(dllskindir, NULL, "knob_tiny_black.png");
-
 
 	mcbits[led_big_green] = new CBitmap(dllskindir, NULL, "led_big_green.png");
 	mcbits[led_big_red] = new CBitmap(dllskindir, NULL, "led_big_red.png");
@@ -1084,8 +956,14 @@ void Module::Initialize()
 	mcbits[led_small_yellow] = new CBitmap(dllskindir, NULL, "led_small_yellow.png");
 	mcbits[led_small_gyr] = new CBitmap(dllskindir, NULL, "led_small_gyr.png");
 
+	mcbits[black_butbit_tiny] = new CBitmap(dllskindir, NULL, "black_button_tiny.png");
 	mcbits[button_led] = new CBitmap(dllskindir, NULL, "button_led.png");
 	mcbits[button_big] = new CBitmap(dllskindir, NULL, "button_big.png");
+
+	mcbits[fader_back] = new CBitmap(dllskindir, NULL, "fader_back.png");
+	mcbits[fader_on] = new CBitmap(dllskindir, NULL, "fader_on.png");
+	mcbits[fader_off] = new CBitmap(dllskindir, NULL, "fader_off.png");
+
 
 	// Make skin config file
 	skin_config = (char *) malloc((strlen(skindir)+21)*sizeof(*skin_config));
@@ -1267,7 +1145,7 @@ void Module::ProcessEvents(const EventsHandle ev)
 {
 }
 
-inline void Module::StartOfBlock(int sample_frames)	
+void Module::StartOfBlock(int sample_frames)	
 {	// Called by SoloRack on the start of each block, for all modules that called CallProcessEvents()
 }
 
@@ -1285,7 +1163,7 @@ void Module::InitPatchPoints(float init)
 	}
 }
 
-inline void Module::ProcessSample()
+void Module::ProcessSample()
 {
 }
 
@@ -1463,10 +1341,35 @@ int Module::GetControlsValuesSize()
 	return nbcontrols*sizeof(float);									// must be type of CControl::value
 }
 
+// Introduced for CLAP host modulation
+void Module::ZeroDAWModValues()
+{
+	CCView *ptemp;
+	ModuleKnob *knob;
+	float ft;
+
+	if (synth_comm.GetPluginFormat(peditor)==CLAP_FORMAT)
+	{	ptemp=pFirstView;
+		while (ptemp)
+		{	if (ptemp->pView->isTypeOf("ModuleKnob"))
+			{	knob = (ModuleKnob*) ptemp->pView;
+				if (knob->mvalue!=0.f)
+				{	ft = knob->value-knob->mvalue;
+					knob->setValue(CLIP(ft,0.f,1.f));
+					knob->mvalue=0.0;
+					ValueChanged(knob);
+				}
+			}
+			ptemp = ptemp->pNext;
+		}
+	}
+}
+
 void Module::SaveControlsValues(void *pdata)
 {	float *pfdata = (float *) pdata;							// This type must be the same type as value/getValue()
 	CCView *ptemp=pFirstView;
 
+	ZeroDAWModValues();
 	while (ptemp)
 	{	if (ptemp->pView->isTypeOf("CControl"))
 		{	if (((CControl *)(ptemp->pView))->getTag()!=NOSAVE_TAG)
@@ -1544,8 +1447,8 @@ const int Module::GetType()
 {	return -1;
 }
 
-void Module::SetKnobsSmoothDelay(int del)
-{	//del=-1 will use the same delay already assciated with each knob. This function will be called by solorack when sample rate changes too because variable smooth_samples has to be recalculated
+void Module::SetKnobsSmoothDelay(float del)
+{	//del=-1 will use the same delay already assciated with each knob. This function will be called by solorack when sample rate changes too because variable smooth_samples_1 has to be recalculated
 	CCView *ptemp=pFirstView;
 
 	while (ptemp)				//** && pfdata<pdata+(size/sizeof(*pfdata))
@@ -1847,76 +1750,76 @@ CHorizontalSlider *Module::AddHorizontalSlider(float x, float y, float width, fl
 }
 
 
-inline void Module::SendAudioToDAW(float left, float right)
+void Module::SendAudioToDAW(float left, float right)
 {	synth_comm.ModuleSendAudioToDAW1Ptr(this,left,right);
 }
 
-inline void Module::SendAudioToDAW(PatchPoint **pps_outputs)
+void Module::SendAudioToDAW(PatchPoint **pps_outputs)
 {	// INs of patchpoints will be sent to DAW outs
 	// NULL indicates the end of the array. Advantage is that there is no num_inputs to pass.
 	synth_comm.ModuleSendAudioToDAW2Ptr(this,pps_outputs);
 }
 
-inline void Module::SendAudioToDAW(PatchPoint **pps_outputs, int first_output)
+void Module::SendAudioToDAW(PatchPoint **pps_outputs, int first_output)
 {	// INs of patchpoints will be sent to DAW outs
 	// NULL indicated the end of the array. Advantage is that there is no last_output to pass.
 	// Sending will start from pps_outputs[first_output]
 	synth_comm.ModuleSendAudioToDAW3Ptr(this,pps_outputs,first_output);
 }
 
-inline void Module::SendAudioToDAW(float *outputs, int last_output)
+void Module::SendAudioToDAW(float *outputs, int last_output)
 {	// Send audio to DAW from an array of float. Sending will stop at outputs[last_output]
 	synth_comm.ModuleSendAudioToDAW4Ptr(this,outputs,last_output);
 }
 
-inline void Module::SendAudioToDAW(float *outputs, int first_output, int last_output)
+void Module::SendAudioToDAW(float *outputs, int first_output, int last_output)
 {	// Send audio to DAW from an array of float
 	// Sending will start from outputs[first_output] and will stop at outputs[last_output]
 	synth_comm.ModuleSendAudioToDAW5Ptr(this,outputs,first_output,last_output);
 }
 
-inline void Module::ReceiveAudioFromDAW(float *left, float *right)
+void Module::ReceiveAudioFromDAW(float *left, float *right)
 {	synth_comm.ModuleReceiveAudioFromDAW1Ptr(this,left,right);
 }
 
-inline void Module::ReceiveAudioFromDAW(PatchPoint **pps_inputs)
+void Module::ReceiveAudioFromDAW(PatchPoint **pps_inputs)
 {	// Outs of patch points will be filled with audio from DAW
 	// NULL indicates the end of the array. Advantage is that there is no last_output to pass.
 	synth_comm.ModuleReceiveAudioFromDAW2Ptr(this,pps_inputs);
 }
 
-inline void Module::ReceiveAudioFromDAW(PatchPoint **pps_inputs, int first_input)
+void Module::ReceiveAudioFromDAW(PatchPoint **pps_inputs, int first_input)
 {	// Outs of patch points will be filled with audio from DAW
 	// NULL indicates the end of the array. Advantage is that there is no num_inputs to pass.
 	// Recieving will start from pps_inputs[first_output]
 	synth_comm.ModuleReceiveAudioFromDAW3Ptr(this,pps_inputs,first_input);
 }
 
-inline void Module::ReceiveAudioFromDAW(float *inputs, int last_input)
+void Module::ReceiveAudioFromDAW(float *inputs, int last_input)
 {	// Recieve audio from DAW to an array of float. Will stop at inputs[last_input]
 	synth_comm.ModuleReceiveAudioFromDAW4Ptr(this,inputs,last_input);
 }
 
-inline void Module::ReceiveAudioFromDAW(float *inputs, int first_input, int last_input)
+void Module::ReceiveAudioFromDAW(float *inputs, int first_input, int last_input)
 {	// Recieve audio from DAW to an array of float. Receiving will start at inputs[first_output] and will stop at inputs[last_input] 
 	synth_comm.ModuleReceiveAudioFromDAW5Ptr(this,inputs,first_input,last_input);
 }
 
-inline int Module::GetNumberOfAudioFromDAW()
+int Module::GetNumberOfAudioFromDAW()
 {	return synth_comm.ModuleGetNumberOfAudioFromDAWPtr(this);
 }
 
-inline int Module::GetNumberOfAudioToDAW()
+int Module::GetNumberOfAudioToDAW()
 {	return synth_comm.ModuleGetNumberOfAudioToDAWPtr(this);
 }
 
-inline void Module::EnterProcessingCriticalSection()
+void Module::EnterProcessingCriticalSection()
 {	// Once called, it will block audio processing until LeaveProcessingCriticalSection() is called.
 	// This means that ProcessSample() will not be called for any module while this module has not left the critical section.
 	synth_comm.ModuleEnterProcessingCriticalSectionPtr(this);
 }
 
-inline void Module::LeaveProcessingCriticalSection()
+void Module::LeaveProcessingCriticalSection()
 {	synth_comm.ModuleLeaveProcessingCriticalSectionPtr(this);
 }
 
@@ -2064,1887 +1967,3 @@ float Module::GetClipLevelPreset(int v)
 	}	
 }
 
-
-//class GranularProcessorEx : clouds::GranularProcessor
-//{
-//	inline float sample_rate() const {
-//		return 32000.0f / \
-//			(low_fidelity_ ? kDownsamplingFactor : 1);
-//	}
-//}
-
-//---------------------------------------------
-// Clouds
-CBitmap *Clouds::panel = NULL;
-char *Clouds::name = "Baadalon";
-int Clouds::name_len=0;
-char *Clouds::vendorname = "ShredsNCharades";
-int Clouds::vendorname_len=0;
-Product *Clouds::pproduct = NULL;
-
-Clouds::Clouds(CFrame *pParent, CControlListener *listener,const SynthComm *psynth_comm, const int vvoice)
-: Module(CRect(0, 0, panel->getWidth(), panel->getHeight()),pParent,panel,psynth_comm,vvoice)
-{	PatchPoint *temp[6];
-
-	// Create The Knobs
-	kposition = AddModuleKnob(39,101,mcbits[knob_medium_red], SNC_MEDIUM_KNOB_IMAGES,false,listener);
-	kposition->setValue(0.5); kposition->svalue=0.5; //ADDPOOLKNOB(chpool,kin1);
-
-	ksize = AddModuleKnob(101,101,mcbits[knob_medium_green],SNC_MEDIUM_KNOB_IMAGES,false,listener);
-	ksize->setValue(0.5); ksize->svalue=0.5; //ADDPOOLKNOB(chpool,kin2);
-	 
-	kpitch = AddModuleKnob(164,101,mcbits[knob_medium_white], SNC_MEDIUM_KNOB_IMAGES,false,listener);
-	kpitch->setValue(0.5); kpitch->svalue=0.5; //ADDPOOLKNOB(chpool,kin3);
-
-	kingain = AddModuleKnob(26,160,mcbits[knob_small_red],SNC_SMALL_KNOB_IMAGES,false,listener);
-	kingain->setValue(0.5); kingain->svalue=0.5; //ADDPOOLKNOB(chpool,kout);
-
-	kdensity = AddModuleKnob(76, 160,mcbits[knob_small_red], SNC_SMALL_KNOB_IMAGES,false,listener);
-	kdensity->setValue(0.5); kdensity->svalue = 0.5;
-
-	ktexture = AddModuleKnob(126,160,mcbits[knob_small_green], SNC_SMALL_KNOB_IMAGES,false,listener);
-	ktexture->setValue(0.5); ktexture->svalue = 0.5;
-
-	kblend = AddModuleKnob(178,160,mcbits[knob_small_white], SNC_SMALL_KNOB_IMAGES,false,listener);
-	kblend->setValue(0.5); kblend->svalue = 0.5;
-
-	kspread = AddModuleKnob(178,160,mcbits[knob_small_white], SNC_SMALL_KNOB_IMAGES,false,listener); kspread->setVisible(false);
-	kspread->setValue(0.0); kspread->svalue = 0.0;
-	
-	kfeedback = AddModuleKnob(178,160,mcbits[knob_small_white], SNC_SMALL_KNOB_IMAGES,false,listener); kfeedback->setVisible(false);
-	kfeedback->setValue(0.0); kfeedback->svalue = 0.0;
-	
-	kreverb = AddModuleKnob(178,160,mcbits[knob_small_white], SNC_SMALL_KNOB_IMAGES,false,listener); kreverb->setVisible(false);
-	kreverb->setValue(0.0); kreverb->svalue = 0.0;
-
-	// Create Patch Points
-	ppfreeze = AddPatchPoint(17,218,ppTypeInput,ppbit,0,listener);
-	pptrig = AddPatchPoint(51,218,ppTypeInput,ppbit,0,listener);
-	ppposition = AddPatchPoint(84,218,ppTypeInput,ppbit,0,listener);
-	ppsize = AddPatchPoint(117,218,ppTypeInput,ppbit,0,listener);
-	pppitch = AddPatchPoint(150,218,ppTypeInput,ppbit,0,listener); 
-	ppblend = AddPatchPoint(183,218,ppTypeInput,ppbit,0,listener);
-
-	ppinl = AddPatchPoint(17,251,ppTypeInput,ppbit,0,listener);
-	ppinr = AddPatchPoint(51,251,ppTypeInput,ppbit,0,listener);
-	ppdensity = AddPatchPoint(84,251,ppTypeInput,ppbit,0,listener);
-	pptexture = AddPatchPoint(117,251,ppTypeInput,ppbit,0,listener);
-	ppoutl = AddPatchPoint(150,251,ppTypeOutput,ppbit,0,listener); 
-	ppoutr = AddPatchPoint(183,251,ppTypeOutput,ppbit,0,listener);
-
-	// Buttons
-	bfreez = AddOnOffButton(20,43,mcbits[button_led],2,listener,COnOffButton::kPostListenerUpdate);
-	bmode = AddKickButton(166,45,mcbits[black_butbit_tiny],2,listener);
-	bquality = AddKickButton(187.6,45,mcbits[black_butbit_tiny],2,listener);
-	balt = AddKickButton(187.6, 72, mcbits[black_butbit_tiny], 2, listener);
-	
-
-	lmix = AddMovieBitmap(65.6,44.7,mcbits[led_big_green], SNC_LED_GREEN_IMAGES,listener);
-	lpan = AddMovieBitmap(89.6,44.7,mcbits[led_big_green], SNC_LED_GREEN_IMAGES,listener);
-	lfb = AddMovieBitmap(114,44.7,mcbits[led_big_yellow], SNC_LED_YELLOW_IMAGES,listener);
-	lreverb = AddMovieBitmap(138,44.7,mcbits[led_big_red], SNC_LED_RED_IMAGES,listener);
-
-	// Put some screws
-	PutLeftScrews(screw1,screw2,listener);
-	PutRightScrews(screw3,screw4,listener);
-	InitPatchPoints(0.0);
-
-	const int memLen = 118784;
-	const int ccmLen = 65536 - 128;
-	block_mem = new uint8_t[memLen]();
-	block_ccm = new uint8_t[ccmLen]();
-	processor = new clouds::GranularProcessor();
-	memset(processor, 0, sizeof(*processor));
-
-	processor->Init(block_mem, memLen, block_ccm, ccmLen);
-	OnReset(); last_vu = 0.f;
-	SetSampleRate(sample_rate);
-}
-
-Clouds::~Clouds()
-{	delete processor;
-	delete[] block_mem;
-	delete[] block_ccm;
-}
-
-void Clouds::OnReset() 
-{
-	freeze = false;
-	blendMode = 0;
-	playback = clouds::PLAYBACK_MODE_GRANULAR;
-	quality = 0;
-}
-
-
-// SoloRack calls this. It can't directly access rhe constructor since this is a Dll and pointers to constructor can not be easily achieved.
-Clouds *Clouds::Constructor(CFrame *pParent, CControlListener *listener,const SynthComm *psynth_comm, const int vvoice)
-{	return new Clouds(pParent,listener,psynth_comm,vvoice);
-}
-
-void Clouds::Initialize()
-{	char *stemp;
-	
-	panel = new CBitmap(dllskindir,NULL,"Clouds.png");
-	name_len = strlen(name); vendorname_len = strlen(vendorname);
-}
-
-void Clouds::End()
-{	panel->forget();
-	if (pproduct!=NULL) delete pproduct;
-}
-
-const char * Clouds::GetName()
-{	return name;
-}
-
-const int Clouds::GetNameLen()
-{	return name_len;
-}
-
-const char * Clouds::GetVendorName()
-{	return vendorname;
-}
-
-const int Clouds::GetVendorNameLen()
-{	return vendorname_len;
-}
-
-const int Clouds::GetType()
-{	return kModifierEffect;
-}
-
-Product *Clouds::Activate(char *fullname, char *email, char *serial)
-{	// Replace this with your own implementation
-	// This should return a pointer to the activated product. Or NULL if activation fails
-	// In our Clouds, NULL is retuned because the module is already active all the time, so no need to activate.
-	return NULL;
-
-	// Here is a simplistic example.
-	//if (pproduct!=NULL) delete pproduct;
-	//pproduct = new Product(0,1,NULL,false,"ShredsNCharades Baadalon");		// Product names has to include vendor name to ensure uniquenes
-	//return pproduct->Activate(fullname,email,serial);
-}
-
-bool Clouds::IsActive()
-{	// This test module is Active. Replace this with your own check. 
-	// It's better not to store this active/inactive status in an obvious place in memory, like a data member of the module or like that.
-	// It's even better if the status is not stored at all, but rather a sophisticated test is done
-	return true;
-
-	// simple example
-	//if (pproduct!=NULL) return pproduct->IsActive(); else return false;
-}
-
-Product *Clouds::InstanceActivate(char *fullname, char *email, char *serial)
-{	return this->Activate(fullname,email,serial);
-}
-
-bool Clouds::InstanceIsActive()
-{	return this->IsActive();
-}
-
-const char *Clouds::GetProductName()
-{	// Change this to your own product name. 
-	return "ShredsNCharades Baadalon";
-}
-
-void Clouds::UpdateBlendKnob()
-{	
-	kblend->setVisible(blendMode == 0);
-	kspread->setVisible(blendMode == 1);
-	kfeedback->setVisible(blendMode == 2);
-	kreverb->setVisible(blendMode == 3);
-
-	lmix->value = (blendMode == 0); 
-	lpan->value = (blendMode == 1); 
-	lfb->value = (blendMode == 2);
-	lreverb->value = (blendMode == 3);
-	leds_wait = CLOUDS_LEDS_WAIT * sample_rate / 32.f;
-}
-
-inline void Clouds::UpdateProcessor()
-{
-	// Set up processor
-	processor->set_playback_mode(playback);
-	if (quality == 4)
-		processor->set_quality(0);
-	else
-		processor->set_quality(quality);
-	processor->Prepare();
-}
-
-void Clouds::ValueChanged(CControl* pControl)
-{
-	if (pControl == bmode && bmode->value>=0.5)
-	{
-		blendMode = (blendMode + 1) % 4;
-		UpdateBlendKnob();
-	}
-	else if (pControl == bfreez)
-		freeze = bfreez->value >= 0.5;
-	else if (pControl == bquality && bquality->value == 1.0)
-	{
-		quality = (quality + 1) % 5;
-		// Mode 4 doesn't sample rate convertion
-		if (quality == 4) processor->set_sample_rate(sample_rate);
-		else processor->set_sample_rate(32000.f);
-		//UpdateProcessor();
-
-		lmix->value = (quality == 0 || quality == 4);
-		lpan->value = (quality == 1 || quality == 4);
-		lfb->value = (quality == 2 || quality == 4);
-		lreverb->value = (quality == 3 || quality == 4);
-		leds_wait = CLOUDS_LEDS_WAIT * sample_rate / 32.f;
-	}
-	else if (pControl == balt && balt->value == 1.0)
-	{
-		lmix->value = 0.f; lpan->value = 0.f;
-		lfb->value = 0.f; lreverb->value = 0.f;
-
-		switch (playback)
-		{	case clouds::PLAYBACK_MODE_GRANULAR:
-				playback = clouds::PLAYBACK_MODE_STRETCH; lpan->value = 1.f; break;
-			case clouds::PLAYBACK_MODE_STRETCH:
-				playback = clouds::PLAYBACK_MODE_LOOPING_DELAY; lfb->value = 1.f; break;
-			case clouds::PLAYBACK_MODE_LOOPING_DELAY:
-				playback = clouds::PLAYBACK_MODE_SPECTRAL; lreverb->value = 1.f;  break;
-			case clouds::PLAYBACK_MODE_SPECTRAL:
-				playback = clouds::PLAYBACK_MODE_GRANULAR; lmix->value = 1.f; break;
-		}
-		leds_wait = CLOUDS_LEDS_WAIT * sample_rate / 32.f;
-
-		//UpdateProcessor();
-		// Doesn't work!!
-		//playback = (playback + 1) % clouds::PLAYBACK_MODE_LAST;
-	}
-
-
-	// If a knob change pool is defined
-	/*else
-	{	bool result;
-		IS_KNOB_IN_POOL(chpool,pControl,result);
-		if (result)
-		{	EnterProcessingCriticalSection();
-			POOL_KNOB_VALUECHANGED(chpool,pControl);
-			LeaveProcessingCriticalSection();
-		}
-	}*/
-		
-}
-
-void Clouds::SetSampleRate(float sr)
-{	Module::SetSampleRate(sr);
-
-	if (quality == 4) processor->set_sample_rate(sample_rate);
-	else processor->set_sample_rate(32000.f);
-	inputSrc.setRates(sample_rate, 32000);
-	outputSrc.setRates(32000, sample_rate);
-	//UpdateProcessor();
-}
-
-int Clouds::GetPresetSize()
-{
-	return GetControlsValuesSize() + sizeof(playback) + sizeof(quality) + sizeof(blendMode);
-}
-
-void Clouds::SavePreset(void* pdata, int size)
-{
-	char* pcdata = (char*)pdata;
-	SaveControlsValues(pcdata);
-	pcdata += GetControlsValuesSize();
-
-	// Save none control data
-	*(clouds::PlaybackMode*) pcdata = playback; pcdata += sizeof(playback);
-	*(int*) pcdata = quality; pcdata += sizeof(quality);
-	*(int*) pcdata = blendMode; pcdata += sizeof(blendMode);
-}
-
-void Clouds::LoadPreset(void* pdata, int size, int version)
-{
-	char* pcdata = (char*)pdata;
-	int csize = GetControlsValuesSize();
-
-	LoadControlsValues(pcdata, csize);
-	pcdata += csize;	
-
-	// Load non control data
-	playback = *(clouds::PlaybackMode*) pcdata; pcdata += sizeof(playback);
-	quality = *(int*) pcdata; pcdata += sizeof(quality);
-	blendMode = *(int*)pcdata; pcdata += sizeof(blendMode);
-
-	UpdateBlendKnob();
-
-	if (quality == 4) processor->set_sample_rate(sample_rate);
-	else processor->set_sample_rate(32000.f);
-	//UpdateProcessor();
-}
-
-const char* Clouds::GetInfoURL()
-{
-	return "https://mutable-instruments.net/modules/clouds/";
-}
-
-inline void Clouds::ProcessSample()
-{	
-	dsp::Frame<2> inputFrame = {};
-	dsp::Frame<2> outputFrame = {};
-
-	// Get input
-	if (!inputBuffer.full()) 
-	{
-		inputFrame.samples[0] = ppinl->in * kingain->value;
-		inputFrame.samples[1] = ppinr->num_cables ? ppinr->in * kingain->value : inputFrame.samples[0];
-		inputBuffer.push(inputFrame);
-	}
-
-	//if (freezeTrigger.process(bfreez->value)) freeze ^= true;
-	//if (blendTrigger.process(bmode->value)) 
-	//	blendMode = (blendMode + 1) % 4;
-
-	// Trigger
-	if (pptrig->in >= 1.0) triggered = true;
-
-	// Render frames
-	if (outputBuffer.empty()) 
-	{	clouds::ShortFrame input[32] = {};
-		dsp::Frame<2> inputFrames[32];
-		if (quality!=4)
-		{	// Convert input buffer
-			int inLen = inputBuffer.size();
-			int outLen = 32;
-			inputSrc.process(inputBuffer.startData(), &inLen, inputFrames, &outLen);
-			inputBuffer.startIncr(inLen);
-
-			// We might not fill all of the input buffer if there is a deficiency, but this cannot be avoided due to imprecisions between the input and output SRC.
-			for (int i = 0; i < outLen; i++) {
-				input[i].l = CLIP(inputFrames[i].samples[0] * 32767.0f, -32768.0f, 32767.0f);
-				input[i].r = CLIP(inputFrames[i].samples[1] * 32767.0f, -32768.0f, 32767.0f);
-			}
-		}
-		else
-		{	// No sample rate convertion
-			int blen = mmin(32,inputBuffer.size());
-			for (int i = 0; i < blen; i++)
-			{
-				input[i].l = CLIP(inputBuffer.startData()[i].samples[0] * 32767.0f, -32768.0f, 32767.0f);
-				input[i].r = CLIP(inputBuffer.startData()[i].samples[1] * 32767.0f, -32768.0f, 32767.0f);
-			}
-			inputBuffer.startIncr(blen);
-		}
-
-		UpdateProcessor();
-
-		clouds::Parameters* p = processor->mutable_parameters();
-		p->trigger = triggered;
-		p->gate = triggered;
-		p->freeze = freeze || (ppfreeze->in >= 1.0);
-		p->position = CLIP(kposition->value + ppposition->in, 0.0f, 1.0f);
-		p->size = CLIP(ksize->value + ppsize->in, 0.0f, 1.0f);
-		p->pitch = CLIP((SCALE(kpitch->value,-2.f,2.f) + pppitch->in*MIDI_TUNE_FACTOR) * 12.0f, -48.0f, 48.0f);
-		p->density = CLIP(kdensity->value + ppdensity->in, 0.0f, 1.0f);
-		p->texture = CLIP(ktexture->value + pptexture->in, 0.0f, 1.0f);
-		p->dry_wet = kblend->value;
-		p->stereo_spread = kspread->value;
-		p->feedback = kfeedback->value;
-
-		p->reverb = kreverb->value;
-		float blend = ppblend->in;
-
-		switch (blendMode) 
-		{
-		case 0:
-			p->dry_wet += blend;
-			p->dry_wet = CLIP(p->dry_wet, 0.0f, 1.0f);
-			break;
-		case 1:
-			p->stereo_spread += blend;
-			p->stereo_spread = CLIP(p->stereo_spread, 0.0f, 1.0f);
-			break;
-		case 2:
-			p->feedback += blend;
-			p->feedback = CLIP(p->feedback, 0.0f, 1.0f);
-			break;
-		case 3:
-			p->reverb += blend;
-			p->reverb = CLIP(p->reverb, 0.0f, 1.0f);
-			break;
-		}
-
-		clouds::ShortFrame output[32];
-		processor->Process(input, output, 32);
-
-		if (quality != 4)
-		{	// Convert output buffer
-			dsp::Frame<2> outputFrames[32];
-			for (int i = 0; i < 32; i++) {
-				outputFrames[i].samples[0] = output[i].l / 32768.0;
-				outputFrames[i].samples[1] = output[i].r / 32768.0;
-			}
-
-			int inLen = 32;
-			int outLen = outputBuffer.capacity();
-			outputSrc.process(outputFrames, &inLen, outputBuffer.endData(), &outLen);
-			outputBuffer.endIncr(outLen);
-		}
-		else
-		{	// No sample rate convertion
-			for (int i = 0; i < 32; i++) 
-			{	outputBuffer.endData()[i].samples[0] = output[i].l / 32768.0;
-				outputBuffer.endData()[i].samples[1] = output[i].r / 32768.0;
-			}
-			outputBuffer.endIncr(32);
-		}
-		triggered = false;
-		outputFrame = outputBuffer.shift();
-
-		// Lights
-		if (leds_wait <= 0)
-		{	dsp::Frame<2> lightFrame = freeze ? outputFrame : inputFrame;
-			float tf, tf2;
-			float vu = fmaxf(fabsf(lightFrame.samples[0]), fabsf(lightFrame.samples[1]));
-
-			// Low pass
-			vu = last_vu + 0.05 * (vu - last_vu);
-			last_vu = vu;
-
-			// Rough and quick LEDs
-			tf2 = 4.0 * vu; if (tf2 > 1.f) lmix->value = 1.f; else lmix->value = tf2;
-			tf = tf2 - 0.25; lpan->value = CLIP(tf, 0.f, 1.f);
-			tf = tf2 - 0.5; lfb->value = CLIP(tf, 0.f, 1.f);
-			tf = tf2 - 0.75; lreverb->value = CLIP(tf, 0.f, 1.f);
-		}
-		else leds_wait--;
-
-	}
-	else outputFrame = outputBuffer.shift();
-
-	// Set output
-	ppoutl->out = outputFrame.samples[0];
-	ppoutr->out = outputFrame.samples[1];
-}
-
-
-
-//---------------------------------------------
-// Rings
-CBitmap* Rings::panel = NULL;
-char* Rings::name = "Riga";
-int Rings::name_len = 0;
-char* Rings::vendorname = "ShredsNCharades";
-int Rings::vendorname_len = 0;
-Product* Rings::pproduct = NULL;
-
-Rings::Rings(CFrame* pParent, CControlListener* listener, const SynthComm* psynth_comm, const int vvoice)
-	: Module(CRect(0, 0, panel->getWidth(), panel->getHeight()), pParent, panel, psynth_comm, vvoice)
-{
-	PatchPoint* temp[6];
-
-	// Create The Knobs
-	kfreq = AddModuleKnob(41, 84, mcbits[knob_medium_white], SNC_MEDIUM_KNOB_IMAGES, false, listener);
-	kfreq->setValue(0.5);
-
-	kstruct = AddModuleKnob(116, 84, mcbits[knob_medium_white], SNC_MEDIUM_KNOB_IMAGES, false, listener);
-	kstruct->setValue(0.5);
-
-	kbright = AddModuleKnob(23, 143, mcbits[knob_small_white], SNC_SMALL_KNOB_IMAGES, false, listener);
-	kbright->setValue(0.5);
-
-	kdamping = AddModuleKnob(77, 143, mcbits[knob_small_white], SNC_SMALL_KNOB_IMAGES, false, listener);
-	kdamping->setValue(0.5);
-
-	kposition = AddModuleKnob(131, 143, mcbits[knob_small_white], SNC_SMALL_KNOB_IMAGES, false, listener);
-	kposition->setValue(0.5);
-
-	kbright_cv = AddModuleKnob(19, 186, mcbits[knob_tiny_black], SNC_TINY_KNOB_IMAGES, false, listener);
-	kbright_cv->setValue(0.5);
-
-	kfreq_cv = AddModuleKnob(48, 186, mcbits[knob_tiny_black], SNC_TINY_KNOB_IMAGES, false, listener);
-	kfreq_cv->setValue(0.5);
-
-	kdamping_cv = AddModuleKnob(78, 186, mcbits[knob_tiny_black], SNC_TINY_KNOB_IMAGES, false, listener);
-	kdamping_cv->setValue(0.5);
-
-	kstruct_cv = AddModuleKnob(107, 186, mcbits[knob_tiny_black], SNC_TINY_KNOB_IMAGES, false, listener);
-	kstruct_cv->setValue(0.5);
-
-	kposition_cv = AddModuleKnob(137, 186, mcbits[knob_tiny_black], SNC_TINY_KNOB_IMAGES, false, listener);
-	kposition_cv->setValue(0.5);
-
-	// Create Patch Points
-	ppbright = AddPatchPoint(19, 216, ppTypeInput, ppbit, 0, listener);
-	ppfreq = AddPatchPoint(48, 216, ppTypeInput, ppbit, 0, listener);
-	ppdamping = AddPatchPoint(77, 216, ppTypeInput, ppbit, 0, listener);
-	ppstruct = AddPatchPoint(107, 216, ppTypeInput, ppbit, 0, listener);
-	ppposition = AddPatchPoint(137, 216, ppTypeInput, ppbit, 0, listener);
-	
-	ppstrum = AddPatchPoint(19, 251, ppTypeInput, ppbit, 0, listener);
-	pppitch = AddPatchPoint(48, 251, ppTypeInput, ppbit, 0, listener);
-	ppin = AddPatchPoint(77, 251, ppTypeInput, ppbit, 0, listener);
-	ppodd = AddPatchPoint(107, 251, ppTypeOutput, ppbit, 0, listener);
-	ppeven = AddPatchPoint(137, 251, ppTypeOutput, ppbit, 0, listener);
-
-	// Buttons
-	bpoly = AddKickButton(14, 37, mcbits[black_butbit_tiny], 2, listener);
-	bresonator = AddKickButton(142, 37, mcbits[black_butbit_tiny], 2, listener);
-	beaster = AddOnOffButton(78, 37, mcbits[black_butbit_tiny], 2, listener, COnOffButton::kPostListenerUpdate);
-	blow_cpu = AddOnOffButton(88, 281, mcbits[black_butbit_tiny], 2, listener, COnOffButton::kPostListenerUpdate);
-
-	lpoly = AddMovieBitmap(28, 36, mcbits[led_small_gyr], SNC_LED_GYR_IMAGES, listener);
-	lresonator = AddMovieBitmap(128, 36, mcbits[led_small_gyr], SNC_LED_GYR_IMAGES, listener);
-	llow_cpu = AddMovieBitmap(102, 281, mcbits[led_small_red], SNC_LED_RED_IMAGES, listener);
-	//lfb = AddMovieBitmap(114, 44, mcbits[led_red], LED_RED_IMAGES, listener);
-	//lreverb = AddMovieBitmap(138, 44, mcbits[led_red], LED_RED_IMAGES, listener);
-
-	// Put some screws
-	PutLeftScrews(screw1, screw2, listener);
-	PutRightScrews(screw3, screw4, listener);
-	InitPatchPoints(0.0);
-
-	SetSampleRate(sample_rate);
-	strummer.Init(0.01, 44100.f / 24);
-	part.Init(reverb_buffer);
-	string_synth.Init(reverb_buffer);
-
-	// Polyphony
-	int polyphony = 1 << polyphonyMode;
-	part.set_polyphony(polyphony);
-
-	UpdateResonatorModel();
-
-	// LEDs
-	lpoly->value = ((float)polyphonyMode + 1.f) / 3.f;
-	lresonator->value = ((float)resonatorModel + 1.f) / 6.f;
-}
-
-// SoloRack calls this. It can't directly access rhe constructor since this is a Dll and pointers to constructor can not be easily achieved.
-Rings* Rings::Constructor(CFrame* pParent, CControlListener* listener, const SynthComm* psynth_comm, const int vvoice)
-{
-	return new Rings(pParent, listener, psynth_comm, vvoice);
-}
-
-void Rings::Initialize()
-{
-	panel = new CBitmap(dllskindir, NULL, "Rings.png");
-	name_len = strlen(name); vendorname_len = strlen(vendorname);
-}
-
-void Rings::End()
-{
-	panel->forget();
-	if (pproduct != NULL) delete pproduct;
-}
-
-const char* Rings::GetName()
-{
-	return name;
-}
-
-const int Rings::GetNameLen()
-{
-	return name_len;
-}
-
-const char* Rings::GetVendorName()
-{
-	return vendorname;
-}
-
-const int Rings::GetVendorNameLen()
-{
-	return vendorname_len;
-}
-
-const int Rings::GetType()
-{
-	return kOscillatorSource;
-}
-
-Product* Rings::Activate(char* fullname, char* email, char* serial)
-{	// Replace this with your own implementation
-	// This should return a pointer to the activated product. Or NULL if activation fails
-	// In our Rings, NULL is retuned because the module is already active all the time, so no need to activate.
-	return NULL;
-
-	// Here is a simplistic example.
-	//if (pproduct!=NULL) delete pproduct;
-	//pproduct = new Product(0,1,NULL,false,"ShredsNCharades Baadalon");		// Product names has to include vendor name to ensure uniquenes
-	//return pproduct->Activate(fullname,email,serial);
-}
-
-bool Rings::IsActive()
-{	// This test module is Active. Replace this with your own check. 
-	// It's better not to store this active/inactive status in an obvious place in memory, like a data member of the module or like that.
-	// It's even better if the status is not stored at all, but rather a sophisticated test is done
-	return true;
-
-	// simple example
-	//if (pproduct!=NULL) return pproduct->IsActive(); else return false;
-}
-
-Product* Rings::InstanceActivate(char* fullname, char* email, char* serial)
-{
-	return this->Activate(fullname, email, serial);
-}
-
-bool Rings::InstanceIsActive()
-{
-	return this->IsActive();
-}
-
-const char* Rings::GetProductName()
-{	// Change this to your own product name. 
-	return "ShredsNCharades Riga";
-}
-
-//inline void Rings::UpdateProcessor()
-//{
-//	// Set up processor
-//	processor->set_playback_mode(playback);
-//	if (quality == 4)
-//		processor->set_quality(0);
-//	else
-//		processor->set_quality(quality);
-//	processor->Prepare();
-//}
-
-void Rings::ValueChanged(CControl* pControl)
-{
-	if (pControl == bpoly && bpoly->value >= 0.5)
-	{
-		EnterProcessingCriticalSection();
-		polyphonyMode = (polyphonyMode + 1) % 3;
-
-		// Polyphony
-		int polyphony = 1 << polyphonyMode;
-		if (part.polyphony() != polyphony)
-			part.set_polyphony(polyphony);
-
-		LeaveProcessingCriticalSection();
-
-		// LED
-		lpoly->value = ((float)polyphonyMode + 1.f) / 3.f;
-	}
-	else if (pControl == bresonator && bresonator->value >= 0.5)
-	{
-		EnterProcessingCriticalSection();
-		resonatorModel = (rings::ResonatorModel)((resonatorModel + 1) % 6);
-		UpdateResonatorModel();
-		LeaveProcessingCriticalSection();
-
-		// LED
-		lresonator->value = ((float)resonatorModel + 1.f) / 6.f;
-	}
-	else if (pControl == beaster)
-	{
-		EnterProcessingCriticalSection();
-		easterEgg = beaster->value >= 0.5;
-		UpdateResonatorModel();
-		LeaveProcessingCriticalSection();
-	}
-	else if (pControl == blow_cpu)
-	{
-		EnterProcessingCriticalSection();
-		if (blow_cpu->value >= 0.5f) low_cpu = 1; else low_cpu = 0;
-		llow_cpu->value = low_cpu;
-		SetSampleRate(sample_rate);
-		LeaveProcessingCriticalSection();
-	}
-}
-
-void Rings::SetSampleRate(float sr)
-{
-	Module::SetSampleRate(sr);
-
-	inputSrc.setRates(sample_rate, 48000);
-	outputSrc.setRates(48000, sample_rate);
-	
-	// This is just a quick trick to allow it to work without sample rate convertion
-	// it's not perfect. kSampleRate is const. It is a whole mess changing it to dynamic.
-	if (low_cpu == 1) sr_notefix = log2(48000.f / sample_rate);
-	else sr_notefix = 0.f;
-}
-
-int Rings::GetPresetSize()
-{
-	return GetControlsValuesSize() + sizeof(polyphonyMode) + sizeof(resonatorModel);
-}
-
-void Rings::SavePreset(void* pdata, int size)
-{
-	char* pcdata = (char*)pdata;
-	SaveControlsValues(pcdata);
-	pcdata += GetControlsValuesSize();
-
-	// Save none control data
-	*(int*)pcdata = polyphonyMode; pcdata += sizeof(polyphonyMode);
-	*(rings::ResonatorModel*)pcdata = resonatorModel; pcdata += sizeof(resonatorModel);
-}
-
-void Rings::LoadPreset(void* pdata, int size, int version)
-{
-	char* pcdata = (char*)pdata;
-	int csize = GetControlsValuesSize();
-
-	LoadControlsValues(pcdata, csize);
-	pcdata += csize;
-
-	// Load non control data
-	polyphonyMode = *(int*) pcdata; pcdata += sizeof(polyphonyMode);
-	resonatorModel = *(rings::ResonatorModel*) pcdata; pcdata += sizeof(resonatorModel);
-
-	// Polyphony
-	int polyphony = 1 << polyphonyMode;
-	part.set_polyphony(polyphony);
-
-	UpdateResonatorModel();
-
-	// LEDs
-	lpoly->value = ((float)polyphonyMode + 1.f) / 3.f;
-	lresonator->value = ((float)resonatorModel + 1.f) / 6.f;
-	//llow_cpu->value = quality; // No need
-}
-
-void Rings::UpdateResonatorModel()
-{	if (easterEgg)
-		string_synth.set_fx((rings::FxType)resonatorModel);
-	else
-		part.set_model(resonatorModel);
-}
-
-const char* Rings::GetInfoURL()
-{
-	return "https://mutable-instruments.net/modules/rings/";
-}
-
-inline void Rings::ProcessSample()
-{	bool strum;
-
-	// Get input
-	if (!inputBuffer.full()) {
-		dsp::Frame<1> f;
-		f.samples[0] = ppin->in;
-		inputBuffer.push(f);
-	}
-
-	// Render frames
-	if (outputBuffer.empty()) 
-	{	//float in[24] = {};
-		float* in;
-		// Convert input buffer
-		if (low_cpu==0)
-		{	in = pin;
-			int inLen = inputBuffer.size();
-			int outLen = 24;
-			inputSrc.process(inputBuffer.startData(), &inLen, (dsp::Frame<1>*) in, &outLen);
-			inputBuffer.startIncr(inLen);
-		}
-		else
-		{	// No sample rate convertion
-			int blen = mmin(24, inputBuffer.size());
-			//for (int i = 0; i < blen; i++)
-			//	in[i] = inputBuffer.startData()[i].samples[0];
-			inputBuffer.startIncr(blen);
-			// This only works here because inputBuffer has 1 float per elemnt
-			in = (float *) inputBuffer.startData();
-			
-		}
-
-		// Patch
-		rings::Patch patch;
-		float structure = kstruct->value + 3.3 * dsp::quadraticBipolar(SCALE(kstruct_cv->value,-1.f,1.f)) * ppstruct->in;
-		patch.structure = CLIP(structure, 0.0f, 0.9995f);
-		patch.brightness = CLIP(kbright->value + 3.3 * dsp::quadraticBipolar(SCALE(kbright_cv->value, -1.f, 1.f)) * ppbright->in, 0.0f, 1.0f);
-		patch.damping = CLIP(kdamping->value + 3.3 * dsp::quadraticBipolar(SCALE(kdamping_cv->value, -1.f, 1.f)) * ppdamping->in, 0.0f, 0.9995f);
-		patch.position = CLIP(kposition->value + 3.3 * dsp::quadraticBipolar(SCALE(kposition_cv->value, -1.f, 1.f)) * ppposition->in, 0.0f, 0.9995f);
-
-		// Performance
-		rings::PerformanceState performance_state;
-		float transpose = SCALE(kfreq->value, 0.f, 60.f);
-		if (pppitch->num_cables)
-		{	performance_state.note = 12.0 * (MIDI_TUNE_FACTOR * pppitch->in + sr_notefix);
-			// Quantize transpose if pitch input is connected
-			transpose = roundf(transpose);
-		}
-		else performance_state.note = 1.f;
-
-		performance_state.tonic = 12.0 + CLIP(transpose, 0.0f, 60.0f);
-		performance_state.fm = CLIP(48.0 * 3.3 * dsp::quarticBipolar(SCALE(kfreq_cv->value, -1.f, 1.f)) * ppfreq->in, -48.0f, 48.0f);
-
-		performance_state.internal_exciter = !ppin->num_cables;
-		performance_state.internal_strum = !ppstrum->num_cables;
-		performance_state.internal_note = !pppitch->num_cables;
-
-		strum = ppstrum->in >= HIGH_CV;
-		performance_state.strum = strum && !lastStrum;
-		lastStrum = strum;
-
-		performance_state.chord = CLIP((int)roundf(structure * (rings::kNumChords - 1)), 0, rings::kNumChords - 1);
-
-		// Process audio
-		float out[24];
-		float aux[24];
-		if (easterEgg) 
-		{	strummer.Process(NULL, 24, &performance_state);
-			string_synth.Process(performance_state, patch, in, out, aux, 24);
-		}
-		else 
-		{	strummer.Process(in, 24, &performance_state);
-			part.Process(performance_state, patch, in, out, aux, 24);
-		}
-
-		// Convert output buffer
-		if (low_cpu==0)
-		{	dsp::Frame<2> outputFrames[24];
-			for (int i = 0; i < 24; i++) 
-			{	outputFrames[i].samples[0] = out[i];
-				outputFrames[i].samples[1] = aux[i];
-			}
-			int inLen = 24;
-			int outLen = outputBuffer.capacity();
-			outputSrc.process(outputFrames, &inLen, outputBuffer.endData(), &outLen);
-			outputBuffer.endIncr(outLen);
-		}
-		else
-		{	// No sample rate convertion
-			for (int i = 0; i < 24; i++)
-			{	outputBuffer.endData()[i].samples[0] = out[i];
-				outputBuffer.endData()[i].samples[1] = aux[i];
-			}
-			outputBuffer.endIncr(24);
-		}
-	}
-
-	// Set output
-	// if (!outputBuffer.empty()) 
-	{	dsp::Frame<2> outputFrame = outputBuffer.shift();
-		// "Note that you need to insert a jack into each output to split the signals: when only one jack is inserted, both signals are mixed together."
-		if (ppodd->num_cables && ppeven->num_cables)
-		{
-			//ppodd->out = CLIP(outputFrame.samples[0], -1.0, 1.0);
-			//ppeven->out = CLIP(outputFrame.samples[1], -1.0, 1.0);
-
-			ppodd->out = outputFrame.samples[0];
-			ppeven->out = outputFrame.samples[1];
-		}
-		else
-		{
-			//float v = CLIP(outputFrame.samples[0] + outputFrame.samples[1], -1.0, 1.0);
-			float v = outputFrame.samples[0] + outputFrame.samples[1];
-			ppodd->out = ppeven->out = v;
-		}
-	}
-}
-
-
-
-//---------------------------------------------
-// Braids
-CBitmap* Braids::panel = NULL;
-char* Braids::name = "Chotiyon";
-int Braids::name_len = 0;
-char* Braids::vendorname = "ShredsNCharades";
-int Braids::vendorname_len = 0;
-Product* Braids::pproduct = NULL;
-const Braids::ShapeInfo Braids::shape_infos[] = {
-	{"CSAW", "Quirky sawtooth"},
-	{"/\\-_", "Triangle to saw"},
-	{"//-_", "Sawtooth wave with dephasing"},
-	{"FOLD", "Wavefolded sine/triangle"},
-	{"uuuu", "Buzz"},
-	{"SUB-", "Square sub"},
-	{"SUB/", "Saw sub"},
-	{"SYN-", "Square sync"},
-	{"SYN/", "Saw sync"},
-	{"//x3", "Triple saw"},
-	{"-_x3", "Triple square"},
-	{"/\\x3", "Triple triangle"},
-	{"SIx3", "Triple sine"},
-	{"RING", "Triple ring mod"},
-	{"////", "Saw swarm"},
-	{"//uu", "Saw comb"},
-	{"TOY*", "Circuit-bent toy"},
-	{"ZLPF", "Low-pass filtered waveform"},
-	{"ZPKF", "Peak filtered waveform"},
-	{"ZBPF", "Band-pass filtered waveform"},
-	{"ZHPF", "High-pass filtered waveform"},
-	{"VOSM", "VOSIM formant"},
-	{"VOWL", "Speech synthesis"},
-	{"VFOF", "FOF speech synthesis"},
-	{"HARM", "12 sine harmonics"},
-	{"FM  ", "2-operator phase-modulation"},
-	{"FBFM", "2-operator phase-modulation with feedback"},
-	{"WTFM", "2-operator phase-modulation with chaotic feedback"},
-	{"PLUK", "Plucked string"},
-	{"BOWD", "Bowed string"},
-	{"BLOW", "Blown reed"},
-	{"FLUT", "Flute"},
-	{"BELL", "Bell"},
-	{"DRUM", "Drum"},
-	{"KICK", "Kick drum circuit simulation"},
-	{"CYMB", "Cymbal"},
-	{"SNAR", "Snare"},
-	{"WTBL", "Wavetable"},
-	{"WMAP", "2D wavetable"},
-	{"WLIN", "1D wavetable"},
-	{"WTx4", "4-voice paraphonic 1D wavetable"},
-	{"NOIS", "Filtered noise"},
-	{"TWNQ", "Twin peaks noise"},
-	{"CLKN", "Clocked noise"},
-	{"CLOU", "Granular cloud"},
-	{"PRTC", "Particle noise"},
-	{"QPSK", "Digital modulation"},
-};
-
-Braids::Braids(CFrame* pParent, CControlListener* listener, const SynthComm* psynth_comm, const int vvoice)
-	: Module(CRect(0, 0, panel->getWidth(), panel->getHeight()), pParent, panel, psynth_comm, vvoice)
-{
-	PatchPoint* temp[6];
-
-	// Create The Knobs
-	kshape = AddModuleKnob(168, 64, mcbits[knob_small_black], SNC_SMALL_KNOB_IMAGES, false, listener);
-
-	kfine = AddModuleKnob(34, 131, mcbits[knob_medium_white], SNC_MEDIUM_KNOB_IMAGES, false, listener);
-	kfine->setValue(0.5);
-
-	kcoarse = AddModuleKnob(102, 131, mcbits[knob_medium_white], SNC_MEDIUM_KNOB_IMAGES, false, listener);
-	kcoarse->setValue(0.5);
-
-	kfm = AddModuleKnob(170, 131, mcbits[knob_medium_white], SNC_MEDIUM_KNOB_IMAGES, false, listener);
-	kfm->setValue(0.5);
-
-	ktimbre = AddModuleKnob(34, 192, mcbits[knob_medium_green], SNC_MEDIUM_KNOB_IMAGES, false, listener);
-	ktimbre->setValue(0.5);
-
-	kmodulation = AddModuleKnob(102, 192, mcbits[knob_medium_green], SNC_MEDIUM_KNOB_IMAGES, false, listener);
-	kmodulation->setValue(0.5);
-
-	kcolor = AddModuleKnob(170, 192, mcbits[knob_medium_red], SNC_MEDIUM_KNOB_IMAGES, false, listener);
-	kcolor->setValue(0.5);
-
-	//kfreq_cv = AddModuleKnob(48, 183, mcbits[tknobit_black], TINY_KNOB_IMAGES, false, listener);
-	//kfreq_cv->setValue(0.5);
-
-	//kdamping_cv = AddModuleKnob(78, 183, mcbits[tknobit_black], TINY_KNOB_IMAGES, false, listener);
-	//kdamping_cv->setValue(0.5);
-
-	//kstruct_cv = AddModuleKnob(107, 183, mcbits[tknobit_black], TINY_KNOB_IMAGES, false, listener);
-	//kstruct_cv->setValue(0.5);
-
-	//kposition_cv = AddModuleKnob(137, 183, mcbits[tknobit_black], TINY_KNOB_IMAGES, false, listener);
-	//kposition_cv->setValue(0.5);
-
-	//// Create Patch Points
-	pptrig = AddPatchPoint(19, 249, ppTypeInput, ppbit, 0, listener);
-	pppitch = AddPatchPoint(50, 249, ppTypeInput, ppbit, 0, listener);
-	ppfm = AddPatchPoint(82, 249, ppTypeInput, ppbit, 0, listener);
-	pptimbre = AddPatchPoint(114, 249, ppTypeInput, ppbit, 0, listener);
-	ppcolor = AddPatchPoint(146, 249, ppTypeInput, ppbit, 0, listener);
-	ppout = AddPatchPoint(185, 249, ppTypeOutput, ppbit, 0, listener);
-
-	// Set Segment/digital font to shape screen
-	CColor cc = CColor();
-	//shape_text = AddTextLabel(14, 41.6, NULL, 0, 126, 39);
-	//shape_text = AddTextLabel(15, 47, NULL, 0, 125, 50); shape_text->setVertAlign(kTopTextWithTopCoord); // Segment14.ttf
-	shape_text = AddTextLabel(14, 46, NULL, 0, 125, 62); shape_text->setVertAlign(kTopTextWithTopCoord); // DSEG14Classic-Italic.ttf
-
-	shape_text->setTransparency(true); shape_text->setText("");
-	cc.red = 175; cc.green = 210; cc.blue = 44; cc.alpha = 255;
-	shape_text->setFontColor(cc);
-	CFontDesc* pf;
-	char *st = (char*) malloc(MAX_PATH * 2 * sizeof(*st));
-	if (st != NULL)
-	{	strcpy(st, dllskindir); GetParentDir(st);
-		//strcat(st, "Segment14.ttf");
-		//pf = new CFontDesc(st, SkinScale(40));
-		strcat(st, "DSEG14Classic-Italic.ttf");
-		pf = new CFontDesc(st, SkinScale(32), kItalicFace);
-		if (pf->getPlatformFontFromFile() == NULL)
-		{	pf->forget();
-			// Try the font as a name instead of path (ie. uses installed fonts).
-			pf = new CFontDesc("DSEG14Classic-Italic.ttf", SkinScale(32), kItalicFace);
-			pf->getPlatformFont();
-		}
-		shape_text->setFont(pf); pf->forget(); free(st);
-	}
-	ValueChanged(kshape);
-
-	//// Buttons
-	bshape_mod = AddOnOffButton(194, 85, mcbits[black_butbit_tiny], 2, listener, COnOffButton::kPostListenerUpdate);
-	blow_cpu = AddOnOffButton(135, 281, mcbits[black_butbit_tiny], 2, listener, COnOffButton::kPostListenerUpdate);
-
-	lshape_mod = AddMovieBitmap(194, 71, mcbits[led_small_red], SNC_LED_RED_IMAGES, listener);
-	llow_cpu = AddMovieBitmap(149, 281, mcbits[led_small_red], SNC_LED_RED_IMAGES, listener);
-
-	// Put some screws
-	PutLeftScrews(screw1, screw2, listener);
-	PutRightScrews(screw3, screw4, listener);
-	InitPatchPoints(0.0);
-
-	std::memset(&osc, 0, sizeof(osc));
-	osc.Init();
-	std::memset(&jitter_source, 0, sizeof(jitter_source));
-	jitter_source.Init();
-	std::memset(&ws, 0, sizeof(ws));
-	ws.Init(0x0000);
-	std::memset(&settings, 0, sizeof(settings));
-
-	// List of supported settings
-	settings.meta_modulation = 0;
-	settings.vco_drift = 0;
-	settings.signature = 0;
-	SetSampleRate(sample_rate);
-}
-
-// SoloRack calls this. It can't directly access rhe constructor since this is a Dll and pointers to constructor can not be easily achieved.
-Braids* Braids::Constructor(CFrame* pParent, CControlListener* listener, const SynthComm* psynth_comm, const int vvoice)
-{
-	return new Braids(pParent, listener, psynth_comm, vvoice);
-}
-
-void Braids::Initialize()
-{
-	panel = new CBitmap(dllskindir, NULL, "Braids.png");
-	name_len = strlen(name); vendorname_len = strlen(vendorname);
-}
-
-void Braids::End()
-{
-	panel->forget();
-	if (pproduct != NULL) delete pproduct;
-}
-
-const char* Braids::GetName()
-{
-	return name;
-}
-
-const int Braids::GetNameLen()
-{
-	return name_len;
-}
-
-const char* Braids::GetVendorName()
-{
-	return vendorname;
-}
-
-const int Braids::GetVendorNameLen()
-{
-	return vendorname_len;
-}
-
-const int Braids::GetType()
-{
-	return kOscillatorSource;
-}
-
-Product* Braids::Activate(char* fullname, char* email, char* serial)
-{	// Replace this with your own implementation
-	// This should return a pointer to the activated product. Or NULL if activation fails
-	// In our Braids, NULL is retuned because the module is already active all the time, so no need to activate.
-	return NULL;
-
-	// Here is a simplistic example.
-	//if (pproduct!=NULL) delete pproduct;
-	//pproduct = new Product(0,1,NULL,false,"ShredsNCharades Baadalon");		// Product names has to include vendor name to ensure uniquenes
-	//return pproduct->Activate(fullname,email,serial);
-}
-
-bool Braids::IsActive()
-{	// This test module is Active. Replace this with your own check. 
-	// It's better not to store this active/inactive status in an obvious place in memory, like a data member of the module or like that.
-	// It's even better if the status is not stored at all, but rather a sophisticated test is done
-	return true;
-
-	// simple example
-	//if (pproduct!=NULL) return pproduct->IsActive(); else return false;
-}
-
-Product* Braids::InstanceActivate(char* fullname, char* email, char* serial)
-{
-	return this->Activate(fullname, email, serial);
-}
-
-bool Braids::InstanceIsActive()
-{
-	return this->IsActive();
-}
-
-const char* Braids::GetProductName()
-{	// Change this to your own product name. 
-	return "ShredsNCharades Chotiyon";
-}
-
-void Braids::ValueChanged(CControl* pControl)
-{
-	if (pControl == kshape)
-	{
-		//EnterProcessingCriticalSection();
-		// Set shape
-		shape = std::round(kshape->value * braids::MACRO_OSC_SHAPE_LAST_ACCESSIBLE_FROM_META);
-		uint8_t sshape = CLIP(shape, 0, braids::MACRO_OSC_SHAPE_LAST_ACCESSIBLE_FROM_META);
-		//LeaveProcessingCriticalSection();
-
-		shape_text->setText(shape_infos[sshape].code);
-		//this->invalid();
-	}
-	else if (pControl == bshape_mod)
-	{
-		settings.meta_modulation = bshape_mod->value >= 0.5f;
-		lshape_mod->value = settings.meta_modulation;
-	}
-	else if (pControl == blow_cpu)
-	{
-		lowCpu = blow_cpu->value >= 0.5f;
-		llow_cpu->value = lowCpu;
-	}
-
-}
-
-void Braids::SetSampleRate(float sr)
-{
-	Module::SetSampleRate(sr);
-
-	src.setRates(96000, sample_rate);
-	#ifdef BRAIDS_SYNC
-	sync_src.setRates(sample_rate, 96000);
-	#endif
-	lowcpu_pitch_fix = log2(96000.f / sample_rate);
-}
-
-//int Braids::GetPresetSize()
-//{
-//	return GetControlsValuesSize() + sizeof(polyphonyMode) + sizeof(resonatorModel);
-//}
-
-//void Braids::SavePreset(void* pdata, int size)
-//{
-//	char* pcdata = (char*)pdata;
-//	SaveControlsValues(pcdata);
-//	pcdata += GetControlsValuesSize();
-//
-//	// Save none control data
-//	*(int*)pcdata = polyphonyMode; pcdata += sizeof(polyphonyMode);
-//	*(rings::ResonatorModel*)pcdata = resonatorModel; pcdata += sizeof(resonatorModel);
-//}
-
-//void Braids::LoadPreset(void* pdata, int size, int version)
-//{
-//	char* pcdata = (char*)pdata;
-//	int csize = GetControlsValuesSize();
-//
-//	LoadControlsValues(pcdata, csize);
-//	pcdata += csize;
-//
-//	// Load non control data
-//	polyphonyMode = *(int*) pcdata; pcdata += sizeof(polyphonyMode);
-//	resonatorModel = *(rings::ResonatorModel*) pcdata; pcdata += sizeof(resonatorModel);
-//}
-
-const char* Braids::GetInfoURL()
-{
-	return "https://mutable-instruments.net/modules/braids/";
-}
-
-inline void Braids::ProcessSample()
-{	
-	// Trigger
-	bool trig = pptrig->in >= HIGH_CV;
-	if (!lastTrig && trig) osc.Strike();
-	lastTrig = trig;
-
-	#ifdef BRAIDS_SYNC
-	// Get sync input
-	if (!sync_inbuffer.full()) {
-		dsp::Frame<1> f;
-		f.samples[0] = pptrig->in;
-		sync_inbuffer.push(f);
-	}
-	#endif
-
-	// Render frames
-	if (outputBuffer.empty())
-	{	
-		// Sync doesn't work well for some reason!! Don't have time for it now.
-		#ifdef BRAIDS_SYNC
-		// Convert sync input buffer
-		float sync_in[24] = {};
-		if (!lowCpu)
-		{
-			int inLen = sync_inbuffer.size();
-			int outLen = 24;
-			sync_src.process(sync_inbuffer.startData(), &inLen, (dsp::Frame<1>*) sync_in, &outLen);
-			sync_inbuffer.startIncr(inLen);
-		}
-		else
-		{	// No sample rate convertion
-			int blen = mmin(24, sync_inbuffer.size());
-			for (int i = 0; i < blen; i++)
-				sync_in[i] = sync_inbuffer.startData()[i].samples[0];
-			sync_inbuffer.startIncr(blen);
-		}
-
-		int i;
-		if (sync_in[0] >= HIGH_CV && sync_in[23] < HIGH_CV)
-		{
-			syncint[0] = 1; i = 2; syncint[1] = 0;
-		}
-		else { syncint[0] = 0; i = 1; }
-		for (; i < 24; i++)
-		{
-			if (sync_in[i] >= HIGH_CV && sync_in[i - 1] < HIGH_CV)
-			{
-				syncint[i] = 1; i++; syncint[i] = 0;
-			}
-			else syncint[i] = 0;
-		}
-		#endif	
-		
-		
-		float fm = SCALE(kfm->value, -1.f, 1.f) * ppfm->in;
-
-		// Set modulating shape
-		if (settings.meta_modulation)
-		{
-			int tshape;
-			tshape = shape + std::round(fm * braids::MACRO_OSC_SHAPE_LAST_ACCESSIBLE_FROM_META);
-			settings.shape = CLIP(tshape, 0, braids::MACRO_OSC_SHAPE_LAST_ACCESSIBLE_FROM_META);
-		}
-		else settings.shape = shape;
-
-		// Setup oscillator from settings
-		osc.set_shape((braids::MacroOscillatorShape)settings.shape);
-
-		// Set timbre/modulation
-		float timbre = ktimbre->value + SCALE(kmodulation->value, -1.f, 1.f) * pptimbre->in;
-		float modulation = kcolor->value + ppcolor->in;
-		int16_t param1 = SCALE(CLIP(timbre, 0.0f, 1.0f), 0, INT16_MAX);
-		int16_t param2 = SCALE(CLIP(modulation, 0.0f, 1.0f), 0, INT16_MAX);
-		osc.set_parameters(param1, param2);
-
-		// Set pitch
-		float pitchV = pppitch->in * MIDI_TUNE_FACTOR + SCALE(kcoarse->value, -5.f, 3.f) + SCALE(kfine->value, -1.f / 12.f, 1.f / 12.f);
-		if (!settings.meta_modulation)
-			pitchV += fm;
-		if (lowCpu)
-			pitchV += lowcpu_pitch_fix;
-		int32_t pitch = (pitchV * 12.0 + 60) * 128;
-		//pitch += jitter_source.Render(settings.vco_drift);
-		pitch = CLIP(pitch, 0, 16383);
-		osc.set_pitch(pitch);
-
-		// TODO: add a sync input buffer (must be sample rate converted)
-		int16_t render_buffer[24];
-		osc.Render(syncint, render_buffer, 24);
-
-		// Signature waveshaping, decimation (not yet supported), and bit reduction (not yet supported)
-		//uint16_t signature = settings.signature * settings.signature * 4095;
-		const uint16_t signature = 0;
-		for (size_t i = 0; i < 24; i++) 
-		{	const int16_t bit_mask = 0xffff;
-			int16_t sample = render_buffer[i] & bit_mask;
-			int16_t warped = ws.Transform(sample);
-			render_buffer[i] = stmlib::Mix(sample, warped, signature);
-		}
-
-		if (lowCpu) 
-		{	for (int i = 0; i < 24; i++) 
-			{	dsp::Frame<1> f;
-				f.samples[0] = render_buffer[i] / 32768.0;
-				outputBuffer.push(f);
-			}
-		}
-		else {
-			// Sample rate convert
-			dsp::Frame<1> in[24];
-			for (int i = 0; i < 24; i++) {
-				in[i].samples[0] = render_buffer[i] / 32768.0;
-			}
-
-			int inLen = 24;
-			int outLen = outputBuffer.capacity();
-			src.process(in, &inLen, outputBuffer.endData(), &outLen);
-			outputBuffer.endIncr(outLen);
-		}
-	}
-
-	// Output
-	//if (!outputBuffer.empty()) 
-	{
-		dsp::Frame<1> f = outputBuffer.shift();
-		ppout->out = f.samples[0];
-	}
-}
-
-
-
-//---------------------------------------------
-// Tides
-CBitmap* Tides::panel = NULL;
-char* Tides::name = "Jvaar";
-int Tides::name_len = 0;
-char* Tides::vendorname = "ShredsNCharades";
-int Tides::vendorname_len = 0;
-Product* Tides::pproduct = NULL;
-const float Tides::kRootScaled[3] =
-{
-	0.125f,
-	2.0f,
-	130.81f
-};
-
-static const tides2::Ratio kRatios[20] = 
-{
-	{ 0.0625f, 16 },
-	{ 0.125f, 8 },
-	{ 0.1666666f, 6 },
-	{ 0.25f, 4 },
-	{ 0.3333333f, 3 },
-	{ 0.5f, 2 },
-	{ 0.6666666f, 3 },
-	{ 0.75f, 4 },
-	{ 0.8f, 5 },
-	{ 1, 1 },
-	{ 1, 1 },
-	{ 1.25f, 4 },
-	{ 1.3333333f, 3 },
-	{ 1.5f, 2 },
-	{ 2.0f, 1 },
-	{ 3.0f, 1 },
-	{ 4.0f, 1 },
-	{ 6.0f, 1 },
-	{ 8.0f, 1 },
-	{ 16.0f, 1 },
-};
-
-Tides::Tides(CFrame* pParent, CControlListener* listener, const SynthComm* psynth_comm, const int vvoice)
-: Module(CRect(0, 0, panel->getWidth(), panel->getHeight()), pParent, panel, psynth_comm, vvoice)
-{
-	PatchPoint* temp[6];
-
-	// Create The Knobs
-	kfreq = AddModuleKnob(40, 85, mcbits[knob_medium_white], SNC_MEDIUM_KNOB_IMAGES, false, listener);
-	kfreq->setValue(0.5);
-
-	kshape = AddModuleKnob(126.3, 85, mcbits[knob_medium_white], SNC_MEDIUM_KNOB_IMAGES, false, listener);
-	kshape->setValue(0.5);
-
-	kslope = AddModuleKnob(29, 142, mcbits[knob_small_white], SNC_SMALL_KNOB_IMAGES, false, listener);
-	kslope->setValue(0.5); 
-
-	ksmooth = AddModuleKnob(83, 131, mcbits[knob_small_white], SNC_SMALL_KNOB_IMAGES, false, listener);
-	ksmooth->setValue(0.5);
-
-	kshift = AddModuleKnob(136, 142, mcbits[knob_small_white], SNC_SMALL_KNOB_IMAGES, false, listener);
-	kshift->setValue(0.5);
-
-	kslopecv = AddModuleKnob(24, 186, mcbits[knob_tiny_black], SNC_TINY_KNOB_IMAGES, false, listener);
-	kslopecv->setValue(0.5);
-
-	kfreqcv = AddModuleKnob(53.6, 186, mcbits[knob_tiny_black], SNC_TINY_KNOB_IMAGES, false, listener);
-	kfreqcv->setValue(0.5);
-
-	ksmoothcv = AddModuleKnob(83, 186, mcbits[knob_tiny_black], SNC_TINY_KNOB_IMAGES, false, listener);
-	ksmoothcv->setValue(0.5);
-
-	kshapecv = AddModuleKnob(113, 186, mcbits[knob_tiny_black], SNC_TINY_KNOB_IMAGES, false, listener);
-	kshapecv->setValue(0.5);
-
-	kshiftcv = AddModuleKnob(142.6, 186, mcbits[knob_tiny_black], SNC_TINY_KNOB_IMAGES, false, listener);
-	kshiftcv->setValue(0.5);
-
-	// Create Patch Points
-	ppslope = AddPatchPoint(19, 218, ppTypeInput, ppbit, 0, listener);
-	ppfreq = AddPatchPoint(45, 218, ppTypeInput, ppbit, 0, listener);
-	ppvoct = AddPatchPoint(71, 218, ppTypeInput, ppbit, 0, listener);
-	ppsmooth = AddPatchPoint(97, 218, ppTypeInput, ppbit, 0, listener);
-	ppshape = AddPatchPoint(123, 218, ppTypeInput, ppbit, 0, listener);
-	ppshift = AddPatchPoint(148, 218, ppTypeInput, ppbit, 0, listener);
-
-	pptrig = AddPatchPoint(19, 252, ppTypeInput, ppbit, 0, listener);
-	ppclock = AddPatchPoint(45, 252, ppTypeInput, ppbit, 0, listener);
-	ppout1 = AddPatchPoint(71, 252, ppTypeOutput, ppbit, 0, listener);
-	ppout2 = AddPatchPoint(97, 252, ppTypeOutput, ppbit, 0, listener);
-	ppout3 = AddPatchPoint(123, 252, ppTypeOutput, ppbit, 0, listener);
-	ppout4 = AddPatchPoint(148, 252, ppTypeOutput, ppbit, 0, listener);
-
-	// Buttons
-	bfrange = AddKickButton(18, 36.6, mcbits[black_butbit_tiny], 2, listener);
-	bmode = AddKickButton(150, 36.6, mcbits[black_butbit_tiny], 2, listener);
-	bramp = AddKickButton(84, 89, mcbits[black_butbit_tiny], 2, listener);
-
-	lfrange = AddMovieBitmap(34, 36.6, mcbits[led_small_gyr], SNC_LED_GYR_IMAGES, listener);
-	lmode = AddMovieBitmap(134, 36.6, mcbits[led_small_gyr], SNC_LED_GYR_IMAGES, listener);
-	lramp = AddMovieBitmap(84, 75, mcbits[led_small_gyr], SNC_LED_GYR_IMAGES, listener);
-
-	lout1 = AddMovieBitmap(63, 238, mcbits[led_small_green], SNC_LED_GREEN_IMAGES, listener);
-	lout2 = AddMovieBitmap(89, 238, mcbits[led_small_green], SNC_LED_GREEN_IMAGES, listener);
-	lout3 = AddMovieBitmap(115, 238, mcbits[led_small_green], SNC_LED_GREEN_IMAGES, listener);
-	lout4 = AddMovieBitmap(141, 238, mcbits[led_small_green], SNC_LED_GREEN_IMAGES, listener);
-
-	// Put some screws
-	PutLeftScrews(screw1, screw2, listener);
-	PutRightScrews(screw3, screw4, listener);
-	InitPatchPoints(0.0);
-
-	poly_slope_generator.Init();
-	ratio_index_quantizer.Init();
-	onReset();
-	SetSampleRate(sample_rate);
-}
-
-void Tides::onReset()
-{	range = 1;
-	output_mode = tides2::OUTPUT_MODE_GATES;
-	ramp_mode = tides2::RAMP_MODE_LOOPING;
-
-	UpdateRangeMode(); UpdateOutPutMode(); UpdateRampMode();
-}
-
-// SoloRack calls this. It can't directly access rhe constructor since this is a Dll and pointers to constructor can not be easily achieved.
-Tides* Tides::Constructor(CFrame* pParent, CControlListener* listener, const SynthComm* psynth_comm, const int vvoice)
-{
-	return new Tides(pParent, listener, psynth_comm, vvoice);
-}
-
-void Tides::Initialize()
-{
-	panel = new CBitmap(dllskindir, NULL, "Tides.png");
-	name_len = strlen(name); vendorname_len = strlen(vendorname);
-}
-
-void Tides::End()
-{
-	panel->forget();
-	if (pproduct != NULL) delete pproduct;
-}
-
-const char* Tides::GetName()
-{
-	return name;
-}
-
-const int Tides::GetNameLen()
-{
-	return name_len;
-}
-
-const char* Tides::GetVendorName()
-{
-	return vendorname;
-}
-
-const int Tides::GetVendorNameLen()
-{
-	return vendorname_len;
-}
-
-const int Tides::GetType()
-{
-	return kModulator;
-}
-
-Product* Tides::Activate(char* fullname, char* email, char* serial)
-{	return NULL;
-}
-
-bool Tides::IsActive()
-{	return true;
-}
-
-Product* Tides::InstanceActivate(char* fullname, char* email, char* serial)
-{
-	return this->Activate(fullname, email, serial);
-}
-
-bool Tides::InstanceIsActive()
-{
-	return this->IsActive();
-}
-
-const char* Tides::GetProductName()
-{	return "ShredsNCharades Jvaar";
-}
-
-void Tides::UpdateRangeMode()
-{
-	range_mode = (range < 2) ? tides2::RANGE_CONTROL : tides2::RANGE_AUDIO;
-	lfrange->value = (float)(range+1) / 3.f;
-	lfrange->invalid();
-}
-void Tides::UpdateOutPutMode()
-{
-	poly_slope_generator.Reset();
-	lmode->value = (float)(output_mode+1) / 4.f;
-	lmode->invalid();
-}
-void Tides::UpdateRampMode()
-{
-	lramp->value = (float)(ramp_mode+1) / 3.f;
-	lramp->invalid();
-}
-
-void Tides::ValueChanged(CControl* pControl)
-{
-	// Switches
-	if (pControl == bfrange && bfrange->value >= 0.5f)
-	{
-		EnterProcessingCriticalSection();
-		range = (range + 1) % 3;
-		UpdateRangeMode();
-		LeaveProcessingCriticalSection();
-	}
-	else if (pControl == bmode && bmode->value >= 0.5f)
-	{
-		EnterProcessingCriticalSection();
-		output_mode = (tides2::OutputMode)((output_mode + 1) % 4);
-		UpdateOutPutMode();
-		LeaveProcessingCriticalSection();
-	}
-	else if (pControl == bramp && bramp->value >= 0.5f)
-	{
-		EnterProcessingCriticalSection();
-		ramp_mode = (tides2::RampMode)((ramp_mode + 1) % 3);
-		UpdateRampMode();
-		LeaveProcessingCriticalSection();
-	}
-}
-
-void Tides::SetSampleRate(float sr)
-{
-	Module::SetSampleRate(sr);
-	ramp_extractor.Init(sr, 40.f / sr);
-}
-
-int Tides::GetPresetSize()
-{
-	return GetControlsValuesSize() + sizeof(range) + sizeof(output_mode) + sizeof(ramp_mode);
-}
-
-void Tides::SavePreset(void* pdata, int size)
-{
-	char* pcdata = (char*)pdata;
-	SaveControlsValues(pcdata);
-	pcdata += GetControlsValuesSize();
-
-	// Save none-control data
-	*(int*)pcdata = range; pcdata += sizeof(range);
-	*(tides2::OutputMode*) pcdata = output_mode; pcdata += sizeof(output_mode);
-	*(tides2::RampMode*) pcdata = ramp_mode; pcdata += sizeof(ramp_mode);
-}
-
-void Tides::LoadPreset(void* pdata, int size, int version)
-{
-	char* pcdata = (char*)pdata;
-	int csize = GetControlsValuesSize();
-
-	LoadControlsValues(pcdata, csize);
-	pcdata += csize;
-
-	// Load none-control data
-	range = *(int*) pcdata; pcdata += sizeof(range);
-	output_mode = *(tides2::OutputMode*) pcdata; pcdata += sizeof(output_mode);
-	ramp_mode = *(tides2::RampMode*)pcdata; pcdata += sizeof(ramp_mode);
-
-	UpdateRangeMode(); UpdateOutPutMode(); UpdateRampMode();
-}
-
-const char* Tides::GetInfoURL()
-{
-	return "https://mutable-instruments.net/modules/tides/";
-}
-
-
-inline void Tides::ProcessSample()
-{
-	float ft;
-
-	// Input gates
-	trig_flags[frame] = stmlib::ExtractGateFlags(previous_trig_flag, pptrig->in >= HIGH_CV);
-	previous_trig_flag = trig_flags[frame];
-
-	clock_flags[frame] = stmlib::ExtractGateFlags(previous_clock_flag, ppclock->in >= HIGH_CV);
-	previous_clock_flag = clock_flags[frame];
-
-	// Process block
-	if (++frame >= tides2::kBlockSize) 
-	{	frame = 0;
-
-		ft = SCALE(kfreq->value, -48.f, 48.f) + 12.f * MIDI_TUNE_FACTOR * ppvoct->in;
-		float note = CLIP(ft, -96.f, 96.f);
-		ft = SCALE(kfreqcv->value, -1.f, 1.f) * ppfreq->in * 5.f * 12.f;
-		float fm = CLIP(ft, -96.f, 96.f);
-		float transposition = note + fm;
-
-		float ramp[tides2::kBlockSize];
-		float frequency;
-
-		if (ppclock->num_cables) 
-		{
-			if (must_reset_ramp_extractor) ramp_extractor.Reset();
-
-			tides2::Ratio r = ratio_index_quantizer.Lookup(kRatios, 0.5f + transposition * 0.0105f, 20);
-			frequency = ramp_extractor.Process(
-				range_mode == tides2::RANGE_AUDIO,
-				range_mode == tides2::RANGE_AUDIO && ramp_mode == tides2::RAMP_MODE_AR,
-				r,
-				clock_flags,
-				ramp,
-				tides2::kBlockSize);
-			must_reset_ramp_extractor = false;
-		}
-		else 
-		{	frequency = kRootScaled[range] / sample_rate * stmlib::SemitonesToRatio(transposition);
-			must_reset_ramp_extractor = true;
-		}
-
-		// Get parameters
-		ft = kslope->value + dsp::cubic(SCALE(kslopecv->value,-1.f,1.f)) * ppslope->in;
-		float slope = CLIP(ft,0.f, 1.f);
-		ft = kshape->value + dsp::cubic(SCALE(kshapecv->value, -1.f, 1.f)) * ppshape->in;
-		float shape = CLIP(ft, 0.f, 1.f);
-		ft = ksmooth->value + dsp::cubic(SCALE(ksmoothcv->value, -1.f, 1.f)) * ppsmooth->in;
-		float smoothness = CLIP(ft, 0.f, 1.f);
-		ft = kshift->value + dsp::cubic(SCALE(kshiftcv->value, -1.f, 1.f)) * ppshift->in;
-		float shift = CLIP(ft, 0.f, 1.f);
-
-		// Render generator
-		poly_slope_generator.Render(
-			ramp_mode,
-			output_mode,
-			range_mode,
-			frequency,
-			slope,
-			shape,
-			smoothness,
-			shift,
-			trig_flags,
-			!(pptrig->num_cables) && ppclock->num_cables ? ramp : NULL,
-			out,
-			tides2::kBlockSize);
-	}
-
-	// Outputs
-	ft = out[frame].channel[0]; ppout1->out = ft;
-	lout1->value = ft;
-
-	ft = out[frame].channel[1]; ppout2->out = ft;
-	lout2->value = ft;
-
-	ft = out[frame].channel[2]; ppout3->out = ft;
-	lout3->value = ft;
-
-	ft = out[frame].channel[3]; ppout4->out = ft;
-	lout4->value = ft;
-}
-
-
-
-
-//---------------------------------------------
-// Branches
-CBitmap* Branches::panel = NULL;
-char* Branches::name = "Shaakhaon";
-int Branches::name_len = 0;
-char* Branches::vendorname = "ShredsNCharades";
-int Branches::vendorname_len = 0;
-Product* Branches::pproduct = NULL;
-
-
-Branches::Branches(CFrame* pParent, CControlListener* listener, const SynthComm* psynth_comm, const int vvoice)
-	: Module(CRect(0, 0, panel->getWidth(), panel->getHeight()), pParent, panel, psynth_comm, vvoice)
-{
-
-	// Create The Knobs
-	kthresh[0] = AddModuleKnob(36, 69, mcbits[knob_small_red], SNC_SMALL_KNOB_IMAGES, false, listener);
-	kthresh[0]->setValue(0.5);
-
-	kthresh[1] = AddModuleKnob(36, 189, mcbits[knob_small_green], SNC_SMALL_KNOB_IMAGES, false, listener);
-	kthresh[1]->setValue(0.5);
-
-	// Create Patch Points
-	ppin[0] = AddPatchPoint(17, 102, ppTypeInput, ppbit, 0, listener);
-	pp[0] = AddPatchPoint(53, 102, ppTypeInput, ppbit, 0, listener);
-	ppouta[0] = AddPatchPoint(17, 131, ppTypeOutput, ppbit, 0, listener);
-	ppoutb[0] = AddPatchPoint(53, 131, ppTypeOutput, ppbit, 0, listener);
-
-	ppin[1] = AddPatchPoint(17, 222, ppTypeInput, ppbit, 0, listener);
-	pp[1] = AddPatchPoint(53, 222, ppTypeInput, ppbit, 0, listener);
-	ppouta[1] = AddPatchPoint(17, 251, ppTypeOutput, ppbit, 0, listener);
-	ppoutb[1] = AddPatchPoint(53, 251, ppTypeOutput, ppbit, 0, listener);
-
-	// Buttons
-	bmode[0] = AddOnOffButton(60, 50, mcbits[black_butbit_tiny], 2, listener, COnOffButton::kPostListenerUpdate);
-	bmode[1] = AddOnOffButton(60, 170, mcbits[black_butbit_tiny], 2, listener, COnOffButton::kPostListenerUpdate);
-
-	lout[0] = AddMovieBitmap(35, 131, mcbits[led_small_gyr], SNC_LED_GYR_IMAGES, listener);
-	lout[1] = AddMovieBitmap(35, 251, mcbits[led_small_gyr], SNC_LED_GYR_IMAGES, listener);
-
-	// Put some screws
-	PutLeftScrews(screw1, screw2, listener);
-	InitPatchPoints(0.0);
-
-	ValueChanged(bmode[0]); ValueChanged(bmode[1]);
-}
-
-void Branches::onReset()
-{
-}
-
-// SoloRack calls this. It can't directly access rhe constructor since this is a Dll and pointers to constructor can not be easily achieved.
-Branches* Branches::Constructor(CFrame* pParent, CControlListener* listener, const SynthComm* psynth_comm, const int vvoice)
-{
-	return new Branches(pParent, listener, psynth_comm, vvoice);
-}
-
-void Branches::Initialize()
-{
-	panel = new CBitmap(dllskindir, NULL, "Branches.png");
-	name_len = strlen(name); vendorname_len = strlen(vendorname);
-}
-
-void Branches::End()
-{
-	panel->forget();
-	if (pproduct != NULL) delete pproduct;
-}
-
-const char* Branches::GetName()
-{
-	return name;
-}
-
-const int Branches::GetNameLen()
-{
-	return name_len;
-}
-
-const char* Branches::GetVendorName()
-{
-	return vendorname;
-}
-
-const int Branches::GetVendorNameLen()
-{
-	return vendorname_len;
-}
-
-const int Branches::GetType()
-{
-	return kClockGate;
-}
-
-Product* Branches::Activate(char* fullname, char* email, char* serial)
-{
-	return NULL;
-}
-
-bool Branches::IsActive()
-{
-	return true;
-}
-
-Product* Branches::InstanceActivate(char* fullname, char* email, char* serial)
-{
-	return this->Activate(fullname, email, serial);
-}
-
-bool Branches::InstanceIsActive()
-{
-	return this->IsActive();
-}
-
-const char* Branches::GetProductName()
-{
-	return "ShredsNCharades Shaakhaon";
-}
-
-
-void Branches::ValueChanged(CControl* pControl)
-{
-	if (pControl == bmode[0])
-	{
-		modes[0] = bmode[0]->value >= 0.5;
-		UpdateOutputs(ppin[0]->in >= HIGH_CV,0);
-	}
-	else if (pControl == bmode[1])
-	{
-		modes[1] = bmode[1]->value >= 0.5;
-		UpdateOutputs(ppin[1]->in >= HIGH_CV,1);
-	}
-}
-
-//void Branches::SetSampleRate(float sr)
-//{
-//	Module::SetSampleRate(sr);
-//	ramp_extractor.Init(sr, 40.f / sr);
-//}
-
-int Branches::GetPresetSize()
-{
-	return GetControlsValuesSize();
-}
-
-void Branches::SavePreset(void* pdata, int size)
-{
-
-}
-
-void Branches::LoadPreset(void* pdata, int size, int version)
-{
-
-}
-
-const char* Branches::GetInfoURL()
-{
-	return "https://mutable-instruments.net/modules/Branches/";
-}
-
-inline void Branches::UpdateOutputs(bool gate, int i)
-{	// Output gate logic
-	bool gateA = !outcomes[i] && (modes[i] ? true : gate);
-	bool gateB = outcomes[i] && (modes[i] ? true : gate);
-
-	if (gateA)
-	{
-		ppouta[i]->out = 1.0; ppoutb[i]->out = 0.0; lout[i]->value = 1.0;
-	}
-	else if (gateB)
-	{
-		ppouta[i]->out = 0.0; ppoutb[i]->out = 1.0; lout[i]->value = 0.3333;
-	}
-	else
-	{
-		ppouta[i]->out = 0.0; ppoutb[i]->out = 0.0; lout[i]->value = 0.0;
-	}
-}
-
-inline void Branches::ProcessSample()
-{
-	int i;
-
-	for (i = 0; i < 2; i++)
-	{
-		bool gate = ppin[i]->in >= HIGH_CV;
-		if (gate >= HIGH_CV && last_gate[i] < HIGH_CV)
-		{
-			// Trigger
-			float threshold = kthresh[i]->value + 0.5 * pp[i]->in;
-			bool toss = (PMRAND() < threshold);
-			if (modes[i])
-			{	// toggle modes
-				if (toss) outcomes[i] ^= true;
-			}
-			else
-			{	// direct modes
-				outcomes[i] = toss;
-			}
-
-			UpdateOutputs(gate, i);
-		}
-		else if (gate < HIGH_CV && last_gate[i] >= HIGH_CV) UpdateOutputs(gate, i);
-		
-		last_gate[i] = gate;
-	}
-
-}
