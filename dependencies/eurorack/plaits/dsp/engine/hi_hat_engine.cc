@@ -33,9 +33,10 @@ namespace plaits {
 
 using namespace stmlib;
 
-void HiHatEngine::Init(BufferAllocator* allocator) {
-  hi_hat_1_.Init();
-  hi_hat_2_.Init();
+void HiHatEngine::Init(BufferAllocator* allocator, float sr) {
+  a0 = (440.0f / 8.0f) / sr;
+  hi_hat_1_.Init(sr);
+  hi_hat_2_.Init(sr);
   temp_buffer_[0] = allocator->Allocate<float>(kMaxBlockSize);
   temp_buffer_[1] = allocator->Allocate<float>(kMaxBlockSize);
 }
@@ -50,7 +51,7 @@ void HiHatEngine::Render(
     float* aux,
     size_t size,
     bool* already_enveloped) {
-  const float f0 = NoteToFrequency(parameters.note);
+  const float f0 = NoteToFrequency(parameters.note,a0);
   
   hi_hat_1_.Render(
       parameters.trigger & TRIGGER_UNPATCHED,

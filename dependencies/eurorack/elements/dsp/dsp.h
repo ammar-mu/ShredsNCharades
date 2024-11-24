@@ -35,7 +35,7 @@
 
 namespace elements {
   
-static const float kSampleRate = 32000.0f;
+//static const float kSampleRate = 32000.0f;		// static const removed by Ammar
 const size_t kMaxBlockSize = 16;
 
 }  // namespace elements

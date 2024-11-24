@@ -35,9 +35,10 @@ namespace plaits {
 using namespace std;
 using namespace stmlib;
 
-void BassDrumEngine::Init(BufferAllocator* allocator) {
-  analog_bass_drum_.Init();
-  synthetic_bass_drum_.Init();
+void BassDrumEngine::Init(BufferAllocator* allocator, float sr) {
+  a0 = (440.0f / 8.0f) / sr;
+  analog_bass_drum_.Init(sr);
+  synthetic_bass_drum_.Init(sr);
   overdrive_.Init();
 }
 
@@ -51,7 +52,7 @@ void BassDrumEngine::Render(
     float* aux,
     size_t size,
     bool* already_enveloped) {
-  const float f0 = NoteToFrequency(parameters.note);
+  const float f0 = NoteToFrequency(parameters.note,a0);
   
   const float attack_fm_amount = min(parameters.harmonics * 4.0f, 1.0f);
   const float self_fm_amount = max(min(parameters.harmonics * 4.0f - 1.0f, 1.0f), 0.0f);

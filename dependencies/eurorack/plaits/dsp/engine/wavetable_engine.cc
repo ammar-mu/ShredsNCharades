@@ -37,7 +37,8 @@ namespace plaits {
 using namespace std;
 using namespace stmlib;
 
-void WavetableEngine::Init(BufferAllocator* allocator) {
+void WavetableEngine::Init(BufferAllocator* allocator, float sr) {
+  a0 = (440.0f / 8.0f) / sr;
   phase_ = 0.0f;
 
   x_lp_ = 0.0f;
@@ -91,7 +92,7 @@ void WavetableEngine::Render(
     float* aux,
     size_t size,
     bool* already_enveloped) {
-  const float f0 = NoteToFrequency(parameters.note);
+  const float f0 = NoteToFrequency(parameters.note,a0);
   
   ONE_POLE(x_pre_lp_, parameters.timbre * 6.9999f, 0.2f);
   ONE_POLE(y_pre_lp_, parameters.morph * 6.9999f, 0.2f);

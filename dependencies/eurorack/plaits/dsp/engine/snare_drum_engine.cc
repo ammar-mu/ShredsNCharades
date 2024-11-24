@@ -35,9 +35,10 @@ namespace plaits {
 using namespace std;
 using namespace stmlib;
 
-void SnareDrumEngine::Init(BufferAllocator* allocator) {
-  analog_snare_drum_.Init();
-  synthetic_snare_drum_.Init();
+void SnareDrumEngine::Init(BufferAllocator* allocator, float sr) {
+  a0 = (440.0f / 8.0f) / sr;
+  analog_snare_drum_.Init(sr);
+  synthetic_snare_drum_.Init(sr);
 }
 
 void SnareDrumEngine::Reset() {
@@ -50,7 +51,7 @@ void SnareDrumEngine::Render(
     float* aux,
     size_t size,
     bool* already_enveloped) {
-  const float f0 = NoteToFrequency(parameters.note);
+  const float f0 = NoteToFrequency(parameters.note,a0);
   
   analog_snare_drum_.Render(
       parameters.trigger & TRIGGER_UNPATCHED,

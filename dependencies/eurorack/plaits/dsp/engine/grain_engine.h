@@ -43,7 +43,7 @@ class GrainEngine : public Engine {
   GrainEngine() { }
   ~GrainEngine() { }
   
-  virtual void Init(stmlib::BufferAllocator* allocator);
+  virtual void Init(stmlib::BufferAllocator* allocator, float sr);
   virtual void Reset();
   virtual void Render(const EngineParameters& parameters,
       float* out,
@@ -58,6 +58,7 @@ class GrainEngine : public Engine {
   stmlib::OnePole dc_blocker_[2];
   
   float grain_balance_;
+  float a0;
   
   DISALLOW_COPY_AND_ASSIGN(GrainEngine);
 };

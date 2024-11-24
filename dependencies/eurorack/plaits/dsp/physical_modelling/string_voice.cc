@@ -40,9 +40,9 @@ namespace plaits {
 using namespace std;
 using namespace stmlib;
 
-void StringVoice::Init(BufferAllocator* allocator) {
+void StringVoice::Init(BufferAllocator* allocator, float sr) {
   excitation_filter_.Init();
-  string_.Init(allocator);
+  string_.Init(allocator,sr);
   remaining_noise_samples_ = 0;
 }
 

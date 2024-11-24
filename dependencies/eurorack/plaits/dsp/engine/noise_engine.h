@@ -41,7 +41,7 @@ class NoiseEngine : public Engine {
   NoiseEngine() { }
   ~NoiseEngine() { }
   
-  virtual void Init(stmlib::BufferAllocator* allocator);
+  virtual void Init(stmlib::BufferAllocator* allocator, float sr);
   virtual void Reset();
   virtual void Render(const EngineParameters& parameters,
       float* out,
@@ -60,6 +60,7 @@ class NoiseEngine : public Engine {
   float previous_mode_;
   
   float* temp_buffer_;
+  float a0;
   
   DISALLOW_COPY_AND_ASSIGN(NoiseEngine);
 };

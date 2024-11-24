@@ -40,7 +40,7 @@ class SnareDrumEngine : public Engine {
   SnareDrumEngine() { }
   ~SnareDrumEngine() { }
   
-  virtual void Init(stmlib::BufferAllocator* allocator);
+  virtual void Init(stmlib::BufferAllocator* allocator, float sr);
   virtual void Reset();
   virtual void Render(const EngineParameters& parameters,
       float* out,
@@ -51,6 +51,7 @@ class SnareDrumEngine : public Engine {
  private:
   AnalogSnareDrum analog_snare_drum_;
   SyntheticSnareDrum synthetic_snare_drum_;
+  float a0;
   
   DISALLOW_COPY_AND_ASSIGN(SnareDrumEngine);
 };

@@ -35,14 +35,17 @@ namespace plaits {
 using namespace std;
 using namespace stmlib;
 
-void SpeechEngine::Init(BufferAllocator* allocator) {
-  sam_speech_synth_.Init();
-  naive_speech_synth_.Init();
+void SpeechEngine::Init(BufferAllocator* allocator, float sr) {
+  //sample_rate = 48000;
+  sample_rate = sr;
+  a0 = (440.0f / 8.0f) / sample_rate;
+  sam_speech_synth_.Init(sample_rate);
+  naive_speech_synth_.Init(sample_rate);
   lpc_speech_synth_word_bank_.Init(
       word_banks_,
       LPC_SPEECH_SYNTH_NUM_WORD_BANKS,
       allocator);
-  lpc_speech_synth_controller_.Init(&lpc_speech_synth_word_bank_);
+  lpc_speech_synth_controller_.Init(&lpc_speech_synth_word_bank_,sample_rate);
   word_bank_quantizer_.Init();
   
   temp_buffer_[0] = allocator->Allocate<float>(kMaxBlockSize);
@@ -62,7 +65,7 @@ void SpeechEngine::Render(
     float* aux,
     size_t size,
     bool* already_enveloped) {
-  const float f0 = NoteToFrequency(parameters.note);
+  const float f0 = NoteToFrequency(parameters.note,a0);
   
   const float group = parameters.harmonics * 6.0f;
   

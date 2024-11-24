@@ -37,7 +37,8 @@ namespace plaits {
 using namespace std;
 using namespace stmlib;
 
-void VirtualAnalogEngine::Init(BufferAllocator* allocator) {
+void VirtualAnalogEngine::Init(BufferAllocator* allocator, float sr) {
+  a0 = (440.0f / 8.0f) / sr;
   primary_.Init();
   auxiliary_.Init();
   sync_.Init();
@@ -172,12 +173,12 @@ void VirtualAnalogEngine::Render(
   
   const float sync_amount = parameters.timbre * parameters.timbre;
   const float auxiliary_detune = ComputeDetuning(parameters.harmonics);
-  const float primary_f = NoteToFrequency(parameters.note);
-  const float auxiliary_f = NoteToFrequency(parameters.note + auxiliary_detune);
+  const float primary_f = NoteToFrequency(parameters.note,a0);
+  const float auxiliary_f = NoteToFrequency(parameters.note + auxiliary_detune,a0);
   const float primary_sync_f = NoteToFrequency(
-      parameters.note + sync_amount * 48.0f);
+      parameters.note + sync_amount * 48.0f,a0);
   const float auxiliary_sync_f = NoteToFrequency(
-      parameters.note + auxiliary_detune + sync_amount * 48.0f);
+      parameters.note + auxiliary_detune + sync_amount * 48.0f,a0);
 
   float shape = parameters.morph * 1.5f;
   CONSTRAIN(shape, 0.0f, 1.0f);
@@ -215,7 +216,7 @@ void VirtualAnalogEngine::Render(
   CONSTRAIN(saw_gain, 0.02f, 1.0f);
   
   const float square_sync_f = NoteToFrequency(
-      parameters.note + square_sync_ratio);
+      parameters.note + square_sync_ratio,a0);
   
   sync_.Render<true>(
       primary_f, square_sync_f, square_pw, 1.0f, temp_buffer_, size);

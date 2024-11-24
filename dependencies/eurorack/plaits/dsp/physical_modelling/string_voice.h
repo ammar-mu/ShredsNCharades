@@ -41,7 +41,7 @@ class StringVoice {
   StringVoice() { }
   ~StringVoice() { }
   
-  void Init(stmlib::BufferAllocator* allocator);
+  void Init(stmlib::BufferAllocator* allocator, float sr);
   void Reset();
   void Render(
       bool sustain,

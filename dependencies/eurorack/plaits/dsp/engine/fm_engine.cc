@@ -36,7 +36,8 @@ namespace plaits {
 
 using namespace stmlib;
 
-void FMEngine::Init(BufferAllocator* allocator) {
+void FMEngine::Init(BufferAllocator* allocator, float sr) {
+  a0 = (440.0f / 8.0f) / sr;
   carrier_phase_ = 0;
   modulator_phase_ = 0;
   sub_phase_ = 0;
@@ -113,7 +114,7 @@ void FMEngine::Render(
       128.0f);
   
   float modulator_note = note + ratio;
-  float target_modulator_frequency = NoteToFrequency(modulator_note);
+  float target_modulator_frequency = NoteToFrequency(modulator_note,a0);
   CONSTRAIN(target_modulator_frequency, 0.0f, 0.5f);
 
   // Reduce the maximum FM index for high pitched notes, to prevent aliasing.
@@ -122,7 +123,7 @@ void FMEngine::Render(
   hf_taming *= hf_taming;
   
   ParameterInterpolator carrier_frequency(
-      &previous_carrier_frequency_, NoteToFrequency(note), size);
+      &previous_carrier_frequency_, NoteToFrequency(note,a0), size);
   ParameterInterpolator modulator_frequency(
       &previous_modulator_frequency_, target_modulator_frequency, size);
   ParameterInterpolator amount_modulation(

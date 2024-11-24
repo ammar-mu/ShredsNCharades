@@ -46,7 +46,7 @@ class NaiveSpeechSynth {
   NaiveSpeechSynth() { }
   ~NaiveSpeechSynth() { }
 
-  void Init();
+  void Init(float sr);
   
   void Render(
       bool click,
@@ -74,8 +74,11 @@ class NaiveSpeechSynth {
   
   stmlib::Svf filter_[kNaiveSpeechNumFormants];
   stmlib::Svf pulse_coloration_;
+  float sample_rate;
 
   static Phoneme phonemes_[kNaiveSpeechNumPhonemes][kNaiveSpeechNumRegisters];
+
+  float a0;     // moved from global by ammar to supported variable sample rates
   
   DISALLOW_COPY_AND_ASSIGN(NaiveSpeechSynth);
 };

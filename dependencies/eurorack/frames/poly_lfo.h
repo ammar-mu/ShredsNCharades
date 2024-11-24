@@ -69,10 +69,13 @@ class PolyLfo {
   inline uint8_t level(uint8_t index) const {
     return level_[index];
   }
+  inline uint16_t level16(uint8_t index) const {
+    return level16_[index];
+  }
   inline const uint8_t* color() const {
     return &color_[0];
   }
-  inline uint16_t dac_code(uint8_t index) const {
+  inline const uint16_t dac_code(uint8_t index) const {
     return dac_code_[index];
   }
   static uint32_t FrequencyToPhaseIncrement(int32_t frequency);
@@ -88,6 +91,7 @@ class PolyLfo {
   int16_t value_[kNumChannels];
   uint32_t phase_[kNumChannels];
   uint8_t level_[kNumChannels];
+  uint16_t level16_[kNumChannels];
   uint16_t dac_code_[kNumChannels];
   uint8_t color_[3];
 

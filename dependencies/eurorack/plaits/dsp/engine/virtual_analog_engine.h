@@ -42,7 +42,7 @@ class VirtualAnalogEngine : public Engine {
   VirtualAnalogEngine() { }
   ~VirtualAnalogEngine() { }
   
-  virtual void Init(stmlib::BufferAllocator* allocator);
+  virtual void Init(stmlib::BufferAllocator* allocator, float sr);
   virtual void Reset();
   virtual void Render(const EngineParameters& parameters,
       float* out,
@@ -62,6 +62,7 @@ class VirtualAnalogEngine : public Engine {
   float auxiliary_amount_;
   float xmod_amount_;
   float* temp_buffer_;
+  float a0;
   
   DISALLOW_COPY_AND_ASSIGN(VirtualAnalogEngine);
 };

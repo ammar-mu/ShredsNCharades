@@ -50,6 +50,24 @@
     <Filter Include="Source Files\Stages">
       <UniqueIdentifier>{df6afb7a-8b54-4d54-8930-b3e3d092d182}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\Elements">
+      <UniqueIdentifier>{99b15cc9-4cbe-43c8-940c-3d3711e567c8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Elements\dsp">
+      <UniqueIdentifier>{81744a5f-1408-4ab2-a19c-959cde9be161}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Marbles">
+      <UniqueIdentifier>{88b1c004-cd85-4373-a19f-e252e50f45f9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Frames">
+      <UniqueIdentifier>{489c9208-aaa2-4fa6-b706-8751542dedf6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Streams">
+      <UniqueIdentifier>{09677e3f-ee13-4822-882b-041acf1d17d0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Plaits">
+      <UniqueIdentifier>{147aefac-76f2-4673-bfb7-786b32f50dfd}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\source\Exports.cpp">
@@ -165,6 +183,171 @@
     </ClCompile>
     <ClCompile Include="..\source\ShredsNCharades.cpp">
       <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\dependencies\eurorack\elements\dsp\ominous_voice.cc">
+      <Filter>Source Files\Elements\dsp</Filter>
+    </ClCompile>
+    <ClCompile Include="..\dependencies\eurorack\elements\dsp\multistage_envelope.cc">
+      <Filter>Source Files\Elements\dsp</Filter>
+    </ClCompile>
+    <ClCompile Include="..\dependencies\eurorack\elements\elements_resources.cc">
+      <Filter>Source Files\Elements</Filter>
+    </ClCompile>
+    <ClCompile Include="..\dependencies\eurorack\elements\dsp\elements_part.cc">
+      <Filter>Source Files\Elements\dsp</Filter>
+    </ClCompile>
+    <ClCompile Include="..\dependencies\eurorack\elements\dsp\voice.cc">
+      <Filter>Source Files\Elements\dsp</Filter>
+    </ClCompile>
+    <ClCompile Include="..\dependencies\eurorack\elements\dsp\exciter.cc">
+      <Filter>Source Files\Elements\dsp</Filter>
+    </ClCompile>
+    <ClCompile Include="..\dependencies\eurorack\elements\dsp\elements_resonator.cc">
+      <Filter>Source Files\Elements\dsp</Filter>
+    </ClCompile>
+    <ClCompile Include="..\dependencies\eurorack\elements\dsp\tube.cc">
+      <Filter>Source Files\Elements\dsp</Filter>
+    </ClCompile>
+    <ClCompile Include="..\dependencies\eurorack\elements\dsp\elements_string.cc">
+      <Filter>Source Files\Elements\dsp</Filter>
+    </ClCompile>
+    <ClCompile Include="..\dependencies\eurorack\marbles\random\t_generator.cc">
+      <Filter>Source Files\Marbles</Filter>
+    </ClCompile>
+    <ClCompile Include="..\dependencies\eurorack\marbles\marbles_resources.cc">
+      <Filter>Source Files\Marbles</Filter>
+    </ClCompile>
+    <ClCompile Include="..\dependencies\eurorack\marbles\ramp\marbles_ramp_extractor.cc">
+      <Filter>Source Files\Marbles</Filter>
+    </ClCompile>
+    <ClCompile Include="..\dependencies\eurorack\marbles\random\quantizer.cc">
+      <Filter>Source Files\Marbles</Filter>
+    </ClCompile>
+    <ClCompile Include="..\dependencies\eurorack\marbles\random\x_y_generator.cc">
+      <Filter>Source Files\Marbles</Filter>
+    </ClCompile>
+    <ClCompile Include="..\dependencies\eurorack\marbles\random\output_channel.cc">
+      <Filter>Source Files\Marbles</Filter>
+    </ClCompile>
+    <ClCompile Include="..\dependencies\eurorack\marbles\random\lag_processor.cc">
+      <Filter>Source Files\Marbles</Filter>
+    </ClCompile>
+    <ClCompile Include="..\dependencies\eurorack\frames\keyframer.cc">
+      <Filter>Source Files\Frames</Filter>
+    </ClCompile>
+    <ClCompile Include="..\dependencies\eurorack\frames\frames_resources.cc">
+      <Filter>Source Files\Frames</Filter>
+    </ClCompile>
+    <ClCompile Include="..\dependencies\eurorack\frames\poly_lfo.cc">
+      <Filter>Source Files\Frames</Filter>
+    </ClCompile>
+    <ClCompile Include="..\dependencies\eurorack\streams\processor.cc">
+      <Filter>Source Files\Streams</Filter>
+    </ClCompile>
+    <ClCompile Include="..\dependencies\eurorack\streams\compressor.cc">
+      <Filter>Source Files\Streams</Filter>
+    </ClCompile>
+    <ClCompile Include="..\dependencies\eurorack\streams\streams_resources.cc">
+      <Filter>Source Files\Streams</Filter>
+    </ClCompile>
+    <ClCompile Include="..\dependencies\eurorack\streams\envelope.cc">
+      <Filter>Source Files\Streams</Filter>
+    </ClCompile>
+    <ClCompile Include="..\dependencies\eurorack\streams\follower.cc">
+      <Filter>Source Files\Streams</Filter>
+    </ClCompile>
+    <ClCompile Include="..\dependencies\eurorack\streams\svf.cc">
+      <Filter>Source Files\Streams</Filter>
+    </ClCompile>
+    <ClCompile Include="..\dependencies\eurorack\streams\lorenz_generator.cc">
+      <Filter>Source Files\Streams</Filter>
+    </ClCompile>
+    <ClCompile Include="..\dependencies\eurorack\streams\vactrol.cc">
+      <Filter>Source Files\Streams</Filter>
+    </ClCompile>
+    <ClCompile Include="..\dependencies\eurorack\plaits\dsp\plaits_voice.cc">
+      <Filter>Source Files\Plaits</Filter>
+    </ClCompile>
+    <ClCompile Include="..\dependencies\eurorack\plaits\dsp\engine\additive_engine.cc">
+      <Filter>Source Files\Plaits</Filter>
+    </ClCompile>
+    <ClCompile Include="..\dependencies\eurorack\plaits\plaits_resources.cc">
+      <Filter>Source Files\Plaits</Filter>
+    </ClCompile>
+    <ClCompile Include="..\dependencies\eurorack\plaits\dsp\engine\bass_drum_engine.cc">
+      <Filter>Source Files\Plaits</Filter>
+    </ClCompile>
+    <ClCompile Include="..\dependencies\eurorack\plaits\dsp\engine\chord_engine.cc">
+      <Filter>Source Files\Plaits</Filter>
+    </ClCompile>
+    <ClCompile Include="..\dependencies\eurorack\plaits\dsp\engine\fm_engine.cc">
+      <Filter>Source Files\Plaits</Filter>
+    </ClCompile>
+    <ClCompile Include="..\dependencies\eurorack\plaits\dsp\engine\grain_engine.cc">
+      <Filter>Source Files\Plaits</Filter>
+    </ClCompile>
+    <ClCompile Include="..\dependencies\eurorack\plaits\dsp\engine\hi_hat_engine.cc">
+      <Filter>Source Files\Plaits</Filter>
+    </ClCompile>
+    <ClCompile Include="..\dependencies\eurorack\plaits\dsp\engine\modal_engine.cc">
+      <Filter>Source Files\Plaits</Filter>
+    </ClCompile>
+    <ClCompile Include="..\dependencies\eurorack\plaits\dsp\physical_modelling\modal_voice.cc">
+      <Filter>Source Files\Plaits</Filter>
+    </ClCompile>
+    <ClCompile Include="..\dependencies\eurorack\plaits\dsp\physical_modelling\plaits_resonator.cc">
+      <Filter>Source Files\Plaits</Filter>
+    </ClCompile>
+    <ClCompile Include="..\dependencies\eurorack\plaits\dsp\engine\noise_engine.cc">
+      <Filter>Source Files\Plaits</Filter>
+    </ClCompile>
+    <ClCompile Include="..\dependencies\eurorack\plaits\dsp\engine\particle_engine.cc">
+      <Filter>Source Files\Plaits</Filter>
+    </ClCompile>
+    <ClCompile Include="..\dependencies\eurorack\plaits\dsp\engine\snare_drum_engine.cc">
+      <Filter>Source Files\Plaits</Filter>
+    </ClCompile>
+    <ClCompile Include="..\dependencies\eurorack\plaits\dsp\engine\speech_engine.cc">
+      <Filter>Source Files\Plaits</Filter>
+    </ClCompile>
+    <ClCompile Include="..\dependencies\eurorack\plaits\dsp\speech\lpc_speech_synth.cc">
+      <Filter>Source Files\Plaits</Filter>
+    </ClCompile>
+    <ClCompile Include="..\dependencies\eurorack\plaits\dsp\speech\lpc_speech_synth_controller.cc">
+      <Filter>Source Files\Plaits</Filter>
+    </ClCompile>
+    <ClCompile Include="..\dependencies\eurorack\plaits\dsp\speech\naive_speech_synth.cc">
+      <Filter>Source Files\Plaits</Filter>
+    </ClCompile>
+    <ClCompile Include="..\dependencies\eurorack\plaits\dsp\speech\sam_speech_synth.cc">
+      <Filter>Source Files\Plaits</Filter>
+    </ClCompile>
+    <ClCompile Include="..\dependencies\eurorack\plaits\dsp\speech\lpc_speech_synth_words.cc">
+      <Filter>Source Files\Plaits</Filter>
+    </ClCompile>
+    <ClCompile Include="..\dependencies\eurorack\plaits\dsp\speech\lpc_speech_synth_phonemes.cc">
+      <Filter>Source Files\Plaits</Filter>
+    </ClCompile>
+    <ClCompile Include="..\dependencies\eurorack\plaits\dsp\engine\string_engine.cc">
+      <Filter>Source Files\Plaits</Filter>
+    </ClCompile>
+    <ClCompile Include="..\dependencies\eurorack\plaits\dsp\physical_modelling\string_voice.cc">
+      <Filter>Source Files\Plaits</Filter>
+    </ClCompile>
+    <ClCompile Include="..\dependencies\eurorack\plaits\dsp\physical_modelling\plaits_string.cc">
+      <Filter>Source Files\Plaits</Filter>
+    </ClCompile>
+    <ClCompile Include="..\dependencies\eurorack\plaits\dsp\engine\swarm_engine.cc">
+      <Filter>Source Files\Plaits</Filter>
+    </ClCompile>
+    <ClCompile Include="..\dependencies\eurorack\plaits\dsp\engine\virtual_analog_engine.cc">
+      <Filter>Source Files\Plaits</Filter>
+    </ClCompile>
+    <ClCompile Include="..\dependencies\eurorack\plaits\dsp\engine\waveshaping_engine.cc">
+      <Filter>Source Files\Plaits</Filter>
+    </ClCompile>
+    <ClCompile Include="..\dependencies\eurorack\plaits\dsp\engine\wavetable_engine.cc">
+      <Filter>Source Files\Plaits</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

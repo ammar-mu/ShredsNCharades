@@ -35,7 +35,8 @@ namespace plaits {
 using namespace std;
 using namespace stmlib;
 
-void SwarmEngine::Init(BufferAllocator* allocator) {
+void SwarmEngine::Init(BufferAllocator* allocator, float sr) {
+  a0 = (440.0f / 8.0f) / sr;
   const float n = (kNumSwarmVoices - 1) / 2;
   for (int i = 0; i < kNumSwarmVoices; ++i) {
     float rank = (static_cast<float>(i) - n) / n;
@@ -51,9 +52,9 @@ void SwarmEngine::Render(
     float* aux,
     size_t size,
     bool* already_enveloped) {
-  const float f0 = NoteToFrequency(parameters.note);
+  const float f0 = NoteToFrequency(parameters.note,a0);
   const float control_rate = static_cast<float>(size);
-  const float density = NoteToFrequency(parameters.timbre * 120.0f) * \
+  const float density = NoteToFrequency(parameters.timbre * 120.0f,a0) * \
       0.025f * control_rate;
   const float spread = parameters.harmonics * parameters.harmonics * \
       parameters.harmonics;

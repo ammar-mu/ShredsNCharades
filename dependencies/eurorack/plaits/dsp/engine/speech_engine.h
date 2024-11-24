@@ -43,7 +43,7 @@ class SpeechEngine : public Engine {
   SpeechEngine() { }
   ~SpeechEngine() { }
   
-  virtual void Init(stmlib::BufferAllocator* allocator);
+  virtual void Init(stmlib::BufferAllocator* allocator, float sr);
   virtual void Reset();
   virtual void Render(const EngineParameters& parameters,
       float* out,
@@ -71,6 +71,8 @@ class SpeechEngine : public Engine {
   float* temp_buffer_[2];
   float prosody_amount_;
   float speed_;
+  float sample_rate;
+  float a0;
   
   DISALLOW_COPY_AND_ASSIGN(SpeechEngine);
 };

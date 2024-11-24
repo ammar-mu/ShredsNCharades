@@ -41,16 +41,28 @@ namespace frames {
 using namespace std;
 
 /* static */
+// Colors for SoloRack. Modified by ammar
 const uint8_t Keyframer::palette_[kNumPaletteEntries][3] = {
   { 255, 0, 0 },
-  { 255, 64, 0 },
+  { 255, 100, 0 },
   { 255, 255, 0 },
-  { 64, 255, 0 },
-  { 0, 255, 64 },
+  { 128, 255, 50 },
+  { 0, 255, 255 },
   { 0, 0, 255 },
-  { 255, 0, 255 },
-  { 255, 0, 64 },
+  { 128, 0, 255 },
+  { 0, 128, 255 },
 };
+// Original colors
+//const uint8_t Keyframer::palette_[kNumPaletteEntries][3] = {
+//  { 255, 0, 0 },
+//  { 255, 64, 0 },
+//  { 255, 255, 0 },
+//  { 64, 255, 0 },
+//  { 0, 255, 64 },
+//  { 0, 0, 255 },
+//  { 255, 0, 255 },
+//  { 255, 0, 64 },
+//};
 
 #ifndef TEST
 stmlib::Storage<0x8020000, 4> storage;

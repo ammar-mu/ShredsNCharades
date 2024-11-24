@@ -38,7 +38,7 @@ class FMEngine : public Engine {
   FMEngine() { }
   ~FMEngine() { }
   
-  virtual void Init(stmlib::BufferAllocator* allocator);
+  virtual void Init(stmlib::BufferAllocator* allocator, float sr);
   virtual void Reset();
   virtual void Render(const EngineParameters& parameters,
       float* out,
@@ -61,6 +61,8 @@ class FMEngine : public Engine {
   
   float sub_fir_;
   float carrier_fir_;
+
+  float a0;     // moved from global by ammar to supported variable sample rates
   
   DISALLOW_COPY_AND_ASSIGN(FMEngine);
 };

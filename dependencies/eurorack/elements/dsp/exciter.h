@@ -59,7 +59,7 @@ class Exciter {
   Exciter() { }
   ~Exciter() { }
   
-  void Init();
+  void Init(float sr);
   
   inline void set_signature(float signature) {
     signature_ = signature;
@@ -124,6 +124,9 @@ class Exciter {
   uint32_t plectrum_delay_;
   
   static ProcessFn fn_table_[];
+
+  // Added by Ammar
+  float sample_rate = 32000.0f;
   
   DISALLOW_COPY_AND_ASSIGN(Exciter);
 };

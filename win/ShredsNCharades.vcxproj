@@ -334,7 +334,7 @@
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
       <Optimization>Disabled</Optimization>
-      <AdditionalIncludeDirectories>../vstgui;../source;../dependencies/speex/libspeex;../dependencies/speex/include;../dependencies/eurorack;../dependencies/Rack-SDK/include;../dependencies/Rack-SDK/dep/include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>../vstgui;../source;../dependencies/speex/libspeex;../dependencies/speex/include;../dependencies/eurorack;../dependencies/Rack-SDK/include;../dependencies/Rack-SDK/dep/include;../dependencies;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;_USRDLL;VSTXSYNTH_EXPORTS;_CRT_SECURE_NO_DEPRECATE=1;TEST=1;M_PI=3.14159265358979323846;IS_SOLORACK;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <MinimalRebuild>true</MinimalRebuild>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
@@ -366,7 +366,7 @@
     </Midl>
     <ClCompile>
       <Optimization>Disabled</Optimization>
-      <AdditionalIncludeDirectories>../vstgui;../source;../dependencies/speex/libspeex;../dependencies/speex/include;../dependencies/eurorack;../dependencies/Rack-SDK/include;../dependencies/Rack-SDK/dep/include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>../vstgui;../source;../dependencies/speex/libspeex;../dependencies/speex/include;../dependencies/eurorack;../dependencies/Rack-SDK/include;../dependencies/Rack-SDK/dep/include;../dependencies;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;_USRDLL;VSTXSYNTH_EXPORTS;VST_64BIT_PLATFORM=1;_CRT_SECURE_NO_DEPRECATE=1;TEST=1;M_PI=3.14159265358979323846;IS_SOLORACK;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <MinimalRebuild>true</MinimalRebuild>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
@@ -395,7 +395,7 @@
       <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>
       <IntrinsicFunctions>false</IntrinsicFunctions>
       <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
-      <AdditionalIncludeDirectories>../vstgui;../source;../dependencies/speex/libspeex;../dependencies/speex/include;../dependencies/eurorack;../dependencies/Rack-SDK/include;../dependencies/Rack-SDK/dep/include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>../vstgui;../source;../dependencies/speex/libspeex;../dependencies/speex/include;../dependencies/eurorack;../dependencies/Rack-SDK/include;../dependencies/Rack-SDK/dep/include;../dependencies;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;_USRDLL;VSTXSYNTH_EXPORTS;_CRT_SECURE_NO_DEPRECATE=1;TEST=1;M_PI=3.14159265358979323846;IS_SOLORACK;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <PreprocessToFile>false</PreprocessToFile>
       <PreprocessSuppressLineNumbers>false</PreprocessSuppressLineNumbers>
@@ -431,7 +431,7 @@
       <Optimization>MaxSpeed</Optimization>
       <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>
       <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
-      <AdditionalIncludeDirectories>../vstgui;../source;../dependencies/speex/libspeex;../dependencies/speex/include;../dependencies/eurorack;../dependencies/Rack-SDK/include;../dependencies/Rack-SDK/dep/include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>../vstgui;../source;../dependencies/speex/libspeex;../dependencies/speex/include;../dependencies/eurorack;../dependencies/Rack-SDK/include;../dependencies/Rack-SDK/dep/include;../dependencies;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;_USRDLL;VSTXSYNTH_EXPORTS;VST_64BIT_PLATFORM=1;_CRT_SECURE_NO_DEPRECATE=1;TEST=1;M_PI=3.14159265358979323846;IS_SOLORACK;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
       <EnableEnhancedInstructionSet>StreamingSIMDExtensions2</EnableEnhancedInstructionSet>
@@ -784,6 +784,53 @@
     <ClCompile Include="..\dependencies\eurorack\clouds\dsp\pvoc\phase_vocoder.cc" />
     <ClCompile Include="..\dependencies\eurorack\clouds\dsp\pvoc\stft.cc" />
     <ClCompile Include="..\dependencies\eurorack\clouds\resources.cc" />
+    <ClCompile Include="..\dependencies\eurorack\elements\dsp\elements_part.cc" />
+    <ClCompile Include="..\dependencies\eurorack\elements\dsp\elements_resonator.cc" />
+    <ClCompile Include="..\dependencies\eurorack\elements\dsp\elements_string.cc" />
+    <ClCompile Include="..\dependencies\eurorack\elements\dsp\exciter.cc" />
+    <ClCompile Include="..\dependencies\eurorack\elements\dsp\multistage_envelope.cc" />
+    <ClCompile Include="..\dependencies\eurorack\elements\dsp\ominous_voice.cc" />
+    <ClCompile Include="..\dependencies\eurorack\elements\dsp\tube.cc" />
+    <ClCompile Include="..\dependencies\eurorack\elements\dsp\voice.cc" />
+    <ClCompile Include="..\dependencies\eurorack\elements\elements_resources.cc" />
+    <ClCompile Include="..\dependencies\eurorack\frames\frames_resources.cc" />
+    <ClCompile Include="..\dependencies\eurorack\frames\keyframer.cc" />
+    <ClCompile Include="..\dependencies\eurorack\frames\poly_lfo.cc" />
+    <ClCompile Include="..\dependencies\eurorack\marbles\marbles_resources.cc" />
+    <ClCompile Include="..\dependencies\eurorack\marbles\ramp\marbles_ramp_extractor.cc" />
+    <ClCompile Include="..\dependencies\eurorack\marbles\random\lag_processor.cc" />
+    <ClCompile Include="..\dependencies\eurorack\marbles\random\output_channel.cc" />
+    <ClCompile Include="..\dependencies\eurorack\marbles\random\quantizer.cc" />
+    <ClCompile Include="..\dependencies\eurorack\marbles\random\t_generator.cc" />
+    <ClCompile Include="..\dependencies\eurorack\marbles\random\x_y_generator.cc" />
+    <ClCompile Include="..\dependencies\eurorack\plaits\dsp\engine\additive_engine.cc" />
+    <ClCompile Include="..\dependencies\eurorack\plaits\dsp\engine\bass_drum_engine.cc" />
+    <ClCompile Include="..\dependencies\eurorack\plaits\dsp\engine\chord_engine.cc" />
+    <ClCompile Include="..\dependencies\eurorack\plaits\dsp\engine\fm_engine.cc" />
+    <ClCompile Include="..\dependencies\eurorack\plaits\dsp\engine\grain_engine.cc" />
+    <ClCompile Include="..\dependencies\eurorack\plaits\dsp\engine\hi_hat_engine.cc" />
+    <ClCompile Include="..\dependencies\eurorack\plaits\dsp\engine\modal_engine.cc" />
+    <ClCompile Include="..\dependencies\eurorack\plaits\dsp\engine\noise_engine.cc" />
+    <ClCompile Include="..\dependencies\eurorack\plaits\dsp\engine\particle_engine.cc" />
+    <ClCompile Include="..\dependencies\eurorack\plaits\dsp\engine\snare_drum_engine.cc" />
+    <ClCompile Include="..\dependencies\eurorack\plaits\dsp\engine\speech_engine.cc" />
+    <ClCompile Include="..\dependencies\eurorack\plaits\dsp\engine\string_engine.cc" />
+    <ClCompile Include="..\dependencies\eurorack\plaits\dsp\engine\swarm_engine.cc" />
+    <ClCompile Include="..\dependencies\eurorack\plaits\dsp\engine\virtual_analog_engine.cc" />
+    <ClCompile Include="..\dependencies\eurorack\plaits\dsp\engine\waveshaping_engine.cc" />
+    <ClCompile Include="..\dependencies\eurorack\plaits\dsp\engine\wavetable_engine.cc" />
+    <ClCompile Include="..\dependencies\eurorack\plaits\dsp\physical_modelling\modal_voice.cc" />
+    <ClCompile Include="..\dependencies\eurorack\plaits\dsp\physical_modelling\plaits_resonator.cc" />
+    <ClCompile Include="..\dependencies\eurorack\plaits\dsp\physical_modelling\plaits_string.cc" />
+    <ClCompile Include="..\dependencies\eurorack\plaits\dsp\physical_modelling\string_voice.cc" />
+    <ClCompile Include="..\dependencies\eurorack\plaits\dsp\plaits_voice.cc" />
+    <ClCompile Include="..\dependencies\eurorack\plaits\dsp\speech\lpc_speech_synth.cc" />
+    <ClCompile Include="..\dependencies\eurorack\plaits\dsp\speech\lpc_speech_synth_controller.cc" />
+    <ClCompile Include="..\dependencies\eurorack\plaits\dsp\speech\lpc_speech_synth_phonemes.cc" />
+    <ClCompile Include="..\dependencies\eurorack\plaits\dsp\speech\lpc_speech_synth_words.cc" />
+    <ClCompile Include="..\dependencies\eurorack\plaits\dsp\speech\naive_speech_synth.cc" />
+    <ClCompile Include="..\dependencies\eurorack\plaits\dsp\speech\sam_speech_synth.cc" />
+    <ClCompile Include="..\dependencies\eurorack\plaits\plaits_resources.cc" />
     <ClCompile Include="..\dependencies\eurorack\rings\dsp\fm_voice.cc" />
     <ClCompile Include="..\dependencies\eurorack\rings\dsp\part.cc" />
     <ClCompile Include="..\dependencies\eurorack\rings\dsp\resonator.cc" />
@@ -796,6 +843,14 @@
     <ClCompile Include="..\dependencies\eurorack\stmlib\dsp\atan.cc" />
     <ClCompile Include="..\dependencies\eurorack\stmlib\dsp\units.cc" />
     <ClCompile Include="..\dependencies\eurorack\stmlib\utils\random.cc" />
+    <ClCompile Include="..\dependencies\eurorack\streams\compressor.cc" />
+    <ClCompile Include="..\dependencies\eurorack\streams\envelope.cc" />
+    <ClCompile Include="..\dependencies\eurorack\streams\follower.cc" />
+    <ClCompile Include="..\dependencies\eurorack\streams\lorenz_generator.cc" />
+    <ClCompile Include="..\dependencies\eurorack\streams\processor.cc" />
+    <ClCompile Include="..\dependencies\eurorack\streams\streams_resources.cc" />
+    <ClCompile Include="..\dependencies\eurorack\streams\svf.cc" />
+    <ClCompile Include="..\dependencies\eurorack\streams\vactrol.cc" />
     <ClCompile Include="..\dependencies\eurorack\tides2\poly_slope_generator.cc" />
     <ClCompile Include="..\dependencies\eurorack\tides2\ramp_extractor.cc" />
     <ClCompile Include="..\dependencies\eurorack\tides2\tides2_resources.cc" />

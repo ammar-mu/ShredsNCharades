@@ -156,7 +156,7 @@ class Voice {
     short aux;
   };
   
-  void Init(stmlib::BufferAllocator* allocator);
+  void Init(stmlib::BufferAllocator* allocator, float sr);
   void Render(
       const Patch& patch,
       const Modulations& modulations,
@@ -217,7 +217,7 @@ class Voice {
   DecayEnvelope decay_envelope_;
   LPGEnvelope lpg_envelope_;
   
-  float trigger_delay_line_[kMaxTriggerDelay];
+  float trigger_delay_line_[kMaxTriggerDelay] = {};
   DelayLine<float, kMaxTriggerDelay> trigger_delay_;
   
   ChannelPostProcessor out_post_processor_;
@@ -225,8 +225,10 @@ class Voice {
   
   EngineRegistry<kMaxEngines> engines_;
   
-  float out_buffer_[kMaxBlockSize];
-  float aux_buffer_[kMaxBlockSize];
+  float out_buffer_[kMaxBlockSize] = {};
+  float aux_buffer_[kMaxBlockSize] = {};
+  float sample_rate;
+  float a0;
   
   DISALLOW_COPY_AND_ASSIGN(Voice);
 };

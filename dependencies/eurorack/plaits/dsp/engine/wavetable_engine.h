@@ -41,7 +41,7 @@ class WavetableEngine : public Engine {
   WavetableEngine() { }
   ~WavetableEngine() { }
   
-  virtual void Init(stmlib::BufferAllocator* allocator);
+  virtual void Init(stmlib::BufferAllocator* allocator, float sr);
   virtual void Reset();
   virtual void Render(const EngineParameters& parameters,
       float* out,
@@ -66,6 +66,8 @@ class WavetableEngine : public Engine {
   float previous_f0_;
   
   Differentiator diff_out_;
+    
+  float a0;     // moved from global by ammar to supported variable sample rates
   
   DISALLOW_COPY_AND_ASSIGN(WavetableEngine);
 };

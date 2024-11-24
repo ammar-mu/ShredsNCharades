@@ -1349,12 +1349,16 @@ protected:
 		led_small_gyr,
 
 		black_butbit_tiny,
+		black_butbit_tiny_up,
+		black_butbit_tiny_down,
 		button_led,
 		button_big,
 
 		fader_back,
 		fader_on,
 		fader_off,
+
+		black_switch,
 
 		kModuleCBitsCount
 	};

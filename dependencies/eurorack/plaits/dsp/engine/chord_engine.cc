@@ -82,7 +82,8 @@ const float chords[kChordNumChords][kChordNumNotes] = {
 
 #endif  // JON_CHORDS
 
-void ChordEngine::Init(BufferAllocator* allocator) {
+void ChordEngine::Init(BufferAllocator* allocator, float sr) {
+  a0 = (440.0f / 8.0f) / sr;
   for (int i = 0; i < kChordNumVoices; ++i) {
     divide_down_voice_[i].Init();
     wavetable_voice_[i].Init();
@@ -228,7 +229,7 @@ void ChordEngine::Render(
   fill(&out[0], &out[size], 0.0f);
   fill(&aux[0], &aux[size], 0.0f);
   
-  const float f0 = NoteToFrequency(parameters.note) * 0.998f;
+  const float f0 = NoteToFrequency(parameters.note,a0) * 0.998f;
   const float waveform = max((morph_lp_ - 0.535f) * 2.15f, 0.0f);
   
   for (int note = 0; note < kChordNumVoices; ++note) {

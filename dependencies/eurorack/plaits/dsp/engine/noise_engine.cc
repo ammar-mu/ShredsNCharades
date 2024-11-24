@@ -35,7 +35,8 @@ namespace plaits {
 using namespace std;
 using namespace stmlib;
 
-void NoiseEngine::Init(BufferAllocator* allocator) {
+void NoiseEngine::Init(BufferAllocator* allocator, float sr) {
+  a0 = (440.0f / 8.0f) / sr;
   clocked_noise_[0].Init();
   clocked_noise_[1].Init();
   lp_hp_filter_.Init();
@@ -60,14 +61,14 @@ void NoiseEngine::Render(
     float* aux,
     size_t size,
     bool* already_enveloped) {
-  const float f0 = NoteToFrequency(parameters.note);
+  const float f0 = NoteToFrequency(parameters.note,a0);
   const float f1 = NoteToFrequency(
-      parameters.note + parameters.harmonics * 48.0f - 24.0f);
+      parameters.note + parameters.harmonics * 48.0f - 24.0f,a0);
   const float clock_lowest_note = parameters.trigger & TRIGGER_UNPATCHED
       ? 0.0f
       : -24.0f;
   const float clock_f = NoteToFrequency(
-      parameters.timbre * (128.0f - clock_lowest_note) + clock_lowest_note);
+      parameters.timbre * (128.0f - clock_lowest_note) + clock_lowest_note,a0);
   const float q = 0.5f * SemitonesToRatio(parameters.morph * 120.0f);
   const bool sync = parameters.trigger & TRIGGER_RISING_EDGE;
   clocked_noise_[0].Render(sync, clock_f, aux, size);

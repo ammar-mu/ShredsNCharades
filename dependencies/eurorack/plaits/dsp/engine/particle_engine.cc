@@ -35,7 +35,10 @@ namespace plaits {
 using namespace std;
 using namespace stmlib;
 
-void ParticleEngine::Init(BufferAllocator* allocator) {
+void ParticleEngine::Init(BufferAllocator* allocator, float sr) {
+  sample_rate = sr;
+  a0 = (440.0f / 8.0f) / sr;
+  timb_correct = 0.05*log2(sample_rate / 48000.f);
   for (int i = 0; i < kNumParticles; ++i) {
     particle_[i].Init();
   }
@@ -53,9 +56,10 @@ void ParticleEngine::Render(
     float* aux,
     size_t size,
     bool* already_enveloped) {
-  const float f0 = NoteToFrequency(parameters.note);
+  const float f0 = NoteToFrequency(parameters.note,a0);
+  const float timb = parameters.timbre + timb_correct;
   const float density_sqrt = NoteToFrequency(
-      60.0f + parameters.timbre * parameters.timbre * 72.0f);
+      60.0f + timb*timb * 72.0f,a0);
   const float density = density_sqrt * density_sqrt * (1.0f / kNumParticles);
   const float gain = 1.0f / density;
   const float q_sqrt = SemitonesToRatio(parameters.morph >= 0.5f

@@ -39,7 +39,8 @@ namespace plaits {
 using namespace std;
 using namespace stmlib;
 
-void AdditiveEngine::Init(BufferAllocator* allocator) {
+void AdditiveEngine::Init(BufferAllocator* allocator, float sr) {
+  a0 = (440.0f / 8.0f) / sr;
   fill(
       &amplitudes_[0],
       &amplitudes_[kNumHarmonics],
@@ -121,7 +122,7 @@ void AdditiveEngine::Render(
     float* aux,
     size_t size,
     bool* already_enveloped) {
-  const float f0 = NoteToFrequency(parameters.note);
+  const float f0 = NoteToFrequency(parameters.note,a0);
 
   const float centroid = parameters.timbre;
   const float raw_bumps = parameters.harmonics;

@@ -42,7 +42,7 @@ class BassDrumEngine : public Engine {
   BassDrumEngine() { }
   ~BassDrumEngine() { }
   
-  virtual void Init(stmlib::BufferAllocator* allocator);
+  virtual void Init(stmlib::BufferAllocator* allocator, float sr);
   virtual void Reset();
   virtual void Render(const EngineParameters& parameters,
       float* out,
@@ -55,6 +55,7 @@ class BassDrumEngine : public Engine {
   SyntheticBassDrum synthetic_bass_drum_;
   
   Overdrive overdrive_;
+  float a0;
   
   DISALLOW_COPY_AND_ASSIGN(BassDrumEngine);
 };

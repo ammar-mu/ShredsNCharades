@@ -44,11 +44,12 @@ class SyntheticBassDrumClick {
   SyntheticBassDrumClick() { }
   ~SyntheticBassDrumClick() { }
   
-  void Init() {
+  void Init(float sr) {
     lp_ = 0.0f;
     hp_ = 0.0f;
+    sample_rate = sr;
     filter_.Init();
-    filter_.set_f_q<stmlib::FREQUENCY_FAST>(5000.0f / kSampleRate, 2.0f);
+    filter_.set_f_q<stmlib::FREQUENCY_FAST>(5000.0f / sample_rate, 2.0f);
   }
   
   float Process(float in) {
@@ -60,6 +61,7 @@ class SyntheticBassDrumClick {
  private:
   float lp_;
   float hp_;
+  float sample_rate;
   stmlib::Svf filter_;
   
   DISALLOW_COPY_AND_ASSIGN(SyntheticBassDrumClick);
@@ -94,7 +96,7 @@ class SyntheticBassDrum {
   SyntheticBassDrum() { }
   ~SyntheticBassDrum() { }
 
-  void Init() {
+  void Init(float sr) {
     phase_ = 0.0f;
     phase_noise_ = 0.0f;
     f0_ = 0.0f;
@@ -106,8 +108,9 @@ class SyntheticBassDrum {
     fm_pulse_width_ = 0;
     tone_lp_ = 0.0f;
     sustain_gain_ = 0.0f;
+    sample_rate = sr;
     
-    click_.Init();
+    click_.Init(sr);
     noise_.Init();
   }
   
@@ -147,11 +150,11 @@ class SyntheticBassDrum {
     dirtiness *= std::max(1.0f - 8.0f * f0, 0.0f);
     
     const float fm_decay = 1.0f - \
-        1.0f / (0.008f * (1.0f + fm_envelope_decay * 4.0f) * kSampleRate);
+        1.0f / (0.008f * (1.0f + fm_envelope_decay * 4.0f) * sample_rate);
 
-    const float body_env_decay = 1.0f - 1.0f / (0.02f * kSampleRate) * \
+    const float body_env_decay = 1.0f - 1.0f / (0.02f * sample_rate) * \
         stmlib::SemitonesToRatio(-decay * 60.0f);
-    const float transient_env_decay = 1.0f - 1.0f / (0.005f * kSampleRate);
+    const float transient_env_decay = 1.0f - 1.0f / (0.005f * sample_rate);
     const float tone_f = std::min(
         4.0f * f0 * stmlib::SemitonesToRatio(tone * 108.0f),
         1.0f);
@@ -160,8 +163,8 @@ class SyntheticBassDrum {
     if (trigger) {
       fm_ = 1.0f;
       body_env_ = transient_env_ = 0.3f + 0.7f * accent;
-      body_env_pulse_width_ = kSampleRate * 0.001f;
-      fm_pulse_width_ = kSampleRate * 0.0013f;
+      body_env_pulse_width_ = sample_rate * 0.001f;
+      fm_pulse_width_ = sample_rate * 0.0013f;
     }
     
     stmlib::ParameterInterpolator sustain_gain(
@@ -240,6 +243,7 @@ class SyntheticBassDrum {
   
   int body_env_pulse_width_;
   int fm_pulse_width_;
+  float sample_rate;
   
   DISALLOW_COPY_AND_ASSIGN(SyntheticBassDrum);
 };

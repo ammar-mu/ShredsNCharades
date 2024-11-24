@@ -42,7 +42,7 @@ class ParticleEngine : public Engine {
   ParticleEngine() { }
   ~ParticleEngine() { }
   
-  virtual void Init(stmlib::BufferAllocator* allocator);
+  virtual void Init(stmlib::BufferAllocator* allocator, float sr);
   virtual void Reset();
   virtual void Render(const EngineParameters& parameters,
       float* out,
@@ -54,6 +54,7 @@ class ParticleEngine : public Engine {
   Particle particle_[kNumParticles];
   Diffuser diffuser_;
   stmlib::Svf post_filter_;
+  float a0, sample_rate, timb_correct;
   
   DISALLOW_COPY_AND_ASSIGN(ParticleEngine);
 };

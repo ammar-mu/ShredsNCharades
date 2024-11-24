@@ -46,7 +46,7 @@ class AnalogBassDrum {
   AnalogBassDrum() { }
   ~AnalogBassDrum() { }
 
-  void Init() {
+  void Init(float sr) {
     pulse_remaining_samples_ = 0;
     fm_pulse_remaining_samples_ = 0;
     pulse_ = 0.0f;
@@ -57,6 +57,7 @@ class AnalogBassDrum {
     lp_out_ = 0.0f;
     tone_lp_ = 0.0f;
     sustain_gain_ = 0.0f;
+    sample_rate = sr;
 
     resonator_.Init();
     oscillator_.Init();
@@ -82,11 +83,11 @@ class AnalogBassDrum {
       float self_fm_amount,
       float* out,
       size_t size) {
-    const int kTriggerPulseDuration = 1.0e-3 * kSampleRate;
-    const int kFMPulseDuration = 6.0e-3 * kSampleRate;
-    const float kPulseDecayTime = 0.2e-3 * kSampleRate;
-    const float kPulseFilterTime = 0.1e-3 * kSampleRate;
-    const float kRetrigPulseDuration = 0.05f * kSampleRate;
+    const int kTriggerPulseDuration = 1.0e-3 * sample_rate;
+    const int kFMPulseDuration = 6.0e-3 * sample_rate;
+    const float kPulseDecayTime = 0.2e-3 * sample_rate;
+    const float kPulseFilterTime = 0.1e-3 * sample_rate;
+    const float kRetrigPulseDuration = 0.05f * sample_rate;
     
     const float scale = 0.001f / f0;
     const float q = 1500.0f * stmlib::SemitonesToRatio(decay * 80.0f);
@@ -183,6 +184,7 @@ class AnalogBassDrum {
   float sustain_gain_;
   
   stmlib::Svf resonator_;
+  float sample_rate;
   
   // Replace the resonator in "free running" (sustain) mode.
   SineOscillator oscillator_;

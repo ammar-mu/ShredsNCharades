@@ -43,7 +43,7 @@ class SAMSpeechSynth {
   SAMSpeechSynth() { }
   ~SAMSpeechSynth() { }
 
-  void Init();
+  void Init(float sr);
   
   void Render(
       bool consonant,
@@ -81,6 +81,7 @@ class SAMSpeechSynth {
   
   static Phoneme phonemes_[kSAMNumPhonemes];
   static float formant_amplitude_lut[16];
+  float sample_rate;
   
   DISALLOW_COPY_AND_ASSIGN(SAMSpeechSynth);
 };

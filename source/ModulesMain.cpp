@@ -41,6 +41,12 @@ BOOL WINAPI DllMain(HINSTANCE hInst, DWORD dwReason, LPVOID lpvReserved)
 		Branches::End();
 		Warps::End();
 		Stages::End();
+		Elements::End();
+		Marbles::End();
+		Frames::End();
+		Streams::End();
+		Shelves::End();
+		Plaits::End();
 		Module::End();
 
 		free(Module::skindir); free(Module::defskindir);

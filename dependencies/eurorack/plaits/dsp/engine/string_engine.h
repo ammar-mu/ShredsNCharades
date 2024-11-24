@@ -41,7 +41,7 @@ class StringEngine : public Engine {
   StringEngine() { }
   ~StringEngine() { }
   
-  virtual void Init(stmlib::BufferAllocator* allocator);
+  virtual void Init(stmlib::BufferAllocator* allocator, float sr);
   virtual void Reset();
   virtual void Render(const EngineParameters& parameters,
       float* out,
@@ -56,6 +56,7 @@ class StringEngine : public Engine {
   DelayLine<float, 16> f0_delay_;
   int active_string_;
   float* temp_buffer_;
+  float a0;
   
   DISALLOW_COPY_AND_ASSIGN(StringEngine);
 };

@@ -957,12 +957,16 @@ void Module::Initialize()
 	mcbits[led_small_gyr] = new CBitmap(dllskindir, NULL, "led_small_gyr.png");
 
 	mcbits[black_butbit_tiny] = new CBitmap(dllskindir, NULL, "black_button_tiny.png");
+	mcbits[black_butbit_tiny_up] = new CBitmap(dllskindir, NULL, "black_button_tiny_up.png");
+	mcbits[black_butbit_tiny_down] = new CBitmap(dllskindir, NULL, "black_button_tiny_down.png");
 	mcbits[button_led] = new CBitmap(dllskindir, NULL, "button_led.png");
 	mcbits[button_big] = new CBitmap(dllskindir, NULL, "button_big.png");
 
 	mcbits[fader_back] = new CBitmap(dllskindir, NULL, "fader_back.png");
 	mcbits[fader_on] = new CBitmap(dllskindir, NULL, "fader_on.png");
 	mcbits[fader_off] = new CBitmap(dllskindir, NULL, "fader_off.png");
+
+	mcbits[black_switch] = new CBitmap(dllskindir, NULL, "black_switch.png");
 
 
 	// Make skin config file

@@ -38,11 +38,12 @@ namespace elements {
 using namespace std;
 using namespace stmlib;
 
-void Voice::Init() {
+void Voice::Init(float sr) {
+  sample_rate = sr;
   envelope_.Init();
-  bow_.Init();
-  blow_.Init();
-  strike_.Init();
+  bow_.Init(sample_rate);
+  blow_.Init(sample_rate);
+  strike_.Init(sample_rate);
   diffuser_.Init(diffuser_buffer_);
   
   ResetResonator();
@@ -65,11 +66,11 @@ void Voice::Init() {
 }
 
 void Voice::ResetResonator() {
-  resonator_.Init();
+  resonator_.Init(sample_rate);
   for (size_t i = 0; i < kNumStrings; ++i) {
-    string_[i].Init(true);
+    string_[i].Init(true, sample_rate);
   }
-  dc_blocker_.Init(1.0f - 10.0f / kSampleRate);
+  dc_blocker_.Init(1.0f - 10.0f / sample_rate);
   resonator_.set_resolution(52);  // Runs with 56 extremely tightly.
 }
 

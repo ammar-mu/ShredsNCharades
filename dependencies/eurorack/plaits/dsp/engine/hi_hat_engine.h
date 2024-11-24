@@ -40,7 +40,7 @@ class HiHatEngine : public Engine {
   HiHatEngine() { }
   ~HiHatEngine() { }
   
-  virtual void Init(stmlib::BufferAllocator* allocator);
+  virtual void Init(stmlib::BufferAllocator* allocator, float sr);
   virtual void Reset();
   virtual void Render(const EngineParameters& parameters,
       float* out,
@@ -53,6 +53,8 @@ class HiHatEngine : public Engine {
   HiHat<RingModNoise, LinearVCA, false> hi_hat_2_;
   
   float* temp_buffer_[2];
+
+  float a0;
   
   DISALLOW_COPY_AND_ASSIGN(HiHatEngine);
 };

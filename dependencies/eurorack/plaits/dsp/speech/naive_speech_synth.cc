@@ -81,7 +81,9 @@ NaiveSpeechSynth::Phoneme NaiveSpeechSynth::phonemes_[][kNaiveSpeechNumRegisters
   },
 };
 
-void NaiveSpeechSynth::Init() {
+void NaiveSpeechSynth::Init(float sr) {
+  sample_rate = sr;
+  a0 = (440.0f / 8.0f) / sr;
   pulse_.Init();
   frequency_ = 0.0f;
   click_duration_ = 0;
@@ -90,7 +92,7 @@ void NaiveSpeechSynth::Init() {
     filter_[i].Init();
   }
   pulse_coloration_.Init();
-  pulse_coloration_.set_f_q<FREQUENCY_DIRTY>(800.0f / kSampleRate, 0.5f);
+  pulse_coloration_.set_f_q<FREQUENCY_DIRTY>(800.0f / sample_rate, 0.5f);
 }
 
 void NaiveSpeechSynth::Render(
@@ -103,7 +105,7 @@ void NaiveSpeechSynth::Render(
     float* output,
     size_t size) {
   if (click) {
-    click_duration_ = kSampleRate * 0.05f;
+    click_duration_ = sample_rate * 0.05f;
   }
   click_duration_ -= min(click_duration_, size);
   

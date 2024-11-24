@@ -40,7 +40,9 @@ namespace plaits {
 using namespace std;
 using namespace stmlib;
 
-void WaveshapingEngine::Init(BufferAllocator* allocator) {
+void WaveshapingEngine::Init(BufferAllocator* allocator, float sr) {
+  a0 = (440.0f / 8.0f) / sr;
+  sample_rate = sr;
   slope_.Init();
   triangle_.Init();
   previous_shape_ = 0.0f;
@@ -68,7 +70,7 @@ void WaveshapingEngine::Render(
     bool* already_enveloped) {
   const float root = parameters.note;
   
-  const float f0 = NoteToFrequency(root);
+  const float f0 = NoteToFrequency(root,a0);
   const float pw = parameters.morph * 0.45f + 0.5f;
   
   // Start from bandlimited slope signal.

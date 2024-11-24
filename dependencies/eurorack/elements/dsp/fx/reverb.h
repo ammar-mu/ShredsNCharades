@@ -40,10 +40,11 @@ class Reverb {
   Reverb() { }
   ~Reverb() { }
   
-  void Init(uint16_t* buffer) {
+  void Init(uint16_t* buffer, float sr) {
+    sample_rate = sr;
     engine_.Init(buffer);
-    engine_.SetLFOFrequency(LFO_1, 0.5f / 32000.0f);
-    engine_.SetLFOFrequency(LFO_2, 0.3f / 32000.0f);
+    engine_.SetLFOFrequency(LFO_1, 0.5f / sr);
+    engine_.SetLFOFrequency(LFO_2, 0.3f / sr);
     lp_ = 0.7f;
     diffusion_ = 0.625f;
   }
@@ -172,6 +173,9 @@ class Reverb {
   
   float lp_decay_1_;
   float lp_decay_2_;
+
+  // Added by Ammar
+  float sample_rate = 32000.0f;
   
   DISALLOW_COPY_AND_ASSIGN(Reverb);
 };

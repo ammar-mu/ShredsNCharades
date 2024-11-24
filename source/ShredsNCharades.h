@@ -42,6 +42,29 @@
 #include <vector>
 //#include "avrlib/avrlib.h"
 
+// For Elements
+#include "elements/dsp/part.h"
+
+// For Marbles
+#include "marbles/random/random_generator.h"
+#include "marbles/random/random_stream.h"
+#include "marbles/random/t_generator.h"
+#include "marbles/random/x_y_generator.h"
+#include "marbles/note_filter.h"
+
+// For Frames
+#include "frames/keyframer.h"
+#include "frames/poly_lfo.h"
+
+// For Streams
+#include "Streams/streams.hpp"
+
+// For Plaits
+#include "plaits/dsp/voice.h"
+
+// For Shelves
+#include "Shelves/shelves.hpp"
+
 using namespace rack;
 #define __PI 3.14159265358979
 #define __TWO_PI (2.0*__PI)
@@ -139,8 +162,8 @@ private:
 	dsp::SampleRateConverter<2> inputSrc;
 	dsp::SampleRateConverter<2> outputSrc;
 	// 780 buffer size supports arround 16x oversampling when sampling rate is 48000
-	dsp::DoubleRingBuffer<dsp::Frame<2>, 780> inputBuffer;
-	dsp::DoubleRingBuffer<dsp::Frame<2>, 780> outputBuffer;
+	dsp::DynDoubleRingBuffer<dsp::Frame<2>> *inputBuffer;
+	dsp::DynDoubleRingBuffer<dsp::Frame<2>> *outputBuffer;
 
 	uint8_t* block_mem;
 	uint8_t* block_ccm;
@@ -166,6 +189,7 @@ class Rings : public Module
 public:
 
 	Rings(CFrame* pParent, CControlListener* listener, const SynthComm* psynth_comm, const int vvoice = 0);
+	~Rings();
 
 	static void Initialize();
 	static void End();
@@ -231,8 +255,8 @@ private:
 	dsp::SampleRateConverter<1> inputSrc;
 	dsp::SampleRateConverter<2> outputSrc;
 	// 780 buffer size supports arround 16x oversampling when sampling rate is 48000
-	dsp::DoubleRingBuffer<dsp::Frame<1>, 780> inputBuffer;
-	dsp::DoubleRingBuffer<dsp::Frame<2>, 780> outputBuffer;
+	dsp::DynDoubleRingBuffer<dsp::Frame<1>> *inputBuffer;
+	dsp::DynDoubleRingBuffer<dsp::Frame<2>> *outputBuffer;
 
 	uint16_t reverb_buffer[32768] = {};
 	rings::Part part;
@@ -263,7 +287,7 @@ public:
 
 	Braids(CFrame* pParent, CControlListener* listener, const SynthComm* psynth_comm, const int vvoice = 0);
 
-	//~Braids();
+	~Braids();
 
 	static void Initialize();
 	static void End();
@@ -340,7 +364,7 @@ private:
 	braids::SignatureWaveshaper ws;
 
 	dsp::SampleRateConverter<1> src;
-	dsp::DoubleRingBuffer<dsp::Frame<1>, 780> outputBuffer;
+	dsp::DynDoubleRingBuffer<dsp::Frame<1>> *outputBuffer;
 #ifdef BRAIDS_SYNC
 	// 780 buffer size supports arround 16x oversampling when sampling rate is 48000
 	dsp::DoubleRingBuffer<dsp::Frame<1>, 780> sync_inbuffer;
@@ -849,4 +873,847 @@ private:
 	float sample_time, phase_add;
 };
 
+
+//---------------------------------------------
+// Elements
+class Elements : public Module
+{
+public:
+
+	Elements(CFrame* pParent, CControlListener* listener, const SynthComm* psynth_comm, const int vvoice = 0);
+
+	~Elements();
+
+	static void Initialize();
+	static void End();
+	static const int GetType();
+	static Product* Activate(char* fullname, char* email, char* serial);				// Activate Licence
+	static bool IsActive();
+	static Elements* Constructor(CFrame* pParent, CControlListener* listener, const SynthComm* psynth_comm, const int vvoice = 0);										// Used to construct modules that are imported for Dll files. Each sub class should define it's own Constructor.
+	static const char* GetProductName();
+	const char* GetName();
+	const int GetNameLen();
+	const char* GetVendorName();
+	const int GetVendorNameLen();
+	inline void ProcessSample();
+	int GetVersion() { return 1000; }														// Is Licence activated ?
+	Product* InstanceActivate(char* fullname, char* email, char* serial);		// Virtual Version
+	bool InstanceIsActive();													// Virtual Version
+	void ValueChanged(CControl* pControl);
+	void OnReset();
+	void SetSampleRate(float sr);
+	void LoadPreset(void* pdata, int size, int version);
+	void SavePreset(void* pdata, int size);
+	int GetPresetSize();
+	//void UpdateProcessor();
+	const char* GetInfoURL();
+	void SetModel(int model);
+	bool GetIsMonoDefault() { return false; }
+
+
+	static Product* pproduct;
+	static char* name;					// Module title name that will be displayed in the menu
+	static int name_len;				// Length of the name string excluding terminating NULL.
+	static char* vendorname;			// Module vendor name
+	static int vendorname_len;			// Length of the vendor name string excluding terminating NULL.
+
+protected:
+	static CBitmap* panel;
+
+private:
+	// Inputs
+	//float in1, in2, in3, in4;
+
+	// Input connections (cables)
+	//float *pin1,*pin2,*pin3,*pin4;
+
+	// Outputs
+	//float out;
+
+	// Knobs
+	ModuleKnob* kcontour, * kbow, * kblow, * kstrike, * kcoarse, * kfine;
+	ModuleKnob* kfm, * kflow, * kmallet, * kgeom, *kbright, *kbow_timbre, *kblow_timbre, *kstrike_timbre;
+	ModuleKnob* kdamp, * kpos, * kspace;
+
+	ModuleKnob *kflowcv, * kmalletcv, * kgeomcv, * kbrightcv, * kbow_timbrecv, * kblow_timbrecv, * kstrike_timbrecv;
+	ModuleKnob *kdampcv, * kposcv, * kspacecv;
+
+	// Knobs. If you want to use a change pool, you'll have to define them as ModuleKnobEx
+
+	// Buttons
+	//COnOffButton * blow_cpu;
+	CKickButton* bplay, *bmode;
+
+	// LEDs
+	CMovieBitmap* lexciter, * lresonator, *lplay, *lmode; // , * llow_cpu;;
+
+	// Patch points
+	PatchPoint* pppitch, * ppfm, * ppgate, * ppstrength, * ppextblow, * ppextstrike, * ppoutl, * ppoutr;
+	PatchPoint* ppflowcv, * ppmalletcv, * ppgeomcv, * ppbrightcv, * ppbow_timbrecv, * ppblow_timbrecv, * ppstrike_timbrecv;
+	PatchPoint* ppdampcv, * ppposcv, * ppspacecv;
+
+	// Switches
+	//CVerticalSwitch *sw1;
+
+	// Screws
+	CMovieBitmap* screw1, * screw2, * screw3, * screw4;
+
+	// knob change pool
+	//ModuleKnobExPool<Elements_NUM_KNOBS> chpool;
+
+	// VCVR Port
+	dsp::SampleRateConverter<2> inputSrc;
+	dsp::SampleRateConverter<2> outputSrc;
+	// 780 buffer size supports arround 16x oversampling when sampling rate is 48000
+	dsp::DynDoubleRingBuffer<dsp::Frame<2>> *inputBuffer;
+	dsp::DynDoubleRingBuffer<dsp::Frame<2>> *outputBuffer;
+	dsp::Frame<2> inputFrame = {};
+	dsp::Frame<2> outputFrame = {};
+
+	uint16_t reverb_buffer[32768] = {};
+	elements::Part* epart;
+	int mmode;
+	//bool low_cpu;
+	//float sr_notefix=0.f;
+
+};
+
+
+
+//---------------------------------------------
+// Marbles
+
+static const marbles::Scale preset_scales[6] = {
+	// C major
+	{
+		1.0f,
+		12,
+		{
+			{ 0.0000f, 255 },  // C
+			{ 0.0833f, 16 },   // C#
+			{ 0.1667f, 96 },   // D
+			{ 0.2500f, 24 },   // D#
+			{ 0.3333f, 128 },  // E
+			{ 0.4167f, 64 },   // F
+			{ 0.5000f, 8 },    // F#
+			{ 0.5833f, 192 },  // G
+			{ 0.6667f, 16 },   // G#
+			{ 0.7500f, 96 },   // A
+			{ 0.8333f, 24 },   // A#
+			{ 0.9167f, 128 },  // B
+		}
+	},
+
+	// C minor
+	{
+		1.0f,
+		12,
+		{
+			{ 0.0000f, 255 },  // C
+			{ 0.0833f, 16 },   // C#
+			{ 0.1667f, 96 },   // D
+			{ 0.2500f, 128 },  // Eb
+			{ 0.3333f, 8 },    // E
+			{ 0.4167f, 64 },   // F
+			{ 0.5000f, 4 },    // F#
+			{ 0.5833f, 192 },  // G
+			{ 0.6667f, 16 },   // G#
+			{ 0.7500f, 96 },   // A
+			{ 0.8333f, 128 },  // Bb
+			{ 0.9167f, 16 },   // B
+		}
+	},
+
+	// Pentatonic
+	{
+		1.0f,
+		12,
+		{
+			{ 0.0000f, 255 },  // C
+			{ 0.0833f, 4 },    // C#
+			{ 0.1667f, 96 },   // D
+			{ 0.2500f, 4 },    // Eb
+			{ 0.3333f, 4 },    // E
+			{ 0.4167f, 140 },  // F
+			{ 0.5000f, 4 },    // F#
+			{ 0.5833f, 192 },  // G
+			{ 0.6667f, 4 },    // G#
+			{ 0.7500f, 96 },   // A
+			{ 0.8333f, 4 },    // Bb
+			{ 0.9167f, 4 },    // B
+		}
+	},
+
+	// Pelog
+	{
+		1.0f,
+		7,
+		{
+			{ 0.0000f, 255 },  // C
+			{ 0.1275f, 128 },  // Db+
+			{ 0.2625f, 32 },  // Eb-
+			{ 0.4600f, 8 },    // F#-
+			{ 0.5883f, 192 },  // G
+			{ 0.7067f, 64 },  // Ab
+			{ 0.8817f, 16 },    // Bb+
+		}
+	},
+
+	// Raag Bhairav That
+	{
+		1.0f,
+		12,
+		{
+			{ 0.0000f, 255 }, // ** Sa
+			{ 0.0752f, 128 }, // ** Komal Re
+			{ 0.1699f, 4 },   //    Re
+			{ 0.2630f, 4 },   //    Komal Ga
+			{ 0.3219f, 128 }, // ** Ga
+			{ 0.4150f, 64 },  // ** Ma
+			{ 0.4918f, 4 },   //    Tivre Ma
+			{ 0.5850f, 192 }, // ** Pa
+			{ 0.6601f, 64 },  // ** Komal Dha
+			{ 0.7549f, 4 },   //    Dha
+			{ 0.8479f, 4 },   //    Komal Ni
+			{ 0.9069f, 64 },  // ** Ni
+		}
+	},
+
+	// Raag Shri
+	{
+		1.0f,
+		12,
+		{
+			{ 0.0000f, 255 }, // ** Sa
+			{ 0.0752f, 4 },   //    Komal Re
+			{ 0.1699f, 128 }, // ** Re
+			{ 0.2630f, 64 },  // ** Komal Ga
+			{ 0.3219f, 4 },   //    Ga
+			{ 0.4150f, 128 }, // ** Ma
+			{ 0.4918f, 4 },   //    Tivre Ma
+			{ 0.5850f, 192 }, // ** Pa
+			{ 0.6601f, 4 },   //    Komal Dha
+			{ 0.7549f, 64 },  // ** Dha
+			{ 0.8479f, 128 }, // ** Komal Ni
+			{ 0.9069f, 4 },   //    Ni
+		}
+	},
+};
+
+class Marbles : public Module
+{
+public:
+
+	Marbles(CFrame* pParent, CControlListener* listener, const SynthComm* psynth_comm, const int vvoice = 0);
+
+	~Marbles();
+
+	static void Initialize();
+	static void End();
+	static const int GetType();
+	static Product* Activate(char* fullname, char* email, char* serial);				// Activate Licence
+	static bool IsActive();
+	static Marbles* Constructor(CFrame* pParent, CControlListener* listener, const SynthComm* psynth_comm, const int vvoice = 0);										// Used to construct modules that are imported for Dll files. Each sub class should define it's own Constructor.
+	static const char* GetProductName();
+	const char* GetName();
+	const int GetNameLen();
+	const char* GetVendorName();
+	const int GetVendorNameLen();
+	inline void ProcessSample();
+	int GetVersion() { return 1000; }														// Is Licence activated ?
+	Product* InstanceActivate(char* fullname, char* email, char* serial);		// Virtual Version
+	bool InstanceIsActive();													// Virtual Version
+	void ValueChanged(CControl* pControl);
+	void OnReset();
+	void SetSampleRate(float sr);
+	void LoadPreset(void* pdata, int size, int version);
+	void SavePreset(void* pdata, int size);
+	int GetPresetSize();
+	//void UpdateProcessor();
+	const char* GetInfoURL();
+	void UpdateLEDs();
+	void StepBlock();
+
+
+	static Product* pproduct;
+	static char* name;					// Module title name that will be displayed in the menu
+	static int name_len;				// Length of the name string excluding terminating NULL.
+	static char* vendorname;			// Module vendor name
+	static int vendorname_len;			// Length of the vendor name string excluding terminating NULL.
+	static const int BLOCK_SIZE = 5;
+
+protected:
+	static CBitmap* panel;
+
+private:
+	// Inputs
+	//float in1, in2, in3, in4;
+
+	// Input connections (cables)
+	//float *pin1,*pin2,*pin3,*pin4;
+
+	// Outputs
+	//float out;
+
+	// Knobs
+	ModuleKnob* kdeja, * ktrate, * kxspread, * klength;
+	ModuleKnob* ktbias, * kxbias, * ktjitter, * kxsteps;
+
+	// Buttons
+	COnOffButton * btdeja, *bxdeja;
+	CKickButton* btmode, *bxmode, *btrange, *bxrange, *bextern;
+
+	// LEDs
+	CMovieBitmap * ltmode, *lxmode, *ltrange, *lxrange, *lextern;
+	CMovieBitmap* lt1, * lt2, * lt3, *ly, * lx1, * lx2, * lx3;
+
+	// Patch points
+	PatchPoint* pptbias, *ppxbias, *pptclock, *pptrate, *pptjitter, *ppdeja, *ppxsteps;
+	PatchPoint*ppxspread, *ppxclock, *ppt1, *ppt2, *ppt3, *ppy, *ppx1, *ppx2, *ppx3;
+
+	// Switches
+	//CVerticalSwitch *sw1;
+
+	// Menus
+	COptionMenu* more_menu, *mtmode, *mtrange, *mxmode, *mxrange, *mscale, *mint_x_clock, *my_divider;
+
+	// Screws
+	CMovieBitmap* screw1, * screw2, * screw3, * screw4;
+
+	// knob change pool
+	//ModuleKnobExPool<Marbles_NUM_KNOBS> chpool;
+
+	// VCVR Port
+	//dsp::SampleRateConverter<2> inputSrc;
+	//dsp::SampleRateConverter<2> outputSrc;
+	//// 780 buffer size supports arround 16x oversampling when sampling rate is 48000
+	//dsp::DoubleRingBuffer<dsp::Frame<2>, 780> inputBuffer;
+	//dsp::DoubleRingBuffer<dsp::Frame<2>, 780> outputBuffer;
+
+	marbles::RandomGenerator random_generator;
+	marbles::RandomStream random_stream;
+	marbles::TGenerator t_generator;
+	marbles::XYGenerator xy_generator;
+	marbles::NoteFilter note_filter;
+
+	// State
+	//dsp::BooleanTrigger tDejaVuTrigger;
+	//dsp::BooleanTrigger xDejaVuTrigger;
+	//dsp::BooleanTrigger tModeTrigger;
+	//dsp::BooleanTrigger xModeTrigger;
+	//dsp::BooleanTrigger tRangeTrigger;
+	//dsp::BooleanTrigger xRangeTrigger;
+	//dsp::BooleanTrigger externalTrigger;
+	bool t_deja_vu;
+	bool x_deja_vu;
+	int t_mode;
+	int x_mode;
+	int t_range;
+	int x_range;
+	bool external;
+	int x_scale;
+	int y_divider_index;
+	int x_clock_source_internal;
+
+	// Buffers
+	stmlib::GateFlags t_clocks[BLOCK_SIZE] = {};
+	stmlib::GateFlags last_t_clock = 0;
+	stmlib::GateFlags xy_clocks[BLOCK_SIZE] = {};
+	stmlib::GateFlags last_xy_clock = 0;
+	float ramp_master[BLOCK_SIZE] = {};
+	float ramp_external[BLOCK_SIZE] = {};
+	float ramp_slave[2][BLOCK_SIZE] = {};
+	bool gates[BLOCK_SIZE * 2] = {};
+	float voltages[BLOCK_SIZE * 4] = {};
+	int blockIndex = 0;
+
+
+};
+
+
+//---------------------------------------------
+// Frames
+
+#define FRAMES_STEP_TIME	0.001
+
+class Frames : public Module
+{
+
+	enum MoreMenuIndexs
+	{	kChannel1 = 0,
+		kChannel2,
+		kChannel3,
+		kChannel4,
+		kClearKeyframes,
+		kSeparator,
+		kKeyframer,
+		kPolyLFO,
+
+		kMoreMenuCount
+	};
+
+	enum MoreChannelMenuIndexs
+	{
+		KInterpolationCurve = -1,
+		kStep,
+		kLinear,
+		kAccelerating,
+		kDecelerating,
+		kDepartureArrival,
+		kBouncing,
+		kRSeparator,
+		kResponseCurve,
+		kLinearR,
+		kExponentialR,
+
+		kMoreChannelMenuCount
+	};
+public:
+
+	Frames(CFrame* pParent, CControlListener* listener, const SynthComm* psynth_comm, const int vvoice = 0);
+
+	~Frames();
+
+	static void Initialize();
+	static void End();
+	static const int GetType();
+	static Product* Activate(char* fullname, char* email, char* serial);				// Activate Licence
+	static bool IsActive();
+	static Frames* Constructor(CFrame* pParent, CControlListener* listener, const SynthComm* psynth_comm, const int vvoice = 0);										// Used to construct modules that are imported for Dll files. Each sub class should define it's own Constructor.
+	static const char* GetProductName();
+	const char* GetName();
+	const int GetNameLen();
+	const char* GetVendorName();
+	const int GetVendorNameLen();
+	inline void ProcessSample();
+	int GetVersion() { return 1000; }														// Is Licence activated ?
+	Product* InstanceActivate(char* fullname, char* email, char* serial);		// Virtual Version
+	bool InstanceIsActive();													// Virtual Version
+	void ValueChanged(CControl* pControl);
+	void OnReset();
+	void SetSampleRate(float sr);
+	void LoadPreset(void* pdata, int size, int version);
+	void SavePreset(void* pdata, int size);
+	int GetPresetSize();
+	void CableConnected(PatchPoint* pp);
+	void CableDisconnected(PatchPoint* pp);
+	//void UpdateProcessor();
+	const char* GetInfoURL();
+	void drawRect(CDrawContext* pContext, const CRect& updateRect);
+	void UpdateFrameColors(bool force_redraw);
+	bool GetAlwaysONDefault() { return true; }
+	bool GetIsMonoDefault() { return false; }
+
+
+	static Product* pproduct;
+	static char* name;					// Module title name that will be displayed in the menu
+	static int name_len;				// Length of the name string excluding terminating NULL.
+	static char* vendorname;			// Module vendor name
+	static int vendorname_len;			// Length of the vendor name string excluding terminating NULL.
+
+protected:
+	static CBitmap* panel;
+
+private:
+	// Inputs
+	//float in1, in2, in3, in4;
+
+	// Input connections (cables)
+	//float *pin1,*pin2,*pin3,*pin4;
+
+	// Outputs
+	//float out;
+
+	// Knobs
+	ModuleKnob* kgain[4];
+	ModuleKnob* kframe, * kmod;
+
+	// Buttons
+	COnOffButton* boffset;		// Should be a switch, but for now this will work because we don't have AddHorizontalSwitch() in SDK. Only vertical
+	CKickButton* badd, * bdel;
+
+	// LEDs
+	CMovieBitmap* ladd_del;
+	CMovieBitmap* lg[4];
+
+	// Patch points
+	PatchPoint* ppall, * ppin[4], * ppframe;
+	PatchPoint* ppmix, * ppout[4], * ppfrstep;
+
+	// Switches
+	CVerticalSwitch *sw1;
+
+	// Menus
+	COptionMenu* more_menu, * mch[4];
+
+	// Screws
+	CMovieBitmap* screw1, * screw2, * screw3, * screw4;
+
+	// knob change pool
+	//ModuleKnobExPool<Frames_NUM_KNOBS> chpool;
+
+	// VCVR Port
+	frames::Keyframer keyframer;
+	frames::PolyLfo poly_lfo;
+	bool poly_lfo_mode = false, allin = false, isppin[4] = {}, isppout[4] = {};
+	uint16_t lastcontrols[4] = {};
+	uint16_t controls[4] = {};
+	int32_t timestamp;
+	int16_t nearestIndex = -1, last_position = -1;
+	float frmod, frx, fry, offsetv = 0.0;
+	int32_t last_timestampMod = 0;
+	uint8_t frcolors[3] = {};
+	int32_t last_colorsi = (255 | 255 << 8 | 255 << 16);
+	int step_count, step_time;
+
+	dsp::SchmittTrigger addTrigger;
+	dsp::SchmittTrigger delTrigger;
+};
+
+
+
+//---------------------------------------------
+// Streams
+
+namespace streams {
+
+	struct StreamsChannelMode {
+		ProcessorFunction function;
+		bool alternate;
+		std::string label;
+	};
+
+	static constexpr int kNumChannelModes = 10;
+
+	static const StreamsChannelMode kChannelModeTable[kNumChannelModes] = {
+		{PROCESSOR_FUNCTION_ENVELOPE,          false, "Envelope"},
+		{PROCESSOR_FUNCTION_VACTROL,           false, "Vactrol"},
+		{PROCESSOR_FUNCTION_FOLLOWER,          false, "Follower"},
+		{PROCESSOR_FUNCTION_COMPRESSOR,        false, "Compressor"},
+		{PROCESSOR_FUNCTION_ENVELOPE,          true,  "AR envelope"},
+		{PROCESSOR_FUNCTION_VACTROL,           true,  "Plucked vactrol"},
+		{PROCESSOR_FUNCTION_FOLLOWER,          true,  "Cutoff controller"},
+		{PROCESSOR_FUNCTION_COMPRESSOR,        true,  "Slow compressor"},
+		{PROCESSOR_FUNCTION_FILTER_CONTROLLER, true,  "Direct VCF controller"},
+		{PROCESSOR_FUNCTION_LORENZ_GENERATOR,  false, "Lorenz generator"},
+	};
+
+	struct StreamsMonitorMode {
+		MonitorMode mode;
+		std::string label;
+	};
+
+	static constexpr int kNumMonitorModes = 4;
+
+	static const StreamsMonitorMode kMonitorModeTable[kNumMonitorModes] = {
+		{MONITOR_MODE_EXCITE_IN, "Excite"},
+		{MONITOR_MODE_VCA_CV,    "Level"},
+		{MONITOR_MODE_AUDIO_IN,  "In"},
+		{MONITOR_MODE_OUTPUT,    "Out"},
+	};
+
+}
+
+class Streams : public Module
+{
+
+public:
+
+	Streams(CFrame* pParent, CControlListener* listener, const SynthComm* psynth_comm, const int vvoice = 0);
+
+	~Streams();
+
+	static void Initialize();
+	static void End();
+	static const int GetType();
+	static Product* Activate(char* fullname, char* email, char* serial);				// Activate Licence
+	static bool IsActive();
+	static Streams* Constructor(CFrame* pParent, CControlListener* listener, const SynthComm* psynth_comm, const int vvoice = 0);										// Used to construct modules that are imported for Dll files. Each sub class should define it's own Constructor.
+	static const char* GetProductName();
+	const char* GetName();
+	const int GetNameLen();
+	const char* GetVendorName();
+	const int GetVendorNameLen();
+	inline void ProcessSample();
+	int GetVersion() { return 1000; }														// Is Licence activated ?
+	Product* InstanceActivate(char* fullname, char* email, char* serial);		// Virtual Version
+	bool InstanceIsActive();													// Virtual Version
+	void ValueChanged(CControl* pControl);
+	void OnReset();
+	void SetSampleRate(float sr);
+	void SetLinked(bool linked);
+	int GetChannelMode(int channel);
+	void SetChannelMode(int channel, int mode_id);
+	void SetMonitorMode(int mode_id);
+	void LoadPreset(void* pdata, int size, int version);
+	void SavePreset(void* pdata, int size);
+	int GetPresetSize();
+	void CableConnected(PatchPoint* pp);
+	void CableDisconnected(PatchPoint* pp);
+	//void UpdateProcessor();
+	const char* GetInfoURL();
+	void UpdateMenus();
+	CMouseEventResult onMouseDown(CPoint &where, const long& buttons);
+	//void drawRect(CDrawContext* pContext, const CRect& updateRect);
+	//bool GetAlwaysONDefault() { return true; }
+	bool GetIsMonoDefault() { return false; }
+
+
+	static Product* pproduct;
+	static char* name;					// Module title name that will be displayed in the menu
+	static int name_len;				// Length of the name string excluding terminating NULL.
+	static char* vendorname;			// Module vendor name
+	static int vendorname_len;			// Length of the vendor name string excluding terminating NULL.
+
+protected:
+	static CBitmap* panel;
+
+private:
+	// Knobs
+	ModuleKnob* kshape1, *kmod1, *klevel1, *kresp1, *kshape2, *kmod2, *klevel2, *kresp2;
+	ModuleKnob* kframe, * kmod;
+
+	// Buttons
+	//COnOffButton* boffset;		
+	CKickButtonEx* bfunc1, * bfunc2, *bmeter;
+
+	// LEDs
+	CMovieBitmap* lch1[4], *lch2[4];
+
+	// Patch points
+	PatchPoint* ppexcite1, * ppin1, * pplevel1, * ppexcite2, * ppin2, * pplevel2;
+	PatchPoint* ppout1, *ppout2;
+
+	// Switches
+	//CVerticalSwitch *sw1;
+
+	// Menus
+	COptionMenu* more_menu, *mch[2], *mmeter;
+
+	// Screws
+	CMovieBitmap* screw1, * screw2;
+
+	// knob change pool
+	//ModuleKnobExPool<Streams_NUM_KNOBS> chpool;
+
+	// VCVR Port
+	streams::StreamsEngine engine;
+	//int prevNumChannels;
+	//float brightnesses[NUM_LIGHTS];
+	streams::StreamsEngine::Frame frame = {};
+	const float led_off = 0.1;
+	int mode_id[2];
+};
+
+
+// -------------------------------------------
+class Shelves : public Module
+{
+
+public:
+
+	Shelves(CFrame* pParent, CControlListener* listener, const SynthComm* psynth_comm, const int vvoice = 0);
+
+	~Shelves();
+
+	static void Initialize();
+	static void End();
+	static const int GetType();
+	static Product* Activate(char* fullname, char* email, char* serial);				// Activate Licence
+	static bool IsActive();
+	static Shelves* Constructor(CFrame* pParent, CControlListener* listener, const SynthComm* psynth_comm, const int vvoice = 0);										// Used to construct modules that are imported for Dll files. Each sub class should define it's own Constructor.
+	static const char* GetProductName();
+	const char* GetName();
+	const int GetNameLen();
+	const char* GetVendorName();
+	const int GetVendorNameLen();
+	inline void ProcessSample();
+	int GetVersion() { return 1000; }														// Is Licence activated ?
+	Product* InstanceActivate(char* fullname, char* email, char* serial);		// Virtual Version
+	bool InstanceIsActive();													// Virtual Version
+	void ValueChanged(CControl* pControl);
+	void OnReset();
+	void SetSampleRate(float sr);
+	//void LoadPreset(void* pdata, int size, int version);
+	//void SavePreset(void* pdata, int size);
+	//int GetPresetSize();
+	void CableConnected(PatchPoint* pp);
+	void CableDisconnected(PatchPoint* pp);
+	//void UpdateProcessor();
+	const char* GetInfoURL();
+	//CMouseEventResult onMouseDown(CPoint &where, const long& buttons);
+	//void drawRect(CDrawContext* pContext, const CRect& updateRect);
+	//bool GetAlwaysONDefault() { return true; }
+	bool GetIsMonoDefault() { return false; }
+
+
+	static Product* pproduct;
+	static char* name;					// Module title name that will be displayed in the menu
+	static int name_len;				// Length of the name string excluding terminating NULL.
+	static char* vendorname;			// Module vendor name
+	static int vendorname_len;			// Length of the vendor name string excluding terminating NULL.
+
+	static const float freqMin;
+	static const float freqMax;
+	static const float freqInit;
+	static const float gainMin;
+	static const float gainMax;
+	static const float qMin;
+	static const float qMax;
+	static const float qInit;
+
+protected:
+	static CBitmap* panel;
+
+private:
+	// Knobs
+	ModuleKnob* khsfreq, *kp1freq, *kp2freq, *klsfreq, *khsgain, *kp1gain, *kp2gain, *klsgain;
+	ModuleKnob* kp1q, * kp2q, *kin;
+
+	// Buttons
+	//COnOffButton* boffset;		
+	//CKickButtonEx* bfunc1, * bfunc2, *bmeter;
+
+	// LEDs
+	CMovieBitmap* lclip;
+
+	// Patch points
+	PatchPoint* pphsfreq, *ppp1freq, *ppp2freq, *pplsfreq, *pphsgain, *ppp1gain, *ppp2gain, *pplsgain;
+	PatchPoint* ppp1q, * ppp2q, *ppfreq, *ppgain, *ppin;
+	PatchPoint* ppp1hp, * ppp1bp, * ppp1lp, * ppp2hp, * ppp2bp, * ppp2lp, * ppout;
+
+	// Switches
+	//CVerticalSwitch *sw1;
+
+	// Menus
+	//COptionMenu* more_menu, *mch[2], *mmeter;
+
+	// Screws
+	CMovieBitmap* screw1, * screw2, * screw3, * screw4;
+
+	// knob change pool
+	//ModuleKnobExPool<Shelves_NUM_KNOBS> chpool;
+
+	// VCVR Port
+	shelves::ShelvesEngine engine;
+	//bool preGain;
+	shelves::ShelvesEngine::Frame frame = {};
+};
+
+
+
+// -------------------------------------------
+#define PLAITS_BLOCKSIZE	12
+
+class Plaits : public Module
+{
+	enum MoreMenuIndexs
+	{	kLowCPU = 0,
+		kEditLPG,
+		kSeparator1,
+		kSeparator1Title,
+		kPairOfClassicWaveforms,
+		kSeparator2 = 12,
+		kSeparator2Title,
+		kGranularColor,
+		kAnalogHiHat = 21
+	};
+
+public:
+
+	Plaits(CFrame* pParent, CControlListener* listener, const SynthComm* psynth_comm, const int vvoice = 0);
+
+	~Plaits();
+
+	static void Initialize();
+	static void End();
+	static const int GetType();
+	static Product* Activate(char* fullname, char* email, char* serial);				// Activate Licence
+	static bool IsActive();
+	static Plaits* Constructor(CFrame* pParent, CControlListener* listener, const SynthComm* psynth_comm, const int vvoice = 0);										// Used to construct modules that are imported for Dll files. Each sub class should define it's own Constructor.
+	static const char* GetProductName();
+	const char* GetName();
+	const int GetNameLen();
+	const char* GetVendorName();
+	const int GetVendorNameLen();
+	inline void ProcessSample();
+	int GetVersion() { return 1000; }														// Is Licence activated ?
+	Product* InstanceActivate(char* fullname, char* email, char* serial);		// Virtual Version
+	bool InstanceIsActive();													// Virtual Version
+	void ValueChanged(CControl* pControl);
+	void OnReset();
+	void SetSampleRate(float sr);
+	void LoadPreset(void* pdata, int size, int version);
+	void SavePreset(void* pdata, int size);
+	int GetPresetSize();
+	void CableConnected(PatchPoint* pp);
+	void CableDisconnected(PatchPoint* pp);
+	//void UpdateProcessor();
+	const char* GetInfoURL();
+	void UpdateLights();
+	//CMouseEventResult onMouseDown(CPoint &where, const long& buttons);
+	//void drawRect(CDrawContext* pContext, const CRect& updateRect);
+	//bool GetAlwaysONDefault() { return true; }
+	void SetLpgMode(bool lpgMode);
+	void SetEngineSampleRate();
+	bool GetIsMonoDefault() { return false; }
+
+
+	static Product* pproduct;
+	static char* name;					// Module title name that will be displayed in the menu
+	static int name_len;				// Length of the name string excluding terminating NULL.
+	static char* vendorname;			// Module vendor name
+	static int vendorname_len;			// Length of the vendor name string excluding terminating NULL.
+
+	static const std::string modelLabels[16];
+
+protected:
+	static CBitmap* panel;
+
+private:
+	// Knobs
+	ModuleKnob* kfreq, *kharm, *ktimb, *klpg_color, *kmorph, *klpg_decay, *ktimbcv, *kfreqcv, *kmorphcv;
+
+	// Buttons
+	//COnOffButton* boffset;		
+	CKickButtonEx* bmodel1, * bmodel2;
+
+	// LEDs
+	CMovieBitmap *lmodel[8];
+
+	// Patch points
+	PatchPoint* ppeng, *pptimb, *ppfreq, *ppmorph, *ppharm, *pptrig, *pplevel, *ppnote;
+	PatchPoint* ppout, * ppaux;
+
+	// Switches
+	//CVerticalSwitch *sw1;
+
+	// Menus
+	COptionMenu* more_menu; // , * mch[2], * mmeter;
+
+	// Screws
+	CMovieBitmap* screw1, * screw2;
+
+	// knob change pool
+	//ModuleKnobExPool<Plaits_NUM_KNOBS> chpool;
+
+	// VCVR Port
+	plaits::Voice *plvoice;
+	plaits::Patch patch = {};
+	char shared_buffer[16384] = {};
+	//float triPhase = 0.f, phase_rate = 0.f;
+	dsp::SampleRateConverter<2> outputSrc;
+	// 780 buffer size supports arround 16x oversampling when sampling rate is 48000
+	// Formula for calculation: required_buffer_size = block_size * sample_rate / hardware_module_sample_rate
+	dsp::DynDoubleRingBuffer<dsp::Frame<2>> *outputBuffer;
+	bool lowCpu = false;
+	bool lpgMode = false;
+	dsp::BooleanTrigger model1Trigger;
+	dsp::BooleanTrigger model2Trigger;
+	plaits::Voice::Frame output[PLAITS_BLOCKSIZE] = {};
+	dsp::Frame<2> outputFrames[PLAITS_BLOCKSIZE] = {};
+
+	float pitchadd;
+	plaits::Modulations modulations;
+};
 #endif

@@ -12,23 +12,30 @@ Use two RC filters in series for a bandpass filter.
 */
 template <typename T = float>
 struct TRCFilter {
-	T c = 0.f;
-	T xstate[1];
-	T ystate[1];
+	T* c;
+	T* state;
+	//T *xstate[1];
+	//T *ystate[1];
+
+	~TRCFilter() {
+		if (c != NULL) _mm_free(c); c = NULL; state = NULL;
+	}
 
 	TRCFilter() {
+		c = (T *) _mm_malloc(3 * sizeof(T), 16);
+		state = &(c[1]);
 		reset();
 	}
 
 	void reset() {
-		xstate[0] = 0.f;
-		ystate[0] = 0.f;
+		
+		*c = 0.f;
 	}
 
 	/** Sets the cutoff angular frequency in radians.
 	*/
 	void setCutoff(T r) {
-		c = 2.f / r;
+		*c = 2.f / r;
 	}
 	/** Sets the cutoff frequency.
 	`f` is the ratio between the cutoff frequency and sample rate, i.e. f = f_c / f_s
@@ -37,15 +44,15 @@ struct TRCFilter {
 		setCutoff(2.f * M_PI * f);
 	}
 	void process(T x) {
-		T y = (x + xstate[0] - ystate[0] * (1 - c)) / (1 + c);
-		xstate[0] = x;
-		ystate[0] = y;
+		T y = (x + state[0] - state[1] * (1 - *c)) / (1 + *c);
+		state[0] = x;
+		state[1] = y;
 	}
 	T lowpass() {
-		return ystate[0];
+		return state[1];
 	}
 	T highpass() {
-		return xstate[0] - ystate[0];
+		return state[0] - state[1];
 	}
 };
 
@@ -55,29 +62,40 @@ typedef TRCFilter<> RCFilter;
 /** Applies exponential smoothing to a signal with the ODE
 \f$ \frac{dy}{dt} = x \lambda \f$.
 */
+// Ammar: For some reason VS doesn't do member alignment that is required for SIMD. Modified to allocate in the Heap!! 
 template <typename T = float>
 struct TExponentialFilter {
-	T out = 0.f;
-	T lambda = 0.f;
+	T *lambda;
+	T *out;
 
-	void reset() {
-		out = 0.f;
+	TExponentialFilter()
+	{	lambda = (T *) _mm_malloc(2 * sizeof(T), 16);
+		out = &(lambda[1]);
 	}
 
-	void setLambda(T lambda) {
-		this->lambda = lambda;
+	~TExponentialFilter()
+	{	if (lambda != NULL) _mm_free(lambda); 
+		lambda = NULL; out = NULL;
+	}
+
+	void reset() {
+		*out = 0.f;
+	}
+
+	void setLambda(T lambda_) {
+		*lambda = lambda_;
 	}
 
 	/** Sets \f$ \lambda = 1 / \tau \f$. */
 	void setTau(T tau) {
-		this->lambda = 1 / tau;
+		*lambda = 1 / tau;
 	}
 
 	T process(T deltaTime, T in) {
-		T y = out + (in - out) * lambda * deltaTime;
+		T y = *out + (in - *out) * (*lambda) * deltaTime;
 		// If no change was made between the old and new output, assume T granularity is too small and snap output to input
-		out = simd::ifelse(out == y, in, y);
-		return out;
+		*out = simd::ifelse(*out == y, in, y);
+		return *out;
 	}
 
 	DEPRECATED T process(T in) {

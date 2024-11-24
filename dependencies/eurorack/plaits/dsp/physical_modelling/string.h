@@ -52,7 +52,7 @@ class String {
   String() { }
   ~String() { }
   
-  void Init(stmlib::BufferAllocator* allocator);
+  void Init(stmlib::BufferAllocator* allocator, float sr);
   void Reset();
   void Process(
       float f0,
@@ -88,6 +88,7 @@ class String {
   // do not fit the delay line. Rarely used.
   float src_phase_;
   float out_sample_[2];
+  float sample_rate;
 
   DISALLOW_COPY_AND_ASSIGN(String);
 };

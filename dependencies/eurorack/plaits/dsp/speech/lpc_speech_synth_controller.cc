@@ -203,13 +203,19 @@ bool LPCSpeechSynthWordBank::Load(int bank) {
   return true;
 }
 
-void LPCSpeechSynthController::Init(LPCSpeechSynthWordBank* word_bank) {
+void LPCSpeechSynthController::Init(LPCSpeechSynthWordBank* word_bank, float sr) {
   word_bank_ = word_bank;
   
   clock_phase_ = 0.0f;
   playback_frame_ = -1;
   last_playback_frame_ = -1;
   remaining_frame_samples_ = 0;
+
+  // Ammar: added to allow custom sample rates.
+  sample_rate = sr;
+  sr_ratio = 48000.f / sample_rate;
+  sr_semitones = std::log2(sr_ratio) * 12.f;
+
 
   fill(&sample_[0], &sample_[2], 0.0f);
   fill(&next_sample_[0], &next_sample_[2], 0.0f);
@@ -232,13 +238,18 @@ void LPCSpeechSynthController::Render(
     float* excitation,
     float* output,
     size_t size) {
-  const float rate_ratio = SemitonesToRatio((formant_shift - 0.5f) * 36.0f);
+
+    // Ammar: mult by rate ratio for custom samples rates
+    frequency *= sr_ratio;
+
+  const float rate_ratio = SemitonesToRatio((formant_shift - 0.5f) * 36.0f + sr_semitones);
   const float rate = rate_ratio / 6.0f;
   
   // All utterances have been normalized for an average f0 of 100 Hz.
   const float pitch_shift = frequency / \
-      (rate_ratio * kLPCSpeechSynthDefaultF0 / kCorrectedSampleRate);
-  const float time_stretch = SemitonesToRatio(-speed * 24.0f +
+      (rate_ratio * kLPCSpeechSynthDefaultF0 / sample_rate);              // no need for corrected sample rate since this is coftware, and sr is accurate
+      //(rate_ratio * kLPCSpeechSynthDefaultF0 / kCorrectedSampleRate);   // commented by ammar
+  const float time_stretch = SemitonesToRatio(speed * 24.0f +
         (formant_shift < 0.4f ? (formant_shift - 0.4f) * -45.0f
             : (formant_shift > 0.6f ? (formant_shift - 0.6f) * -45.0f : 0.0f)));
   
@@ -283,7 +294,7 @@ void LPCSpeechSynthController::Render(
   } else {
     if (remaining_frame_samples_ == 0) {
       synth_.PlayFrame(frames, float(playback_frame_), false);
-      remaining_frame_samples_ = kSampleRate / kLPCSpeechSynthFPS * \
+      remaining_frame_samples_ = sample_rate / kLPCSpeechSynthFPS * \
           time_stretch;
       ++playback_frame_;
       if (playback_frame_ >= last_playback_frame_) {

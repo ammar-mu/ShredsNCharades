@@ -50,7 +50,7 @@ class SquareNoise {
   SquareNoise() { }
   ~SquareNoise() { }
 
-  void Init() {
+  void Init(float sr) {
     std::fill(&phase_[0], &phase_[6], 0);
   }
     
@@ -102,7 +102,8 @@ class RingModNoise {
   RingModNoise() { }
   ~RingModNoise() { }
 
-  void Init() {
+  void Init(float sr) {
+    sample_rate = sr;
     for (int i = 0; i < 6; ++i) {
       oscillator_[i].Init();
     }
@@ -110,12 +111,12 @@ class RingModNoise {
   
   void Render(float f0, float* temp_1, float* temp_2, float* out, size_t size) {
     const float ratio = f0 / (0.01f + f0);
-    const float f1a = 200.0f / kSampleRate * ratio;
-    const float f1b = 7530.0f / kSampleRate * ratio;
-    const float f2a = 510.0f / kSampleRate * ratio;
-    const float f2b = 8075.0f / kSampleRate * ratio;
-    const float f3a = 730.0f / kSampleRate * ratio;
-    const float f3b = 10500.0f / kSampleRate * ratio;
+    const float f1a = 200.0f / sample_rate * ratio;
+    const float f1b = 7530.0f / sample_rate * ratio;
+    const float f2a = 510.0f / sample_rate * ratio;
+    const float f2b = 8075.0f / sample_rate * ratio;
+    const float f3a = 730.0f / sample_rate * ratio;
+    const float f3b = 10500.0f / sample_rate * ratio;
     
     std::fill(&out[0], &out[size], 0.0f);
     
@@ -140,6 +141,7 @@ class RingModNoise {
     }
   }
   Oscillator oscillator_[6];
+  float sample_rate;
   
   DISALLOW_COPY_AND_ASSIGN(RingModNoise);
 };
@@ -166,13 +168,14 @@ class HiHat {
   HiHat() { }
   ~HiHat() { }
 
-  void Init() {
+  void Init(float sr) {
     envelope_ = 0.0f;
     noise_clock_ = 0.0f;
     noise_sample_ = 0.0f;
     sustain_gain_ = 0.0f;
+    sample_rate = sr;
 
-    metallic_noise_.Init();
+    metallic_noise_.Init(sr);
     noise_coloration_svf_.Init();
     hpf_.Init();
   }
@@ -202,9 +205,9 @@ class HiHat {
     metallic_noise_.Render(2.0f * f0, temp_1, temp_2, out, size);
 
     // Apply BPF on the metallic noise.
-    float cutoff = 150.0f / kSampleRate * stmlib::SemitonesToRatio(
+    float cutoff = 150.0f / sample_rate * stmlib::SemitonesToRatio(
         tone * 72.0f);
-    CONSTRAIN(cutoff, 0.0f, 16000.0f / kSampleRate);
+    CONSTRAIN(cutoff, 0.0f, 16000.0f / sample_rate);
     noise_coloration_svf_.set_f_q<stmlib::FREQUENCY_ACCURATE>(
         cutoff, resonance ? 3.0f + 6.0f * tone : 1.0f);
     noise_coloration_svf_.Process<stmlib::FILTER_MODE_BAND_PASS>(
@@ -246,6 +249,7 @@ class HiHat {
   float noise_clock_;
   float noise_sample_;
   float sustain_gain_;
+  float sample_rate;
 
   MetallicNoiseSource metallic_noise_;
   stmlib::Svf noise_coloration_svf_;

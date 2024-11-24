@@ -49,7 +49,7 @@ class Resonator {
   Resonator() { }
   ~Resonator() { }
   
-  void Init();
+  void Init(float sr);
   void Process(
       const float* bow_strength,
       const float* in,
@@ -125,6 +125,9 @@ class Resonator {
   stmlib::DelayLine<float, kMaxDelayLineSize> d_bow_[kMaxBowedModes];
   
   size_t clock_divider_;
+
+  // Added by Ammar
+  float sample_rate = 32000.0f;
   
   DISALLOW_COPY_AND_ASSIGN(Resonator);
 };

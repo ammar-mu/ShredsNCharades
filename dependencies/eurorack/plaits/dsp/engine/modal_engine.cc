@@ -35,7 +35,8 @@ namespace plaits {
 using namespace std;
 using namespace stmlib;
 
-void ModalEngine::Init(BufferAllocator* allocator) {
+void ModalEngine::Init(BufferAllocator* allocator, float sr) {
+  a0 = (440.0f / 8.0f) / sr;
   temp_buffer_ = allocator->Allocate<float>(kMaxBlockSize);
   harmonics_lp_ = 0.0f;
   Reset();
@@ -60,7 +61,7 @@ void ModalEngine::Render(
       parameters.trigger & TRIGGER_UNPATCHED,
       parameters.trigger & TRIGGER_RISING_EDGE,
       parameters.accent,
-      NoteToFrequency(parameters.note),
+      NoteToFrequency(parameters.note,a0),
       harmonics_lp_,
       parameters.timbre,
       parameters.morph,

@@ -158,7 +158,7 @@ class LPCSpeechSynthController {
   LPCSpeechSynthController() { }
   ~LPCSpeechSynthController() { }
   
-  void Init(LPCSpeechSynthWordBank* word_bank);
+  void Init(LPCSpeechSynthWordBank* word_bank, float sr);
   
   void Render(
       bool free_running,
@@ -186,6 +186,7 @@ class LPCSpeechSynthController {
   size_t remaining_frame_samples_;
 
   LPCSpeechSynthWordBank* word_bank_;
+  float sample_rate, sr_semitones, sr_ratio;
   
   static const LPCSpeechSynth::Frame phonemes_[kLPCSpeechSynthNumPhonemes];
   

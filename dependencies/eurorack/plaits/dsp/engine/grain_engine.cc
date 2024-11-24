@@ -35,7 +35,8 @@ namespace plaits {
 using namespace std;
 using namespace stmlib;
 
-void GrainEngine::Init(BufferAllocator* allocator) {
+void GrainEngine::Init(BufferAllocator* allocator, float sr) {
+  a0 = (440.0f / 8.0f) / sr;
   grainlet_[0].Init();
   grainlet_[1].Init();
   // vosim_oscillator_.Init();
@@ -55,9 +56,9 @@ void GrainEngine::Render(
     size_t size,
     bool* already_enveloped) {
   const float root = parameters.note;
-  const float f0 = NoteToFrequency(root);
+  const float f0 = NoteToFrequency(root,a0);
   
-  const float f1 = NoteToFrequency(24.0f + 84.0f * parameters.timbre);
+  const float f1 = NoteToFrequency(24.0f + 84.0f * parameters.timbre,a0);
   const float ratio = SemitonesToRatio(-24.0f + 48.0f * parameters.harmonics);
   const float carrier_bleed = parameters.harmonics < 0.5f
       ? 1.0f - 2.0f * parameters.harmonics
@@ -73,7 +74,7 @@ void GrainEngine::Render(
     out[i] = dc_blocker_[0].Process<FILTER_MODE_HIGH_PASS>(out[i] + aux[i]);
   }
 
-  const float cutoff = NoteToFrequency(root + 96.0f * parameters.timbre);
+  const float cutoff = NoteToFrequency(root + 96.0f * parameters.timbre,a0);
   z_oscillator_.Render(
       f0,
       cutoff,

@@ -41,7 +41,8 @@ namespace elements {
 using namespace std;
 using namespace stmlib;
 
-void Exciter::Init() {
+void Exciter::Init(float sr) {
+  sample_rate = sr;     // By Ammar
   set_model(EXCITER_MODEL_MALLET);
   set_parameter(0.0f);
   set_timbre(0.99f);
@@ -236,7 +237,7 @@ void Exciter::ProcessParticles(
             particle_state_ = 0.02f;
           }
         }
-        delay_ = static_cast<uint32_t>(particle_state_ * 0.15f * kSampleRate);
+        delay_ = static_cast<uint32_t>(particle_state_ * 0.15f * sample_rate);
         float gain = 1.0f - particle_range_;
         gain *= gain;
         *out = particle_state_ * amplitude * (1.0f - gain);

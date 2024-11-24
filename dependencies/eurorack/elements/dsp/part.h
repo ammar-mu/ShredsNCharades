@@ -54,7 +54,7 @@ class Part {
   Part() { }
   ~Part() { }
   
-  void Init(uint16_t* reverb_buffer);
+  void Init(uint16_t* reverb_buffer, float sr);
   
   void Process(
       const PerformanceState& performance_state,
@@ -105,6 +105,9 @@ class Part {
   float scaled_exciter_level_;
   float scaled_resonator_level_;
   float resonator_level_;
+
+  // Added by Ammar
+  float sample_rate = 32000.0f;
   
   Reverb reverb_;
   

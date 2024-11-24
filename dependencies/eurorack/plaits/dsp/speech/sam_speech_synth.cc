@@ -41,11 +41,12 @@ namespace plaits {
 using namespace std;
 using namespace stmlib;
 
-void SAMSpeechSynth::Init() {
+void SAMSpeechSynth::Init(float sr) {
   phase_ = 0.0f;
   frequency_ = 0.0f;
   pulse_next_sample_ = 0.0f;
   pulse_lp_ = 0.0f;
+  sample_rate = sr;
   
   fill(&formant_phase_[0], &formant_phase_[3], 0);
   consonant_samples_ = 0;
@@ -98,7 +99,7 @@ void SAMSpeechSynth::InterpolatePhonemeData(
     float f_1 = p_1.formant[i].frequency;
     float f_2 = p_2.formant[i].frequency;
     float f = f_1 + (f_2 - f_1) * phoneme_fractional;
-    f *= 8.0f * formant_shift * 4294967296.0f / kSampleRate;
+    f *= 8.0f * formant_shift * 4294967296.0f / sample_rate;
     formant_frequency[i] = static_cast<uint32_t>(f);
   
     float a_1 = formant_amplitude_lut[p_1.formant[i].amplitude];
@@ -120,7 +121,7 @@ void SAMSpeechSynth::Render(
   }
   
   if (consonant) {
-    consonant_samples_ = kSampleRate * 0.05f;
+    consonant_samples_ = sample_rate * 0.05f;
     int r = (vowel + 3.0f * frequency + 7.0f * formant_shift) * 8.0f;
     consonant_index_ = (r % kSAMNumConsonants);
   }

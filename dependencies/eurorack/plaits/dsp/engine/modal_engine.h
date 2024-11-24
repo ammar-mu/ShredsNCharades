@@ -39,7 +39,7 @@ class ModalEngine : public Engine {
   ModalEngine() { }
   ~ModalEngine() { }
   
-  virtual void Init(stmlib::BufferAllocator* allocator);
+  virtual void Init(stmlib::BufferAllocator* allocator, float sr);
   virtual void Reset();
   virtual void Render(const EngineParameters& parameters,
       float* out,
@@ -51,6 +51,7 @@ class ModalEngine : public Engine {
   ModalVoice voice_;
   float* temp_buffer_;
   float harmonics_lp_;
+  float a0;
   
   DISALLOW_COPY_AND_ASSIGN(ModalEngine);
 };

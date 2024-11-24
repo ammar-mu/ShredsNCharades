@@ -39,7 +39,7 @@ class WaveshapingEngine : public Engine {
   WaveshapingEngine() { }
   ~WaveshapingEngine() { }
   
-  virtual void Init(stmlib::BufferAllocator* allocator);
+  virtual void Init(stmlib::BufferAllocator* allocator, float sr);
   virtual void Reset();
   virtual void Render(const EngineParameters& parameters,
       float* out,
@@ -53,6 +53,7 @@ class WaveshapingEngine : public Engine {
   float previous_shape_;
   float previous_wavefolder_gain_;
   float previous_overtone_gain_;
+  float a0, sample_rate;
   
   DISALLOW_COPY_AND_ASSIGN(WaveshapingEngine);
 };

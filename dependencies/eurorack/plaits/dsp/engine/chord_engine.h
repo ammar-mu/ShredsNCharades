@@ -54,7 +54,7 @@ class ChordEngine : public Engine {
   ChordEngine() { }
   ~ChordEngine() { }
   
-  virtual void Init(stmlib::BufferAllocator* allocator);
+  virtual void Init(stmlib::BufferAllocator* allocator, float sr);
   virtual void Reset();
   virtual void Render(const EngineParameters& parameters,
       float* out,
@@ -79,6 +79,7 @@ class ChordEngine : public Engine {
   float previous_root_normalization_;
   
   float* ratios_;
+  float a0;
   
   DISALLOW_COPY_AND_ASSIGN(ChordEngine);
 };

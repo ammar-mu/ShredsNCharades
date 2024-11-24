@@ -12,7 +12,7 @@ extern "C"
 // You should provide an accurate .INI file for your dll.
 __declspec(dllexport) int GetDllNumberOfModules()
 {	// Returnes total number of modules in this Dll.
-	return 7;
+	return 13;
 }
 
 __declspec(dllexport) const char *GetDllVendorName()
@@ -39,6 +39,18 @@ __declspec(dllexport) int GetDllModuleNameLenByIndex(DllModule *mi, int index)
 			return Warps::name_len;
 		case 6:
 			return Stages::name_len;
+		case 7:
+			return Elements::name_len;
+		case 8:
+			return Marbles::name_len;
+		case 9:
+			return Frames::name_len;
+		case 10:
+			return Streams::name_len;
+		case 11:
+			return Shelves::name_len;
+		case 12:
+			return Plaits::name_len;
 		default:
 			return -1;
 	}
@@ -75,6 +87,12 @@ __declspec(dllexport) bool GetDllModuleByIndex(DllModule* mi, int index)
 		MODCASE(4, Branches)
 		MODCASE(5, Warps)
 		MODCASE(6, Stages)
+		MODCASE(7, Elements)
+		MODCASE(8, Marbles)
+		MODCASE(9, Frames)
+		MODCASE(10, Streams)
+		MODCASE(11, Shelves)
+		MODCASE(12, Plaits)
 
 		default:
 			return false;
@@ -112,6 +130,12 @@ __declspec(dllexport) bool GetDllModule(DllModule* mi, char* vendorname)
 	else IFMOD(Branches)
 	else IFMOD(Warps)
 	else IFMOD(Stages)
+	else IFMOD(Elements)
+	else IFMOD(Marbles)
+	else IFMOD(Frames)
+	else IFMOD(Streams)
+	else IFMOD(Shelves)
+	else IFMOD(Plaits)
 	else return false;
 }
 
@@ -151,6 +175,12 @@ __declspec(dllexport) bool DllInitialize(const DllInit *init)
 	Branches::Initialize();
 	Warps::Initialize();
 	Stages::Initialize();
+	Elements::Initialize();
+	Marbles::Initialize();
+	Frames::Initialize();
+	Streams::Initialize();
+	Shelves::Initialize();
+	Plaits::Initialize();
 	// Remmember to call your Initialize() here for each of your modules
 	// ....
 	return true;

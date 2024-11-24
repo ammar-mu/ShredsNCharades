@@ -58,7 +58,7 @@ class Voice {
   Voice() { }
   ~Voice() { }
   
-  void Init();
+  void Init(float sr);
   void Process(
       const Patch& patch,
       float frequency,
@@ -122,6 +122,9 @@ class Voice {
   
   ResonatorModel resonator_model_;
   float chord_index_;
+
+  // Added by Ammar
+  float sample_rate = 32000.0f;
   
   DISALLOW_COPY_AND_ASSIGN(Voice);
 };

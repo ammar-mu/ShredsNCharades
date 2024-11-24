@@ -43,7 +43,7 @@ class AdditiveEngine : public Engine {
   AdditiveEngine() { }
   ~AdditiveEngine() { }
   
-  virtual void Init(stmlib::BufferAllocator* allocator);
+  virtual void Init(stmlib::BufferAllocator* allocator, float sr);
   virtual void Reset();
   virtual void Render(const EngineParameters& parameters,
       float* out,
@@ -63,6 +63,7 @@ class AdditiveEngine : public Engine {
   HarmonicOscillator<kHarmonicBatchSize> harmonic_oscillator_[kNumHarmonicOscillators];
   
   float amplitudes_[kNumHarmonics];
+  float a0;
   
   DISALLOW_COPY_AND_ASSIGN(AdditiveEngine);
 };

@@ -48,7 +48,7 @@ class SyntheticSnareDrum {
   SyntheticSnareDrum() { }
   ~SyntheticSnareDrum() { }
 
-  void Init() {
+  void Init(float sr) {
     phase_[0] = 0.0f;
     phase_[1] = 0.0f;
     drum_amplitude_ = 0.0f;
@@ -56,6 +56,7 @@ class SyntheticSnareDrum {
     fm_ = 0.0f;
     hold_counter_ = 0;
     sustain_gain_ = 0.0f;
+    sample_rate = sr;
 
     drum_lp_.Init();
     snare_hp_.Init();
@@ -79,12 +80,12 @@ class SyntheticSnareDrum {
       size_t size) {
     const float decay_xt = decay * (1.0f + decay * (decay - 1.0f));
     fm_amount *= fm_amount;
-    const float drum_decay = 1.0f - 1.0f / (0.015f * kSampleRate) * \
+    const float drum_decay = 1.0f - 1.0f / (0.015f * sample_rate) * \
         stmlib::SemitonesToRatio(
            -decay_xt * 72.0f - fm_amount * 12.0f + snappy * 7.0f);
-    const float snare_decay = 1.0f - 1.0f / (0.01f * kSampleRate) * \
+    const float snare_decay = 1.0f - 1.0f / (0.01f * sample_rate) * \
         stmlib::SemitonesToRatio(-decay * 60.0f - snappy * 7.0f);
-    const float fm_decay = 1.0f - 1.0f / (0.007f * kSampleRate);
+    const float fm_decay = 1.0f - 1.0f / (0.007f * sample_rate);
     
     snappy = snappy * 1.1f - 0.05f;
     CONSTRAIN(snappy, 0.0f, 1.0f);
@@ -104,7 +105,7 @@ class SyntheticSnareDrum {
       snare_amplitude_ = drum_amplitude_ = 0.3f + 0.7f * accent;
       fm_ = 1.0f;
       phase_[0] = phase_[1] = 0.0f;
-      hold_counter_ = static_cast<int>((0.04f + decay * 0.03f) * kSampleRate);
+      hold_counter_ = static_cast<int>((0.04f + decay * 0.03f) * sample_rate);
     }
     
     stmlib::ParameterInterpolator sustain_gain(
@@ -189,6 +190,7 @@ class SyntheticSnareDrum {
   stmlib::OnePole drum_lp_;
   stmlib::OnePole snare_hp_;
   stmlib::Svf snare_lp_;
+  float sample_rate;
   
   DISALLOW_COPY_AND_ASSIGN(SyntheticSnareDrum);
 };

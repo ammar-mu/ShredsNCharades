@@ -35,10 +35,11 @@ namespace plaits {
 using namespace std;
 using namespace stmlib;
 
-void StringEngine::Init(BufferAllocator* allocator) {
+void StringEngine::Init(BufferAllocator* allocator, float sr) {
+  a0 = (440.0f / 8.0f) / sr;
   temp_buffer_ = allocator->Allocate<float>(kMaxBlockSize);
   for (int i = 0; i < kNumStrings; ++i) {
-    voice_[i].Init(allocator);
+    voice_[i].Init(allocator,sr);
     f0_[i] = 0.01f;
   }
   active_string_ = kNumStrings - 1;
@@ -65,7 +66,7 @@ void StringEngine::Render(
     active_string_ = (active_string_ + 1) % kNumStrings;
   }
   
-  const float f0 = NoteToFrequency(parameters.note);
+  const float f0 = NoteToFrequency(parameters.note,a0);
   f0_[active_string_] = f0;
   f0_delay_.Write(f0);
   

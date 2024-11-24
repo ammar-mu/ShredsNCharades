@@ -49,13 +49,14 @@ class AnalogSnareDrum {
 
   static const int kNumModes = 5;
 
-  void Init() {
+  void Init(float sr) {
     pulse_remaining_samples_ = 0;
     pulse_ = 0.0f;
     pulse_height_ = 0.0f;
     pulse_lp_ = 0.0f;
     noise_envelope_ = 0.0f;
     sustain_gain_ = 0.0f;
+    sample_rate = sr;
 
     for (int i = 0; i < kNumModes; ++i) {
       resonator_[i].Init();
@@ -75,8 +76,8 @@ class AnalogSnareDrum {
       float* out,
       size_t size) {
     const float decay_xt = decay * (1.0f + decay * (decay - 1.0f));
-    const int kTriggerPulseDuration = 1.0e-3 * kSampleRate;
-    const float kPulseDecayTime = 0.1e-3 * kSampleRate;
+    const int kTriggerPulseDuration = 1.0e-3 * sample_rate;
+    const float kPulseDecayTime = 0.1e-3 * sample_rate;
     const float q = 2000.0f * stmlib::SemitonesToRatio(decay_xt * 84.0f);
     const float noise_envelope_decay = 1.0f - 0.0017f * \
         stmlib::SemitonesToRatio(-decay * (50.0f + snappy * 10.0f));
@@ -189,6 +190,7 @@ class AnalogSnareDrum {
   
   stmlib::Svf resonator_[kNumModes];
   stmlib::Svf noise_filter_;
+  float sample_rate;
 
   // Replace the resonators in "free running" (sustain) mode.
   SineOscillator oscillator_[kNumModes];
