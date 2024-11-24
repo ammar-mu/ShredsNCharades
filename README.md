@@ -1,5 +1,9 @@
 <img src="./Shot.jpg" style="max-width: 100%;">
 
+<img src="./Shot3.jpg" style="max-width: 100%;">
+
+<img src="./Shot4.jpg" style="max-width: 100%;">
+
 <img src="./Shot2.jpg" style="max-width: 100%;">
 
 # Shreds & Charades
